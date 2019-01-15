@@ -1,5 +1,4 @@
-#ifndef BACKGROUND_HPP
-#define BACKGROUND_HPP
+##pragma once
 
 #include <SFML/Graphics.hpp>
 #include <utility> 
@@ -16,4 +15,3 @@ public:
 	
 };
 
-#enfif //!BACKGROUND_HPP
