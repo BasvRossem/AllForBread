@@ -18,7 +18,7 @@ BackGround::getPath(const std::string & backGroundName) {
 BackGround::SetBackGround(const std::string & backGroundName, sf::RenderWindow & window){
 	sf::Texture texture;
 	sf::Sprite sprite;
-	if (texture.loadFromFile(getPath(backGroundName)) {
+	if (texture.loadFromFile(getPath(backGroundName))) {
 			sprite.setTexture(texture);
 			sprite.setPosition(0,0);
 		}
