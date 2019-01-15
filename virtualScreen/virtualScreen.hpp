@@ -51,8 +51,10 @@ public:
 	inline void drawSurfaceDraw(const sf::Drawable &drawable, const sf::RenderStates &states = sf::RenderStates::Default) { vScreen.draw(drawable, states); }
 	inline void drawSurfaceDisplay() { vScreen.display(); }
 	
+	//check collision with the virtualscreen itself
 	bool collision(const sf::Vector2i & point);
 
+	//check collision with the given object with the offset of the virtual screen
 	template <typename T>
 	inline bool collision(const sf::Vector2i & point, T object) 
 	{
