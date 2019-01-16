@@ -9,7 +9,7 @@ class CharacterContainer {
 protected:
 	std::vector<std::shared_ptr<T>> characters;
 public:
-	CharacterContainer(std::vector<T> characters) : characters(characters) {	};
+	CharacterContainer(std::vector<std::shared_ptr<T>> characters) : characters(characters) {	};
 
 	void add(std::shared_ptr<T> character) {
 		if (characters.size < N) {

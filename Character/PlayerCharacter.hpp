@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "EnumClasses.hpp"
 #include "Character.hpp"
+#include <string>
 
 class PlayerCharacter : public Character {
 private:
@@ -10,8 +11,8 @@ private:
 	int abilityPoints = 0;
 
 public:
-	PlayerCharacter(std::string & textureName, const sf::Vector2u & imageCount, const float & switchTime, const sf::Vector2f & imageSize, const int & exp = 0) :
-		Character(textureName, imageCount, switchTime, imageSize),
+	PlayerCharacter(std::string characterName, std::string & textureName, const int & exp = 0) :
+		Character(characterName, textureName),
 		experience(exp) {
 	};
 

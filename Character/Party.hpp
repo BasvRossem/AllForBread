@@ -5,19 +5,19 @@
 #include <vector>
 
 template<int N = 4>
-class Party : public CharacterContainer<PlayerCharacter, N> {
+class Party : public CharacterContainer<std::shared_ptr<PlayerCharacter>, N> {
 private:
 	int currency = 0;
 
 public:
-	Party(const std::vector<PlayerCharacter> & players):
-		CharacterContainer<PlayerCharacter, N>(players){
+	Party(const std::vector<std::shared_ptr<PlayerCharacter>> players):
+		CharacterContainer<std::shared_ptr<PlayerCharacter>, N>(players){
 	};
 
 	void addExperience(const int & exp) {
 		int splitExp = static_cast<int>(exp / this->characters.size());
-		for (const PlayerCharacter & p : this->characters) {
-			p.increaseExperience(splitExp);
+		for (std::shared_ptr<PlayerCharacter> p : this->characters) {
+			p->increaseExperience(splitExp);
 		}
 	}
 

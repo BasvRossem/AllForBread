@@ -1,40 +1,23 @@
 #include "Character.hpp"
 #include <filesystem>
+#include <iostream>
 
-
-Character::Character(std::string & textureName, const sf::Vector2u & imageCount, const float & switchTime, const sf::Vector2f & imageSize) :
-	imageCount(imageCount),
-	switchTime(switchTime)
+Character::Character(std::string characterName, std::string textureName):
+	name(characterName),
+	idleTexture(new(sf::Texture)),
+	sprite(new sf::Sprite)
 {
-	totalTime = 0.0f;
-	currentImage.x = 0;
-
-	characterTexture.loadFromFile(textureName);
-	characterTexture.setSmooth(true);
-	uvRect.width = characterTexture.getSize().x / float(imageCount.x);
-	uvRect.height = characterTexture.getSize().y / float(imageCount.y);
-	std::cout << uvRect.width << " " << uvRect.height << std::endl;
-	player.setTexture(&characterTexture);
-	sf::Vector2u backSize = characterTexture.getSize();
-	float xScale = imageSize.x / backSize.x * characterTexture.getSize().x;
-	float yScale = imageSize.y / backSize.y * characterTexture.getSize().y;
-	player.setSize(sf::Vector2f(xScale, yScale));
+	idleTexture->loadFromFile(textureName);
+	
+	idleTexture->setSmooth(true);
+	
+	sprite->setPosition(sf::Vector2f(200, 200));
+	sprite->setScale(0.5, 0.5);
+	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 }
 
-void Character::update(int row, float deltaTime) {
-	currentImage.y = row;
-	totalTime += deltaTime;
-	
-	if (totalTime >= switchTime) {
-		totalTime -= switchTime;
-		currentImage.x++;
-		if (currentImage.x >= imageCount.x) {
-			currentImage.x = 0;
-		}
-	}
-
-	uvRect.left = currentImage.x * uvRect.width;
-	uvRect.top = currentImage.y * uvRect.height;
+void Character::update() {
+	currentAnimation.update();
 }
 
 Character::~Character()
@@ -42,33 +25,16 @@ Character::~Character()
 }
 
 void Character::Show(sf::RenderWindow & window) {
-	player.setTextureRect(uvRect);
-	player.setPosition(sf::Vector2f(200, 200));
-	
-	window.draw(player);
+	window.draw(*sprite);
 }
 
-//void Character::ShowMonster(sf::RenderWindow & window) {
-//	std::cout << name << std::endl;
-//	//std::cout << currentAnimation << " " << currentAnimation % idleAnimationNames.size()<< std::endl;
-//	characterTexture.loadFromFile(idleAnimationNames[currentAnimation%idleAnimationNames.size()]);
-//	currentAnimation++;
-//	//std::cout << idleAnimationNames.size() << std::endl;
-//	characterSprite.setTexture(characterTexture);
-//	sf::Vector2u backSize = characterTexture.getSize();
-//	float xScale = 200.0 / backSize.x;
-//	float yScale = 200.0 / backSize.y;
-//	characterSprite.setScale(sf::Vector2f(xScale, yScale));
-//	characterSprite.setOrigin({ characterSprite.getLocalBounds().width, 0 });
-//	characterSprite.scale({ -1, 1 });
-//	characterSprite.setPosition(position);
-//	window.draw(characterSprite);
-//}
+void Character::IdleAnimation() {
+	currentAnimation = Animation(sprite, idleTexture, float(1.0));
+}
 
 std::string Character::GetName() {
 	return name;
 }
-
 
 int Character::getHealth() {
 	return currentHealth;
@@ -81,10 +47,12 @@ int Character::getMana() {
 void Character::decreaseHealth(const int & modifier) {
 	if (modifier < 0) {
 		std::cout << "Je probeert de health te verminderen met een negatief getal\n";
-	} else if (modifier > maxHealth) {
+	}
+	else if (modifier > maxHealth) {
 		std::cout << "INSTAKILL!\n";
 		currentHealth = 0;
-	} else {
+	}
+	else {
 		currentHealth -= modifier;
 	}
 }
@@ -92,10 +60,12 @@ void Character::decreaseHealth(const int & modifier) {
 void Character::increaseHealth(const int & modifier) {
 	if (modifier <= 0) {
 		std::cout << "Je probeert de health te verhogen met een negatief getal\n";
-	}else if (modifier > maxHealth) {
+	}
+	else if (modifier > maxHealth) {
 		std::cout << "INSTAHEAL!!\n";
 		currentHealth = maxHealth;
-	} else {
+	}
+	else {
 		currentHealth += maxHealth;
 	}
 }
@@ -103,10 +73,12 @@ void Character::increaseHealth(const int & modifier) {
 void Character::decreaseMana(const int & modifier) {
 	if (modifier < 0) {
 		std::cout << "Je probeert de mana te verminderen met een negatief getal\n";
-	} else if (modifier > maxMana) {
+	}
+	else if (modifier > maxMana) {
 		std::cout << "INSTAKILL!\n";
 		currentMana = 0;
-	} else {
+	}
+	else {
 		currentMana -= modifier;
 	}
 }
@@ -114,10 +86,12 @@ void Character::decreaseMana(const int & modifier) {
 void Character::increaseMana(const int & modifier) {
 	if (modifier <= 0) {
 		std::cout << "Je probeert de mana te verhogen met een negatief getal\n";
-	} else if (modifier > maxMana) {
+	}
+	else if (modifier > maxMana) {
 		std::cout << "INSTAREGEN!!\n";
 		currentMana = maxMana;
-	} else {
+	}
+	else {
 		currentMana += maxMana;
 	}
 }

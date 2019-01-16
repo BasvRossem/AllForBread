@@ -3,7 +3,9 @@
 #include "PlayerCharacter.hpp"
 
 template<int N>
-class CharacterContainer<PlayerCharacter, N> {
+class CharacterContainer<std::shared_ptr<PlayerCharacter>, N> {
 public:
-	CharacterContainer<PlayerCharacter, N>(std::vector<T> characters) : CharacterContainer(characters) {};
+	CharacterContainer<std::shared_ptr<PlayerCharacter>, N>(std::vector<std::shared_ptr<PlayerCharacter>> chars) : 
+		characters(chars)
+	{};
 };
