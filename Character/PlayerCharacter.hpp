@@ -9,14 +9,6 @@ private:
 	int experienceGauge = 100;
 	int abilityPoints = 0;
 
-	std::unordered_map<AbilityScores, int> characterStats = {
-		{AbilityScores::strength,	10},
-		{AbilityScores::dexterity,	10},
-		{AbilityScores::endurance,	10},
-		{AbilityScores::arcanism,	10},
-		{AbilityScores::charisma,	10}
-	};
-
 public:
 	PlayerCharacter(std::string & textureName, const sf::Vector2u & imageCount, const float & switchTime, const sf::Vector2f & imageSize, const int & exp = 0) :
 		Character(textureName, imageCount, switchTime, imageSize),

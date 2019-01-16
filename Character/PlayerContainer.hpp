@@ -1,6 +1,6 @@
 #pragma once
 #include "CharacterContainer.hpp"
-#include "Player.hpp"
+#include "PlayerCharacter.hpp"
 
 template<int N>
 class CharacterContainer<PlayerCharacter, N> {

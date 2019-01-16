@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <filesystem>
+#include <unordered_map>
+#include "EnumClasses.hpp"
 
 class Character{
 private:
@@ -24,6 +26,13 @@ protected:
 	int currentHealth = maxHealth;
 	int currentMana = maxMana;
 
+	std::unordered_map<AbilityScores, int> characterStats = {
+		{AbilityScores::strength,	10},
+		{AbilityScores::dexterity,	10},
+		{AbilityScores::endurance,	10},
+		{AbilityScores::arcanism,	10},
+		{AbilityScores::charisma,	10}
+	};
 	
 public:
 	Character(std::string & textureName, const sf::Vector2u & imageCount, const float & switchTime, const sf::Vector2f & imageSize);
