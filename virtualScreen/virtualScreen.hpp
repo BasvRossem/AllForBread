@@ -8,9 +8,12 @@ private:
 
 	//The core of the virtual screen
 	sf::RenderTexture vScreen;
+
+	//Resets the size of the virtual screen 
+	inline void setSize(const unsigned int & width, const unsigned int & height) { vScreen.create(width, height); }
 public:
 	//constructor applying the size of the virtual screen
-	VirtualScreen(const sf::Vector2f& screenSize = { 0.0f,0.0f });
+	VirtualScreen(const unsigned int & width = 20, const unsigned int & height = 20);
 
 	//Inherited via Drawable
 	//The draw function that allows you to use window.draw(this_class)
@@ -19,9 +22,6 @@ public:
 
 	//Set the location of the virtual screen
 	inline void setLocation(const sf::Vector2f& loc) { location = loc; }
-
-	//Resets the size of the virtual screen
-	inline void setSize(const sf::Vector2f& screenSize) { vScreen.create(screenSize.x, screenSize.y); }
 
 	//Returns the virtual screen for drawing purposes
 	/*
