@@ -11,15 +11,17 @@ private:
 	int abilityPoints = 0;
 
 public:
-	PlayerCharacter(std::string characterName, std::string & textureName, const int & exp = 0) :
+	PlayerCharacter(std::string characterName, std::string textureName, const int & exp = 0) :
 		Character(characterName, textureName),
 		experience(exp) {
 	};
 
 	void increaseExperience(const int &);
 	int calculateTotalExperience();
+	void decreaseAbilityScore(const AbilityScores &, const int &);
 	void increaseAbilityScore(const AbilityScores &, const int &);
 	
 	void printAbilityStats();
+	void printExperience();
 	void printTotalExperience();
 };

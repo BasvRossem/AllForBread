@@ -1,120 +1,43 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
+#include <string>
+#include <vector>
+#include "Character/Party.hpp"
 
-class state {
-public:
-	virtual state * update() = 0;
-protected:
-	sf::RenderWindow & window;
-	state(sf::RenderWindow&w) : window(w) {}
-};
+int main(){
+	//test SFML
+	sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
+	window.setFramerateLimit(60);
 
-class overworld : public state {
-public:
-	overworld(sf::RenderWindow&w) : state(w) {};
+	std::shared_ptr<sf::CircleShape> myCircle(new sf::CircleShape);
+	myCircle->setRadius(100);
+	myCircle->setFillColor(sf::Color::Green);
+	myCircle->setPosition(sf::Vector2f(300, 300));
 
+	PlayerCharacter testCharacter = PlayerCharacter("Anubis, the distructor of hopes and dreams","test1.png");
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(testCharacter)};
+	
+	Party heroParty(heroVector);
 
-	// Inherited via state
-	virtual state * update() override
-	{
-		sf::Event event;
-		while (window.pollEvent(event)) {
-
-		}
-
-		window.clear();
-
-		window.display();
-
-		return events();
-
-	}
-
-};
-
-class cave : public state {
-private:
-	state * current;
-public:
-	cave(sf::RenderWindow&w) : state(w) {  };
-
-
-	// Inherited via state
-	virtual state * update() override
-	{
-
-		sf::Event event;
-		while (window.pollEvent(event)) {
-
-		}
-
-		window.clear();
-
-		window.display();
-
-		if (exit_cave) return nullptr;
-
-		
-
-		while (current != nullptr)
-		{
-			current = current->update();
-		}
-
-		return this;
-
-	}
-
-};
-
-class combat : public state {
-public:
-	overworld(sf::RenderWindow&w) : state(w) {};
-
-
-	// Inherited via state
-	virtual state * update() override
-	{
-		sf::Event event;
-		while (window.pollEvent(event)) {
-
-		}
-
-		window.clear();
-
-		window.display();
-
-	}
-
-};
-
-
-int main()
-{
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-
-	overworld base(window);
-	state * current;
-
+	std::cout << heroParty[0]->getHealth() << '\n';
 	while (window.isOpen())
 	{
-		event = base.update();
-
-		switch (event)
+		sf::Event event;
+		while (window.pollEvent(event))
 		{
-		case cave:
-			current = new cave(window);
-			break;
-		default:
-			break;
+			if (event.type == sf::Event::Closed)
+				window.close();
 		}
 
-
-		while current != nullptr {
-			current = current->update();
-
-		}
-
-	}
-
+		window.clear();
+		
+		window.draw(*myCircle);
+		testCharacter.Show(window);
+		testCharacter.update();
+		
+		window.display();
+	} //END test SFML
 	return 0;
 }

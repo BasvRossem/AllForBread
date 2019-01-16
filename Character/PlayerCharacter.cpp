@@ -7,13 +7,13 @@ void PlayerCharacter::increaseExperience(const int & exp) {
 		return;
 	}
 
-	//-Experience + xpReward >= experienceGauge = level up
 	if (experience + exp >= experienceGauge) {
 		int excessExperience = (experience + exp) - experienceGauge;
 		experience = 0;
 		level++;
 		abilityPoints++;
-		experienceGauge *= 1.2;
+		float newExperienceGauge = experienceGauge * float(1.2);
+		experienceGauge = static_cast<int>(newExperienceGauge);
 		increaseExperience(excessExperience);
 
 	} else {
@@ -26,12 +26,11 @@ void PlayerCharacter::increaseExperience(const int & exp) {
 int PlayerCharacter::calculateTotalExperience() {
 	int totalExperience = 0;
 	int experiencePerLevel = 100;
-	for (unsigned int i = 1; i < level; i++) {
+
+	for (int i = 1; i < level; i++) {
 		totalExperience += experiencePerLevel;
-		experiencePerLevel *= 1.2;
-		float newExperiencePerLevel = experiencePerLevel * 1.2;
+		float newExperiencePerLevel = experiencePerLevel * float(1.2);
 		experiencePerLevel = static_cast<int>(newExperiencePerLevel);
-		std::cout << "Levelcounter: " << i << " totalExperience: " << totalExperience << " experiencePerLevel: " << experience << "\n";
 	}
 
 	totalExperience += experience;
@@ -52,6 +51,20 @@ void PlayerCharacter::increaseAbilityScore(const AbilityScores & stat, const int
 	}
 }
 
+void PlayerCharacter::decreaseAbilityScore(const AbilityScores & stat, const int & statDecrease) {
+	//-Safeguard from negative	 integers in parameter: "statDecrease"
+	if (statDecrease < 0) {
+		std::cout << "Parameter: 'statDecrease' value is smaller than 0, Value: " << statDecrease << "\n";
+		return;
+	}
+
+	if (characterStats[stat] - statDecrease < 0) {
+		characterStats[stat] = 0;
+	} else {
+		characterStats[stat] -= statDecrease;
+	}
+}
+
 void PlayerCharacter::printAbilityStats() {
 	std::cout << "Str:	" << characterStats[AbilityScores::strength] << "\n";
 	std::cout << "Dex:	" << characterStats[AbilityScores::dexterity] << "\n";
@@ -63,4 +76,11 @@ void PlayerCharacter::printAbilityStats() {
 
 void PlayerCharacter::printTotalExperience() {
 	std::cout << "Total experience aquired: " << calculateTotalExperience() << "\n";
+}
+
+void PlayerCharacter::printExperience() {
+	std::cout << "Current Experience:	" << experience << "\n";
+	std::cout << "Experience Gauge:	" << experienceGauge << "\n";
+	std::cout << "Player Level:		" << level << "\n";
+	std::cout << "\n";
 }

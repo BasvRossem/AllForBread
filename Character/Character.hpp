@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <filesystem>
-#include "../Animation.hpp"
+#include "../Animation/Animation.hpp"
 #include <unordered_map>
 #include "EnumClasses.hpp"
 
@@ -45,4 +45,6 @@ public:
 	void increaseHealth(const int &);
 	void decreaseMana(const int &);
 	void increaseMana(const int &);
+
+	int getStat(const AbilityScores &);
 };

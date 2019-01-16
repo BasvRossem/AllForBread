@@ -95,3 +95,7 @@ void Character::increaseMana(const int & modifier) {
 		currentMana += maxMana;
 	}
 }
+
+int Character::getStat(const AbilityScores & stat) {
+	return characterStats[stat];
+}
