@@ -18,25 +18,44 @@ int main(){
 	myCircle->setFillColor(sf::Color::Green);
 	myCircle->setPosition(sf::Vector2f(300, 300));
 
-	PlayerCharacter testCharacter = PlayerCharacter("Anubis, the distructor of hopes and dreams","test1.png");
-	PlayerCharacter testCharacter2 = PlayerCharacter("Anubis, the distructor of hopes and dreams","test1.png");
+	PlayerCharacter pcAnubis = PlayerCharacter("Anubis, the distructor of hopes and dreams","test1.png");
+	PlayerCharacter pcJoop = PlayerCharacter("Joop","test1.png");
+	Character mDracula = PlayerCharacter("Dracula","test1.png");
+	Character mVlad = PlayerCharacter("Vlad","test1.png");
+	Character mStrahd = PlayerCharacter("Strahd","test1.png");
 
-	testCharacter.increaseAbilityScore(AbilityScores::arcanism, 12);
-	testCharacter.increaseAbilityScore(AbilityScores::endurance, 5);
-	testCharacter.decreaseAbilityScore(AbilityScores::strength, 3);
-	testCharacter.decreaseAbilityScore(AbilityScores::charisma, 1);
+	pcAnubis.increaseAbilityScore(AbilityScores::arcanism, 12);
+	pcAnubis.increaseAbilityScore(AbilityScores::endurance, 5);
+	pcAnubis.decreaseAbilityScore(AbilityScores::strength, 3);
+	pcAnubis.decreaseAbilityScore(AbilityScores::charisma, 1);
 
-	testCharacter2.increaseAbilityScore(AbilityScores::strength, 33);
-	testCharacter2.increaseAbilityScore(AbilityScores::endurance, 12);
-	testCharacter2.decreaseAbilityScore(AbilityScores::arcanism, 4);
-	testCharacter2.decreaseAbilityScore(AbilityScores::dexterity, 9);
+	pcJoop.increaseAbilityScore(AbilityScores::strength, 33);
+	pcJoop.increaseAbilityScore(AbilityScores::endurance, 12);
+	pcJoop.decreaseAbilityScore(AbilityScores::arcanism, 4);
+	pcJoop.decreaseAbilityScore(AbilityScores::dexterity, 9);
 
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(testCharacter), std::make_shared<PlayerCharacter>(testCharacter2) };
+
+	pcAnubis.addCombatAction(std::make_shared<Attack>("Zwaardslag", 12));
+	pcAnubis.activateCombatAction(0, std::make_shared<Character>(pcJoop));
+
+	CharacterContainer<std::shared_ptr<Character>> monsters(std::vector<std::shared_ptr<Character>>{
+		std::make_shared<Character>(mDracula), 
+		std::make_shared<Character>(mVlad), 
+		std::make_shared<Character>(mStrahd)
+	});
+	
+
+
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(pcAnubis), std::make_shared<PlayerCharacter>(pcJoop) };
 	
 	Party heroParty(heroVector);
 
-	for (auto & c : heroVector) {
-		c->printAbilityStats();
+	CharacterContainer<std::shared_ptr<Character>, 8> totalCombatants;
+	totalCombatants.add(monsters);
+	totalCombatants.add(heroParty);
+
+	for (unsigned int i = 0; i < totalCombatants.size(); i++) {
+		totalCombatants[i]->printAbilityStats();
 	}
 
 	std::cout << heroParty[0]->getHealth() << '\n';
@@ -52,8 +71,8 @@ int main(){
 		window.clear();
 		
 		window.draw(*myCircle);
-		testCharacter.draw(window);
-		testCharacter.update();
+		pcAnubis.draw(window);
+		pcAnubis.update();
 		
 		window.display();
 	} //END test SFML

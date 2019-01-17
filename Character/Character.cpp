@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <iostream>
 
-Character::Character(std::string characterName, std::string textureName):
+Character::Character(const std::string & characterName, const std::string & textureName):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
@@ -17,7 +17,7 @@ Character::Character(std::string characterName, std::string textureName):
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 }
 
-Character::Character(std::string characterName, std::string textureName, int frameAmount):
+Character::Character(const std::string & characterName, const std::string & textureName, const int & frameAmount):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
@@ -104,7 +104,7 @@ void Character::decreaseMana(const int & modifier) {
 		std::cout << "Je probeert de mana te verminderen met een negatief getal\n";
 	}
 	else if (modifier > maxMana) {
-		std::cout << "INSTAKILL!\n";
+		std::cout << "INSTADEPLETE!\n";
 		currentMana = 0;
 	}
 	else {
@@ -125,6 +125,42 @@ void Character::increaseMana(const int & modifier) {
 	}
 }
 
+void Character::increaseAbilityScore(const AbilityScores & stat, const int & statIncrease) {
+	//-Safeguard for negative integers in parameter: "statIncrease"
+	if (statIncrease < 0) {
+		std::cout << "Parameter: 'statIncrease' value is smaller than 0, Value: " << statIncrease << "\n";
+		return;
+	}
+	if (characterStats[stat] + statIncrease > 99) {
+		characterStats[stat] = 99;
+	} else {
+		characterStats[stat] += statIncrease;
+	}
+}
+
+void Character::decreaseAbilityScore(const AbilityScores & stat, const int & statDecrease) {
+	//-Safeguard from negative	 integers in parameter: "statDecrease"
+	if (statDecrease < 0) {
+		std::cout << "Parameter: 'statDecrease' value is smaller than 0, Value: " << statDecrease << "\n";
+		return;
+	}
+
+	if (characterStats[stat] - statDecrease < 0) {
+		characterStats[stat] = 0;
+	} else {
+		characterStats[stat] -= statDecrease;
+	}
+}
+
+void Character::printAbilityStats() {
+	std::cout << "Str:	" << characterStats[AbilityScores::strength] << "\n";
+	std::cout << "Dex:	" << characterStats[AbilityScores::dexterity] << "\n";
+	std::cout << "End:	" << characterStats[AbilityScores::endurance] << "\n";
+	std::cout << "Arc:	" << characterStats[AbilityScores::arcanism] << "\n";
+	std::cout << "Cha:	" << characterStats[AbilityScores::charisma] << "\n";
+	std::cout << "\n";
+}
+
 int Character::getStat(const AbilityScores & stat) {
 	return characterStats[stat];
 }
@@ -133,9 +169,9 @@ void Character::addCombatAction(std::shared_ptr<Action> a) {
 	actions.push_back(a);
 }
 
-void Character::activateCombatAction(const unsigned int & id, const std::string & playername, const std::string & enemy) {
+void Character::activateCombatAction(const unsigned int & id, std::shared_ptr<Character> target) {
 	if (id < actions.size()) {
-		actions[id]->activate(playername, enemy);
+		actions[id]->activate(name, target->GetName());
 	}
 }
 

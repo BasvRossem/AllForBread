@@ -3,30 +3,40 @@
 #include "CharacterContainer.hpp"
 #include <memory>
 #include <vector>
+/// @file
 
-
+/// \brief
+/// A class that handles the storage of player characters.
+/// This is a specialisation of the charactercontainer
 class Party : public CharacterContainer< std::shared_ptr<PlayerCharacter>, 4> {
 private:
 	int currency = 0;
-
+	int overworldPosition = 0;
 public:
-	Party(std::vector<std::shared_ptr<PlayerCharacter>> players):
-		CharacterContainer<std::shared_ptr<PlayerCharacter>, 4>(players)
-	{};
+	Party(const std::vector<std::shared_ptr<PlayerCharacter>> &);
 
-	void addExperience(const int & exp) {
-		int splitExp = static_cast<int>(exp / this->characters.size());
-		for (auto p : this->characters) {
-			p->increaseExperience(splitExp);
-		}
-	}
+	/// \brief
+	/// Awards experience distributed evenly between all members
+	void addExperience(const int &);
 
-	void addCurrency(const int & currencyModifier) {
-		if (currencyModifier < 0) {
-			std::cout << "Je probeert currency te verhogen met een negatieve waarde\n";
-		} else {
-			currency += currencyModifier;
-		}
-	}
+	/// \brief
+	/// Adds currency given amount
+	void addCurrency(const int &);
 
+	/// \brief
+	/// Lowers currency by given amount
+	void decreaseCurrency(const int &);
+
+	/// \brief
+	/// Returns current currency
+	int getCurrency();
+
+
+	/// \brief
+	/// sets Overworld Position to given value
+	void setOverworldPosition(const int &);
+
+	/// \brief
+	/// Returns current Overworld Position
+	int getOverworldPosition();
 };

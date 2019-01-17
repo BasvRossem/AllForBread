@@ -4,13 +4,17 @@
 #include <vector>
 #include <iostream>
 #include <stdexcept>
+/// @file
 
+/// \brief
+/// Templates base class for containing objects of class T.
 template<typename T, int N = 4>
-class CharacterContainer {
+class CharacterContainer{
 protected:
 	std::vector<T> characters;
 public:
 	CharacterContainer(const std::vector<T> & characters) : characters(characters) {	};
+	CharacterContainer(): characters(std::vector<T>()){};
 
 	/// \brief
 	/// Adds element T to internal container
@@ -23,7 +27,7 @@ public:
 	}
 
 	/// \brief
-	/// Allows access to internal container through []
+	/// Allows access to internal container through [] at given index
 	T &operator[](const unsigned int & index) {
 		if (index < characters.size()) { // Not N, because the party might not be full
 			return characters.at(index);
@@ -34,32 +38,19 @@ public:
 	}
 
 	/// \brief
-	/// dereferencing operator
-	T operator*(T * objToDereference) {
-		return &objToDereference;
-	}
-
-	/// \brief
-	/// returns begin iterator from container
-	T* begin() {
-		return characters.begin();
-	}
-
-	/// \brief
-	/// returns end iterator from container
-	T* end() {
-		return characters.end();
-	}
-
-	/// \brief
 	/// Adds a vector of T to internal container
-	void add(const std::vector<T> & additionalCharacters) {
-		characters.insert(additionalCharacters);
+	template<typename C>
+	void add( C & additionalCharacters) {
+		if (characters.size() + additionalCharacters.size() <= N) {
+			for (unsigned int i = 0; i < additionalCharacters.size(); i++) {
+				characters.push_back(additionalCharacters[i]);
+			}
+		}
 	}
 
 	/// \brief
 	/// Returns signed integer size of the container
-	int size() {
-		return static_cast<int>(characters.size());
+	unsigned int size() {
+		return characters.size();
 	}
 };

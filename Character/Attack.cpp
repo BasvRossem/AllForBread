@@ -9,7 +9,7 @@ Attack::Attack(const std::string & name, const unsigned int & damage) :
 
 
 void Attack::activate(const std::string & playername, const std::string & enemy) {
-	std::cout << playername << " sla "<< enemy <<"  voor " << damage <<std::endl;
+	std::cout << playername << " sla "<< enemy <<" voor " << damage <<std::endl;
 }
 
 std::string Attack::getName() {
