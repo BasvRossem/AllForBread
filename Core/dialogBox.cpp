@@ -1,6 +1,6 @@
 #include "dialogBox.h"
 
-DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2f& size) :
+DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2f& size, sf::vector2f& position) :
 	w(window),
 	bufferWidth(bufferWidth),
 	maxLines(maxLines),
@@ -14,6 +14,7 @@ DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_
 	text.setCharacterSize(24);
 	text.setFillColor(sf::Color::White);
 	text.setOutlineColor(sf::Color::Black);
+	diaBox.setLocation(position);
 	draw();
 }
 
