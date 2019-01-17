@@ -6,9 +6,9 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 	party(party),
 	monsters(monster),
 	surroundings(surrounding),
-	animationScreen(animationScreenSize),
-	damageScreen(damageScreenSize),
-	menuScreen(menuScreenSize)
+	animationScreen(animationScreenSize.x , animationScreenSize.y),
+	damageScreen(damageScreenSize.x, damageScreenSize.y),
+	menuScreen(menuScreenSize.x, menuScreenSize.y)
 {
 	sf::Vector2f animationScreenTopLeft(0.0, 0.0);
 	sf::Vector2f damageScreenTopLeft(0.0, 0.0);
@@ -44,6 +44,7 @@ void Combat::start() {
 
 State* Combat::update() {
 	attackFeedback(monsters[0], 200);
+	monsters[0]->decreaseHealth(20);
 	for(;;){
 		sf::Event event;
 		while (window.pollEvent(event))

@@ -11,9 +11,9 @@ private:
 	
 	Party party;
 	CharacterContainer<std::shared_ptr<Character>> monsters;
-	sf::Vector2f animationScreenSize = sf::Vector2f(1920.0f, 680.0f);
-	sf::Vector2f damageScreenSize = sf::Vector2f(1920.0f, 680.0f);
-	sf::Vector2f menuScreenSize = sf::Vector2f(1920.0f, 450.0f);
+	sf::Vector2u animationScreenSize = sf::Vector2u(1920, 680);
+	sf::Vector2u damageScreenSize = sf::Vector2u(1920, 680);
+	sf::Vector2u menuScreenSize = sf::Vector2u(1920, 450);
 	
 	VirtualScreen animationScreen;
 	VirtualScreen damageScreen;
