@@ -1,0 +1,13 @@
+//This code streches the image given to the size of the window.
+//Both in height and in width.
+if (!backgroundTexture.loadFromFile(backgr, sf::IntRect(0, 0, 1920, 1080))){
+		std::cout << "Can't load background image: " << backgr << std::endl;
+		if (!backgroundTexture.loadFromFile("error.JPG", sf::IntRect(0, 0, 1920, 1080))) {
+			std::cout << "Can't load background image: " << backgr << std::endl;
+		}
+	}
+backgroundSprite.setTexture(backgroundTexture);
+sf::Vector2u backSize = backgroundTexture.getSize();
+float xScale = 1920.0 / backSize.x;
+float yScale = 800 / backSize.y;
+backgroundSprite.scale(sf::Vector2f(xScale, yScale));
