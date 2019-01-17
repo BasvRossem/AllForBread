@@ -17,12 +17,12 @@ private:
 	sf::RenderWindow& w;
 	uint_fast16_t bufferWidth;
 	uint_fast16_t maxLines;
-	
+
 	sf::Font font;
 	sf::Text text;
 
 public:
-	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i& size, sf::Vector2f& position);
+	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position);
 	///\brief
 	/// draws the screen part and the text
 	void draw();
@@ -34,7 +34,7 @@ public:
 	/// When all displayable rows have been drawn it waits for the input of the player to display the next rows.
 	/// It keeps on doing this until all the text has been displayed.
 	void print(std::string& str);
-	
+
 	///\brief
 	/// A wordwrap function for the dialog boxes.
 	///\details

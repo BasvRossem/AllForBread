@@ -1,6 +1,6 @@
 #include "dialogBox.h"
 
-DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i& size, sf::Vector2f& position) :
+DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position) :
 	w(window),
 	bufferWidth(bufferWidth),
 	maxLines(maxLines),
@@ -15,15 +15,13 @@ DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_
 	text.setFillColor(sf::Color::White);
 	text.setOutlineColor(sf::Color::Black);
 	diaBox.setLocation(position);
-	draw();
-}
 
+}
 void DialogBox::draw() {
 	diaBox.drawSurfaceClear();
 	diaBox.drawSurfaceDraw(text);
 	diaBox.drawSurfaceDisplay();
 	w.draw(diaBox);
-	w.display();
 }
 
 
@@ -31,29 +29,32 @@ std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 	std::vector<std::string> returnstring;
 	unsigned int beginLine = 0;
 
-	while (beginLine < str.size()){
+	while (beginLine < str.size()) {
 		const unsigned int idealEnd = beginLine + bufferWidth;
 		unsigned int endLine = idealEnd < str.size() ? idealEnd : str.size() - 1;
-		if (endLine == str.size() - 1){
+		if (endLine == str.size() - 1) {
 			returnstring.push_back(str.substr(beginLine, (endLine - beginLine)).append("\n"));
 			++endLine;
-		}else if (std::isspace(str[endLine]) || str[endLine] == ',' || str[endLine] == '.') {
+		}
+		else if (std::isspace(str[endLine]) || str[endLine] == ',' || str[endLine] == '.') {
 			returnstring.push_back(str.substr(beginLine, (endLine - beginLine)).append("\n"));
 			++endLine;
-		}else {
+		}
+		else {
 			unsigned int end = endLine;
-			while (!std::isspace(str[end]) && str[end] != ',' && str[end] != '.'){
-				if (end == beginLine){
+			while (!std::isspace(str[end]) && str[end] != ',' && str[end] != '.') {
+				if (end == beginLine) {
 					break;
 				}
 				--end;
 			}
-			if (end != beginLine){
+			if (end != beginLine) {
 				endLine = end;
 				endLine++;
 				returnstring.push_back(str.substr(beginLine, (end - beginLine)).append("\n"));
-			}else {
-				
+			}
+			else {
+
 				returnstring.push_back(str.substr(beginLine, (endLine - beginLine)).append("\n"));
 			}
 		}
@@ -64,7 +65,7 @@ std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 }
 
 void DialogBox::printPerm(std::vector<std::string>& textVector) {
-	if (textVector.size() <= maxLines){
+	if (textVector.size() <= maxLines) {
 		std::string textString;
 		for (size_t i = 0; i < textVector.size(); i++) {
 			textString.append(textVector[i]).append("\n");
@@ -77,13 +78,13 @@ void DialogBox::printPerm(std::vector<std::string>& textVector) {
 void DialogBox::print(std::string& str) {
 	std::vector<std::string> strVect = wordwrap(str);
 	uint_fast16_t page = 0;
-	
+
 	uint_fast16_t oldpage = 1;
 	size_t max = 0;
 
 	while (true) {
 		std::string tempStr;
-		unsigned int maxLTimesPage = (maxLines) * page;
+		unsigned int maxLTimesPage = (maxLines)* page;
 		if (maxLTimesPage > strVect.size()) {
 			break;
 		}
@@ -102,7 +103,8 @@ void DialogBox::print(std::string& str) {
 
 			oldpage = page;
 			tempStr.clear();
-		}else {
+		}
+		else {
 			sf::Event event;
 			while (w.pollEvent(event)) {
 				if (event.type == sf::Event::KeyPressed) {
@@ -113,7 +115,7 @@ void DialogBox::print(std::string& str) {
 					}
 				}
 			}
-			
+
 		}
 		draw();
 		sf::sleep(sf::milliseconds(1000 / 60));
