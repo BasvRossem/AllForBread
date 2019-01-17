@@ -11,9 +11,31 @@ Character::Character(std::string characterName, std::string textureName):
 	
 	idleTexture->setSmooth(true);
 	
-	sprite->setPosition(sf::Vector2f(200, 200));
-	sprite->setScale(0.5, 0.5);
+	sprite->setPosition(sf::Vector2f(150, 350));
+	//Zorg dat setscale netjes wordt gedaan Dank u
+	sprite->setScale(0.4f, 0.4f);
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
+}
+
+Character::Character(std::string characterName, std::string textureName, int frameAmount):
+	name(characterName),
+	idleTexture(new(sf::Texture)),
+	sprite(new sf::Sprite)
+{
+	idleTexture->loadFromFile(textureName);
+
+	idleTexture->setSmooth(true);
+
+	sprite->setPosition(sf::Vector2f(50, 400));
+	//Zorg dat setscale netjes wordt gedaan Dank u
+	sprite->setScale(0.5, 0.5);
+	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
+}
+
+void Character::makeMonster() {
+	sprite->scale(-1.0f, 1.0f);
+	//BESTE BAS VAN MORGEN FIX DAT DIT NETJHES MET EEN TESTFRAME EN EEN OFFSET WORDT GEDAAN SetOrigin
+	sprite->setPosition(sf::Vector2f(1770, 400));
 }
 
 void Character::update() {
@@ -24,10 +46,17 @@ Character::~Character()
 {
 }
 
-void Character::Show(sf::RenderWindow & window) {
+void Character::draw(sf::RenderWindow & window) {
 	window.draw(*sprite);
 }
 
+void Character::draw(VirtualScreen & window) {
+	window.drawSurfaceDraw(*sprite);
+}
+
+std::shared_ptr<sf::Sprite> Character::getDrawable() {
+	return sprite;
+}
 void Character::IdleAnimation() {
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 }
