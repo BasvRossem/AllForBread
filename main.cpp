@@ -8,6 +8,8 @@
 
 int main(){
 	//test SFML
+
+
 	sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
 	window.setFramerateLimit(60);
 
@@ -17,9 +19,25 @@ int main(){
 	myCircle->setPosition(sf::Vector2f(300, 300));
 
 	PlayerCharacter testCharacter = PlayerCharacter("Anubis, the distructor of hopes and dreams","test1.png");
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(testCharacter)};
+	PlayerCharacter testCharacter2 = PlayerCharacter("Anubis, the distructor of hopes and dreams","test1.png");
+
+	testCharacter.increaseAbilityScore(AbilityScores::arcanism, 12);
+	testCharacter.increaseAbilityScore(AbilityScores::endurance, 5);
+	testCharacter.decreaseAbilityScore(AbilityScores::strength, 3);
+	testCharacter.decreaseAbilityScore(AbilityScores::charisma, 1);
+
+	testCharacter2.increaseAbilityScore(AbilityScores::strength, 33);
+	testCharacter2.increaseAbilityScore(AbilityScores::endurance, 12);
+	testCharacter2.decreaseAbilityScore(AbilityScores::arcanism, 4);
+	testCharacter2.decreaseAbilityScore(AbilityScores::dexterity, 9);
+
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(testCharacter), std::make_shared<PlayerCharacter>(testCharacter2) };
 	
 	Party heroParty(heroVector);
+
+	for (auto & c : heroVector) {
+		c->printAbilityStats();
+	}
 
 	std::cout << heroParty[0]->getHealth() << '\n';
 	while (window.isOpen())
