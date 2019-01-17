@@ -117,7 +117,7 @@ public:
 
 	/// \brief
 	/// Activates action at given index, target at given character
-	void activateCombatAction(const unsigned int &, std::shared_ptr<Character>);
+	void activateCombatAction(const unsigned int &, Character  &c);
 
 	/// \brief
 	/// Returns action name at given index. If index is out of bounds, return empty string

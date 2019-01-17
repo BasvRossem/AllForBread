@@ -5,11 +5,11 @@
 
 class Attack : public Action {
 private:
-	int ID;
+	const int ID = 1;
 	std::string name;
 	unsigned int damage;
 public:
 	Attack(const std::string &, const unsigned int &);
-	void activate(const std::string &, const std::string &) override;
+	std::pair<int, int> activate();
 	std::string getName() override;
 };

@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
+
+
 class Action {
-	int counter;
 public:
-	virtual void activate(const std::string &, const std::string &) {};
+	virtual std::pair<int, int> activate() { return std::pair<int,int>(0,0); };
 	virtual std::string  getName() { return ""; };
 };

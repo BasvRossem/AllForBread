@@ -84,6 +84,7 @@ void Character::decreaseHealth(const int & modifier) {
 	else {
 		currentHealth -= modifier;
 	}
+	std::cout << "current healt" << currentHealth << std::endl;
 }
 
 void Character::increaseHealth(const int & modifier) {
@@ -169,9 +170,12 @@ void Character::addCombatAction(std::shared_ptr<Action> a) {
 	actions.push_back(a);
 }
 
-void Character::activateCombatAction(const unsigned int & id, std::shared_ptr<Character> target) {
+void Character::activateCombatAction(const unsigned int & id, Character  &c) {
 	if (id < actions.size()) {
-		actions[id]->activate(name, target->GetName());
+		std::pair<int, int> IDandInfo = actions[id]->activate();
+		if (IDandInfo.first == 0) {
+			c.decreaseHealth(IDandInfo.second);
+		}
 	}
 }
 
