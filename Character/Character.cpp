@@ -29,7 +29,7 @@ Character::Character(std::string characterName, std::string textureName, int fra
 	sprite->setPosition(sf::Vector2f(50, 400));
 	//Zorg dat setscale netjes wordt gedaan Dank u
 	sprite->setScale(0.5, 0.5);
-	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
+	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 }
 
 void Character::makeMonster() {

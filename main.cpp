@@ -34,7 +34,7 @@ int main(){
 		window.clear();
 		
 		window.draw(*myCircle);
-		testCharacter.Show(window);
+		testCharacter.draw(window);
 		testCharacter.update();
 		
 		window.display();

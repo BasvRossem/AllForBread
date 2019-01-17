@@ -9,7 +9,7 @@ class CharacterContainer {
 protected:
 	std::vector<T> characters;
 public:
-	CharacterContainer(std::vector<T> characters) : characters(characters) {	};
+	CharacterContainer(const std::vector<T> & characters) : characters(characters) {	};
 
 	void add(T character) {
 		if (characters.size < N) {
@@ -18,6 +18,7 @@ public:
 			std::cout << "Je probeert een character toe te voegen aan een volle container\n";
 		}
 	}
+
 	T &operator[](const unsigned int & index) {
 		if (index < characters.size()) { // Not N, because the party might not be full
 			return characters.at(index);
@@ -26,6 +27,11 @@ public:
 			return characters.at(0);
 		}
 	}
+
+	void add(const std::vector<T> & additionalCharacters) {
+		characters.insert(additionalCharacters);
+	}
+
 	int size() {
 		return static_cast<int>(characters.size());
 	}
