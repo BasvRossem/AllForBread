@@ -8,7 +8,8 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 	surroundings(surrounding),
 	animationScreen(animationScreenSize.x , animationScreenSize.y),
 	damageScreen(damageScreenSize.x, damageScreenSize.y),
-	menuScreen(menuScreenSize.x, menuScreenSize.y)
+	menuScreen(menuScreenSize.x, menuScreenSize.y),
+	diaBox(window, 40, 5, "PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0, animationScreenSize.y))
 {
 	sf::Vector2f animationScreenTopLeft(0.0, 0.0);
 	sf::Vector2f damageScreenTopLeft(0.0, 0.0);
@@ -32,6 +33,10 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 	float xScale = static_cast<float>(1920.0 / backSize.x);
 	float yScale = static_cast<float>(680.0 / backSize.y);
 	backgroundSprite.scale(sf::Vector2f(xScale, yScale));
+
+	combatChoices.push_back("1. Attack");
+	combatChoices.push_back("2. Nothing"); 
+	combatChoices.push_back("3. Idle");
 }
 
 
@@ -66,7 +71,7 @@ void Combat::draw() {
 
 	damageScreen.drawSurfaceClear(sf::Color::Transparent);
 	animationScreen.drawSurfaceClear(sf::Color::Red);
-	menuScreen.drawSurfaceClear(sf::Color::Blue);
+	menuScreen.drawSurfaceClear(sf::Color::Black);
 
 	animationScreen.drawSurfaceDraw(backgroundSprite);
 	for (int i = 0; i < party.size(); i++) {
@@ -84,10 +89,12 @@ void Combat::draw() {
 	else {
 		//Make combat actions
 	}
+
+	
 	checkMonstersDeath();
 
-	animationScreen.drawSurfaceDisplay();
 
+	animationScreen.drawSurfaceDisplay();
 	menuScreen.drawSurfaceDisplay();
 	damageScreen.drawSurfaceDisplay();
 
@@ -97,6 +104,10 @@ void Combat::draw() {
 	window.draw(animationScreen);
 
 	window.draw(damageScreen);
+
+	diaBox.printPerm(combatChoices);
+	diaBox.draw();
+
 	window.display();
 }
 
@@ -114,7 +125,7 @@ void Combat::attackFeedback(std::shared_ptr<Character> & attacked, int dmg) {
 		damageText->setString(damage);
 		damageText->setCharacterSize(24);
 		damageText->setFillColor(sf::Color::White);
-
+		damageText->setOutlineColor(sf::Color::Black);
 		damageTextMidPoint = sf::Vector2f(damageText->getLocalBounds().width / 2, damageText->getLocalBounds().height / 2);
 		damageText->setOrigin(damageTextMidPoint);
 		characterMidpoint = sf::Vector2f(

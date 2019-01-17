@@ -1,10 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <String>
 #include "State.hpp"
 #include "../Character/Party.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
 #include "../TransformableMovement/TransformableMovement.hpp"
+#include "../Core/dialogBox.h"
 
 class Combat : public State {
 private:
@@ -18,6 +20,9 @@ private:
 	VirtualScreen animationScreen;
 	VirtualScreen damageScreen;
 	VirtualScreen menuScreen;
+
+	DialogBox diaBox;
+	std::vector<std::string> combatChoices;
 
 	bool attackFeedbackDone = 1;
 	sf::Vector2f damageTextMidPoint;
