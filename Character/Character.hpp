@@ -6,16 +6,20 @@
 #include <unordered_map>
 #include "EnumClasses.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
+#include <cstdlib>
 
 class Character{
-private:
-	std::shared_ptr<sf::Texture> idleTexture ;
+protected:
+	std::shared_ptr<sf::Texture> idleTexture;
+	std::shared_ptr<sf::Texture> deathTexture;
 	std::shared_ptr<sf::Sprite> sprite;
 	Animation currentAnimation;
+	Animation deathAnimation;
 
 	std::string name;
 	sf::Vector2f position;
-protected:
+	sf::Clock clock;
+
 	int maxHealth = 10;
 	int maxMana = 100;
 	int level = 1;
@@ -49,6 +53,10 @@ public:
 	void increaseHealth(const int &);
 	void decreaseMana(const int &);
 	void increaseMana(const int &);
+
+	//-Added 2 functions (Niels)
+	virtual void doDeath();
+	void showDeathTexture();
 
 	int getStat(const AbilityScores &);
 };

@@ -4,16 +4,28 @@
 #include "State.hpp"
 #include "../Character/Party.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
+#include "../TransformableMovement/TransformableMovement.hpp"
 
 class Combat : public State {
 private:
 	
 	Party party;
-	CharacterContainer<Character> monsters;
-	sf::Vector2i animationScreenSize = sf::Vector2i(1920, 680);
-	sf::Vector2i menuScreenSize = sf::Vector2i(1920, 450);
+	CharacterContainer<std::shared_ptr<Character>> monsters;
+	sf::Vector2f animationScreenSize = sf::Vector2f(1920.0f, 680.0f);
+	sf::Vector2f damageScreenSize = sf::Vector2f(1920.0f, 680.0f);
+	sf::Vector2f menuScreenSize = sf::Vector2f(1920.0f, 450.0f);
+	
 	VirtualScreen animationScreen;
+	VirtualScreen damageScreen;
 	VirtualScreen menuScreen;
+
+	bool attackFeedbackDone = 1;
+	sf::Vector2f damageTextMidPoint;
+	sf::Vector2f characterMidpoint;
+	TransformableMovement damageMover;
+	sf::Font attackFont;
+	std::shared_ptr<sf::Text> damageText;
+
 	std::vector<std::shared_ptr<Character>> initiative; //Players and monsters
 
 	std::string surroundings;
@@ -27,11 +39,19 @@ public:
 	bool CombatStarted = false;
 	bool CombatFinished = false;
 
-	Combat(sf::RenderWindow & window, Party & party, CharacterContainer<Character> & monster, std::string surrounding);
+	Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding);
 	~Combat();
 
 	void start();
 	virtual State* update();
 	void draw();
 	void Stop();
+
+	void attackFeedback(std::shared_ptr<Character> & attacked, int dmg);
+
+	//-Added 3 function (Niels)
+	void checkMonstersDeath();
+
+	void partyVictory();
+	void monsterVictory();
 };

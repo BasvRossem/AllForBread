@@ -5,31 +5,47 @@
 Character::Character(std::string characterName, std::string textureName):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
+	deathTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
 {
 	idleTexture->loadFromFile(textureName);
-	
 	idleTexture->setSmooth(true);
-	
+
 	sprite->setPosition(sf::Vector2f(150, 350));
 	//Zorg dat setscale netjes wordt gedaan Dank u
 	sprite->setScale(0.4f, 0.4f);
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
+
+	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
+		std::cout << "Error loading Rip.png, constructor 1" << std::endl;
+	}
+
+	currentAnimation = Animation(sprite, idleTexture, float(1.0));
+	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
+
+	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 Character::Character(std::string characterName, std::string textureName, int frameAmount):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
+	deathTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
 {
 	idleTexture->loadFromFile(textureName);
-
 	idleTexture->setSmooth(true);
 
 	sprite->setPosition(sf::Vector2f(50, 400));
 	//Zorg dat setscale netjes wordt gedaan Dank u
 	sprite->setScale(0.5, 0.5);
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
+
+	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
+		std::cout << "Error loading Rip.png, constructor 2" << std::endl;
+	}
+
+	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
+	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 }
 
 void Character::makeMonster() {
@@ -42,8 +58,7 @@ void Character::update() {
 	currentAnimation.update();
 }
 
-Character::~Character()
-{
+Character::~Character(){
 }
 
 void Character::draw(sf::RenderWindow & window) {
@@ -84,6 +99,7 @@ void Character::decreaseHealth(const int & modifier) {
 	else {
 		currentHealth -= modifier;
 	}
+
 }
 
 void Character::increaseHealth(const int & modifier) {
@@ -127,4 +143,15 @@ void Character::increaseMana(const int & modifier) {
 
 int Character::getStat(const AbilityScores & stat) {
 	return characterStats[stat];
+}
+
+//-Added (Niels)
+void Character::doDeath() {
+	std::cout << name << " is dead!\n";
+	showDeathTexture();
+}
+
+//-Added (Niels)
+void Character::showDeathTexture() {
+	currentAnimation = deathAnimation;
 }

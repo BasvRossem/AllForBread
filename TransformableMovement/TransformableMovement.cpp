@@ -1,5 +1,7 @@
 #include "TransformableMovement.hpp"
 
+TransformableMovement::TransformableMovement() {};
+
 TransformableMovement::TransformableMovement(std::shared_ptr<sf::Transformable> target, sf::Vector2f position, float duration):
 	target(target),
 	position(position),
