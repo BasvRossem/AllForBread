@@ -11,6 +11,7 @@ std::string BackGround::getPath(const std::string & backGroundName) {
 			return background.second;
 		}
 	}
+	return 0;
 }
 void BackGround::SetBackGround(const std::string & backGroundName){
 	if (texture.loadFromFile(getPath(backGroundName))) {
