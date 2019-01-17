@@ -4,13 +4,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "virtualscreen/virtualScreen.hpp"
-#include "dialogBox.h"
+#include "virtualScreen/virtualScreen.hpp"
+#include "Core/dialogBox.h"
 
 int main(int argc, char *argv[]) {
 	sf::RenderWindow window{ sf::VideoMode{640, 480}, "SFML window" };
 	sf::Vector2f dialogBoxSize(500, 500);
-	DialogBox diaBox(window, 20, 4, "arial.ttf", dialogBoxSize);
+	sf::Vector2f dialogBoxPos(0, 580);
+	DialogBox diaBox(window, 20, 4, "arial.ttf", dialogBoxSize, dialogBoxPos);
 	int count = 0;
 	while (true) {
 		window.display();

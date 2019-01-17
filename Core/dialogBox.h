@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "virtualscreen/virtualScreen.hpp"
+#include "../virtualScreen/virtualScreen.hpp"
 #include <cctype>
 /// @file
 
@@ -24,7 +24,7 @@ private:
 	sf::Text text;
 
 public:
-	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2f& size, sf::vector2f& position);
+	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2f& size, sf::Vector2f& position);
 	///\brief
 	/// draws the screen part and the text
 	void draw();
