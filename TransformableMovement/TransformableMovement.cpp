@@ -20,7 +20,7 @@ void TransformableMovement::blend(){
 		sf::Vector2f targetPosition = target->getPosition();
 		sf::Time elapsed = clock.restart();
 		float currentTime = elapsed.asSeconds();
-		float fps = 1.0 / currentTime;
+		double fps = 1.0 / currentTime;
 		
 		sf::Vector2f movement = position - targetPosition;
 		std::cout << movement.x << ", " << movement.y << std::endl;
@@ -29,7 +29,7 @@ void TransformableMovement::blend(){
 			return;
 		}
 		duration -= startClock.restart().asSeconds();
-		float framesLeft = duration * fps;
+		float framesLeft = static_cast<float>(duration * fps);
 		movement.x = movement.x / framesLeft;
 		movement.y = movement.y / framesLeft;
 		target->move(movement);

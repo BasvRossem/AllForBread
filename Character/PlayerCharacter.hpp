@@ -16,6 +16,11 @@ public:
 		experience(exp) {
 	};
 
+	PlayerCharacter(std::string characterName, std::string textureName, int frameAmount, const int & exp = 0) :
+		Character(characterName, textureName, frameAmount),
+		experience(exp) {
+	};
+
 	void increaseExperience(const int &);
 	int calculateTotalExperience();
 	void decreaseAbilityScore(const AbilityScores &, const int &);

@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 
-template<typename T, int N>
+template<typename T, int N = 4>
 class CharacterContainer {
 protected:
 	std::vector<T> characters;
@@ -25,5 +25,8 @@ public:
 			std::cout << "Je probeert een character te vinden die niet bestaat\n";
 			return characters.at(0);
 		}
+	}
+	int size() {
+		return static_cast<int>(characters.size());
 	}
 };

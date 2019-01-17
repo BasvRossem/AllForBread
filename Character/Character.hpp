@@ -5,6 +5,7 @@
 #include "../Animation/Animation.hpp"
 #include <unordered_map>
 #include "EnumClasses.hpp"
+#include "../virtualScreen/virtualScreen.hpp"
 
 class Character{
 private:
@@ -32,13 +33,16 @@ protected:
 
 public:
 	Character(std::string characterName, std::string textureName);
+	Character(std::string characterName, std::string textureName, int frameAmount);
 	~Character();
 
 	void update();
-	void Show(sf::RenderWindow & window);
+	void draw(sf::RenderWindow & window);
+	void draw(VirtualScreen & window);
 	void IdleAnimation();
-	
+	void makeMonster();
 	std::string GetName();
+	std::shared_ptr<sf::Sprite> getDrawable();
 	int getHealth();
 	int getMana();
 	void decreaseHealth(const int &);
