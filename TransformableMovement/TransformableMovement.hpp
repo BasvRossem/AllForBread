@@ -14,6 +14,7 @@ private:
 	float startTime;
 	float duration;
 public:
+	TransformableMovement();
 	TransformableMovement(std::shared_ptr<sf::Transformable> target, sf::Vector2f position, float duration);
 	~TransformableMovement();
 
