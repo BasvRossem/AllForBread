@@ -10,9 +10,11 @@
 int main2(int argc, char *argv[]) {
 	sf::RenderWindow window{ sf::VideoMode{640, 480}, "SFML window" };
 	sf::Vector2i dialogBoxSize(500, 500);
-	sf::Vector2f dialogBoxPos(0, 580);
+	sf::Vector2f dialogBoxPos(0, 0);
 	DialogBox diaBox(window, 20, 4, "arial.ttf", dialogBoxSize, dialogBoxPos);
-	int count = 0;
+
+	std::vector<std::string> test = { "aap", "aap2" };
+
 	while (true) {
 		window.display();
 		sf::sleep(sf::milliseconds(1000));
@@ -22,11 +24,9 @@ int main2(int argc, char *argv[]) {
 				window.close();
 			}
 		}
-		std::string str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-		str += std::to_string(count);
-		diaBox.print(str);
-		count++;
 
+		diaBox.printPerm(test);
+		diaBox.draw();
 		window.display();
 
 		sf::sleep(sf::milliseconds(1000 / 60));
