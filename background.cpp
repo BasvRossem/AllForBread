@@ -1,7 +1,7 @@
 #include "background.hpp"
 
 
-void BackGround::add(const std::string &name, std::string &fileName) {
+void BackGround::add(const std::string &name, const std::string &fileName) {
 	backGrounds.push_back(std::pair<std::string, std::string>(name, fileName));
 }
 
