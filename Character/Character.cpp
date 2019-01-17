@@ -128,3 +128,20 @@ void Character::increaseMana(const int & modifier) {
 int Character::getStat(const AbilityScores & stat) {
 	return characterStats[stat];
 }
+
+void Character::addCombatAction(std::shared_ptr<Action> a) {
+	actions.push_back(a);
+}
+
+void Character::activateCombatAction(const unsigned int & id, const std::string & playername, const std::string & enemy) {
+	if (id < actions.size()) {
+		actions[id]->activate(playername, enemy);
+	}
+}
+
+std::string Character::getActionName(const unsigned int &id) {
+	if (id < actions.size()) {
+		return actions[id]->getName();
+	}
+	return "";
+}

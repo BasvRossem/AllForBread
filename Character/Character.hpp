@@ -5,6 +5,7 @@
 #include "../Animation/Animation.hpp"
 #include <unordered_map>
 #include "EnumClasses.hpp"
+#include "Action.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
 
 class Character{
@@ -12,6 +13,8 @@ private:
 	std::shared_ptr<sf::Texture> idleTexture ;
 	std::shared_ptr<sf::Sprite> sprite;
 	Animation currentAnimation;
+	
+	std::vector<std::shared_ptr<Action>> actions;
 
 	std::string name;
 	sf::Vector2f position;
@@ -51,4 +54,8 @@ public:
 	void increaseMana(const int &);
 
 	int getStat(const AbilityScores &);
+	
+	void addCombatAction(std::shared_ptr<Action>);
+	void activateCombatAction(const unsigned int &, const std::string &, const std::string &);
+	std::string getActionName(const unsigned int &);
 };
