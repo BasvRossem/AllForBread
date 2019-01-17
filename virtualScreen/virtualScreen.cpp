@@ -1,8 +1,8 @@
 #include "virtualScreen.hpp"
 
 
-VirtualScreen::VirtualScreen(const sf::Vector2f & screenSize) {
-	setSize(screenSize);
+VirtualScreen::VirtualScreen(const unsigned int & width, const unsigned int & height) {
+	setSize(width,height);
 }
 
 void VirtualScreen::draw(sf::RenderTarget & target, sf::RenderStates states) const {
@@ -15,5 +15,6 @@ bool VirtualScreen::collision(const sf::Vector2i & point)
 {
 	sf::Sprite spr(vScreen.getTexture());
 	spr.setPosition(location);
-	return spr.getGlobalBounds().contains(point.x, point.y);
+	
+	return spr.getGlobalBounds().contains(sf::Vector2f(point));
 }
