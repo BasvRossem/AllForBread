@@ -1,10 +1,10 @@
 #include "dialogBox.h"
 
-DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2f& size, sf::Vector2f& position) :
+DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i& size, sf::Vector2f& position) :
 	w(window),
 	bufferWidth(bufferWidth),
 	maxLines(maxLines),
-	diaBox(size)
+	diaBox(size.x, size.y)
 {
 
 	if (!font.loadFromFile(fontFileLocation)) {
@@ -67,14 +67,14 @@ std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 
 void DialogBox::print(std::string& str) {
 	std::vector<std::string> strVect = wordwrap(str);
-	page = 0;
+	uint_fast16_t page = 0;
 	
 	uint_fast16_t oldpage = 1;
 	size_t max = 0;
 
 	while (true) {
 		std::string tempStr;
-		int maxLTimesPage = (maxLines) * page;
+		unsigned int maxLTimesPage = (maxLines) * page;
 		if (maxLTimesPage > strVect.size()) {
 			break;
 		}

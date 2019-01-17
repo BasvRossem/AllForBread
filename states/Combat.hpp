@@ -10,8 +10,8 @@ private:
 	
 	Party party;
 	CharacterContainer<Character> monsters;
-	sf::Vector2f animationScreenSize = sf::Vector2f(1920.0f, 680.0f);
-	sf::Vector2f menuScreenSize = sf::Vector2f(1920.0f, 450.0f);
+	sf::Vector2i animationScreenSize = sf::Vector2i(1920, 680);
+	sf::Vector2i menuScreenSize = sf::Vector2i(1920, 450);
 	VirtualScreen animationScreen;
 	VirtualScreen menuScreen;
 	std::vector<std::shared_ptr<Character>> initiative; //Players and monsters

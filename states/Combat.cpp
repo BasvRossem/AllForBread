@@ -5,8 +5,8 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<Char
 	party(party),
 	monsters(monster),
 	surroundings(surrounding),
-	animationScreen(animationScreenSize),
-	menuScreen(menuScreenSize)
+	animationScreen(animationScreenSize.x, animationScreenSize.y),
+	menuScreen(menuScreenSize.x, menuScreenSize.y)
 {
 	sf::Vector2f animationScreenTopLeft(0.0, 0.0);
 	sf::Vector2f menuScreenTopLeft(0.0, 680);
@@ -24,8 +24,8 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<Char
 	}
 	backgroundSprite.setTexture(backgroundTexture);
 	sf::Vector2u backSize = backgroundTexture.getSize();
-	float xScale = 1920.0 / backSize.x;
-	float yScale = 680.0 / backSize.y;
+	float xScale = static_cast<float>(1920.0 / backSize.x);
+	float yScale = static_cast<float>(680.0 / backSize.y);
 	backgroundSprite.scale(sf::Vector2f(xScale, yScale));
 }
 

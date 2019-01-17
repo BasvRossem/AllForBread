@@ -15,16 +15,14 @@ class DialogBox {
 private:
 	VirtualScreen diaBox;
 	sf::RenderWindow& w;
-
-	uint_fast16_t page;
 	uint_fast16_t bufferWidth;
 	uint_fast16_t maxLines;
-
+	
 	sf::Font font;
 	sf::Text text;
 
 public:
-	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2f& size, sf::Vector2f& position);
+	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i& size, sf::Vector2f& position);
 	///\brief
 	/// draws the screen part and the text
 	void draw();
