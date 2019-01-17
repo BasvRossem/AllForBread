@@ -26,6 +26,7 @@ void DialogBox::draw() {
 	w.display();
 }
 
+
 std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 	std::vector<std::string> returnstring;
 	unsigned int beginLine = 0;
@@ -62,7 +63,15 @@ std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 	return returnstring;
 }
 
-
+void DialogBox::printPerm(std::vector<std::string>& textVector) {
+	if (textVector.size() <= maxLines){
+		std::string textString;
+		for (size_t i = 0; i < textVector.size(); i++) {
+			textString.append(textVector[i]).append("\n");
+		}
+		text.setString(textString);
+	}
+}
 
 
 void DialogBox::print(std::string& str) {

@@ -41,4 +41,10 @@ public:
 	/// returns a vector of strings that contains all the text neatly wordwrapped to the defined max character width.
 	/// this makes it that all the text given to the dialogbox is able to be displayed.
 	std::vector<std::string> wordwrap(std::string& str);
+
+	///\brief
+	/// user controlled print function
+	///\details
+	/// When given a vector of strings it displays the vector on screen until it is cleared or it is overwritten with new text.
+	void printPerm(std::vector<std::string>&);
 };
