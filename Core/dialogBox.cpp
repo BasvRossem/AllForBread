@@ -18,6 +18,24 @@ DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_
 	draw();
 }
 
+DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position) :
+	w(window),
+	bufferWidth(bufferWidth),
+	maxLines(maxLines),
+	diaBox(size.x, size.y)
+{
+
+	if (!font.loadFromFile(fontFileLocation)) {
+		//throw fileNotFound(fontFileLocation)
+	}
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setFillColor(sf::Color::White);
+	text.setOutlineColor(sf::Color::Black);
+	diaBox.setLocation(position);
+	draw();
+}
+
 void DialogBox::draw() {
 	diaBox.drawSurfaceClear();
 	diaBox.drawSurfaceDraw(text);
