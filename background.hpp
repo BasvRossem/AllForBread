@@ -11,8 +11,8 @@
 /// A class that create and set the background.
 class BackGround {
 private:
-	sf::Sprite sprite;
-	sf::Texture texture;
+	sf::Sprite backgroundSprite;
+	sf::Texture backgroundTexture;
 	std::vector<std::pair<std::string, std::string>> backGrounds;
 public:
 	///\brief
@@ -25,7 +25,7 @@ public:
 	
 	///\brief
 	/// Sets a backgroud.
-	void SetBackGround(const std::string &);
+	void SetBackGround(const std::string &, sf::RenderWindow &);
 	
 	///\brief
 	///Draws the backgroud.
