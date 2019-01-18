@@ -33,7 +33,7 @@ public:
 			return characters.at(index);
 		} else {
 			std::cout << "Je probeert een character te vinden die niet bestaat\n";
-			throw std::out_of_range("blah");
+			throw std::out_of_range("Je probeert een character te vinden die niet bestaat");
 		}
 	}
 
@@ -52,5 +52,17 @@ public:
 	/// Returns signed integer size of the container
 	unsigned int size() {
 		return characters.size();
+	}
+
+	/// \brief
+	/// Returns the character at given index, and erases it from internal container
+	T pop(const int & index) {
+		if (index < N && index < characters.size()) {
+			T tmpChar = characters[index];
+			characters.erase(characters.begin() + index);
+			return tmpChar;
+		} else {
+			throw std::out_of_range("Je probeert een character te poppen die niet bestaat.")
+		}
 	}
 };
