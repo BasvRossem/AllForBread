@@ -23,4 +23,3 @@ public:
 	bool isFinished();
 	bool checkForFinished();
 };
-

@@ -1,11 +1,8 @@
 #include "Database.hpp"
 
-
-
 Database::Database():
 	db(NULL)
-{
-}
+{}
 
 Database::Database(const char * filename):
 	db(NULL)
@@ -29,13 +26,11 @@ bool Database::open(const char * filename, int flags, const char * zVfs) {
 	return false;
 }
 
-bool Database::close()
-{
+bool Database::close(){
 	return (SQLITE_OK == sqlite3_close(db));
 }
 
-bool Database::cmd(const char * query, int(*callback)(void *, int, char **, char **), void * firstagumentofcallback, char ** errmsg)
-{
+bool Database::cmd(const char * query, int(*callback)(void *, int, char **, char **), void * firstagumentofcallback, char ** errmsg){
 	return (SQLITE_OK == sqlite3_exec(db, query, callback, firstagumentofcallback, errmsg));
 }
 
