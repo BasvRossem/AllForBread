@@ -22,6 +22,16 @@ void BackGround::SetBackGround(const std::string & backGroundName, sf::RenderWin
 	}
 }
 
+void BackGround::SetBackGround(const std::string & backGroundName, sf::Vector2f & windowSize) {
+	if (backgroundTexture.loadFromFile(getPath(backGroundName))) {
+		sf::Vector2f size = sf::Vector2f{ backgroundTexture.getSize() };
+		backgroundSprite.setTexture(backgroundTexture);
+		backgroundSprite.setPosition(0, 0);
+		backgroundSprite.scale(sf::Vector2f{ windowSize.x / size.x, windowSize.y / size.y });
+	}
+}
+
+
 void BackGround::draw(sf::RenderWindow &window) {
 	window.draw(backgroundSprite);
 }

@@ -26,6 +26,10 @@ public:
 	///\brief
 	/// Sets a backgroud.
 	void SetBackGround(const std::string &, sf::RenderWindow &);
+
+	void SetBackGround(const std::string &, sf::Vector2f &);
+
+
 	
 	///\brief
 	///Draws the backgroud.
