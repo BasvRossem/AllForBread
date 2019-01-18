@@ -35,3 +35,7 @@ void BackGround::SetBackGround(const std::string & backGroundName, sf::Vector2f 
 void BackGround::draw(sf::RenderWindow &window) {
 	window.draw(backgroundSprite);
 }
+
+void BackGround::draw(VirtualScreen &virtualScreen) {
+	virtualScreen.drawSurfaceDraw(backgroundSprite);
+}

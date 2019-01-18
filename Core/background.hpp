@@ -3,6 +3,7 @@
 #include <utility> 
 #include <string>
 #include <vector>
+#include "virtualScreen/virtualScreen.hpp"
 
 
 ///@file
@@ -24,15 +25,22 @@ public:
 	std::string getPath(const std::string &);
 	
 	///\brief
-	/// Sets a backgroud.
+	/// Sets a backgroud from window.
 	void SetBackGround(const std::string &, sf::RenderWindow &);
 
+	///\brief
+	/// Sets a backgroud from a size vector.
 	void SetBackGround(const std::string &, sf::Vector2f &);
 
 
-	
 	///\brief
-	///Draws the backgroud.
+	///Draws the backgroud to window.
 	void draw(sf::RenderWindow &);
+
+	///\brief
+	///Draws the backgroud to virtualscreen.
+	void draw(VirtualScreen &);
+
+
 };
 
