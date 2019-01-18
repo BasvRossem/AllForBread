@@ -20,10 +20,6 @@ protected:
 	std::shared_ptr<sf::Sprite> sprite;
 	Animation currentAnimation;
 	Animation deathAnimation;
-private:
-	std::shared_ptr<sf::Texture> idleTexture;
-	std::shared_ptr<sf::Sprite> sprite;
-	Animation currentAnimation;
 	
 	std::vector<std::shared_ptr<Action>> actions;
 
@@ -135,4 +131,6 @@ public:
 	/// \brief
 	/// Returns action name at given index. If index is out of bounds, return empty string
 	std::string getActionName(const unsigned int &);
+
+	std::vector<std::shared_ptr<Action>> getActions();
 };

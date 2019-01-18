@@ -1,16 +1,24 @@
 #include "Combat.hpp"
 
 
-Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding):
+Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding, BackGround & backgrnd):
 	State(window),
 	party(party),
 	monsters(monster),
-	surroundings(surrounding),
+	surrounding(surrounding),
 	animationScreen(animationScreenSize.x , animationScreenSize.y),
 	damageScreen(damageScreenSize.x, damageScreenSize.y),
 	menuScreen(menuScreenSize.x, menuScreenSize.y),
-	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0, animationScreenSize.y))
+	backgrnd(backgrnd),
+	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)))
 {
+	for (size_t i = 0; i < party.size(); i++){
+		initiative.push_back(party[i]);
+	}
+	for (size_t i = 0; i < monster.size(); i++) {
+		initiative.push_back(monster[i]);
+	}
+	calculateInitiative(initiative);
 	sf::Vector2f animationScreenTopLeft(0.0, 0.0);
 	sf::Vector2f damageScreenTopLeft(0.0, 0.0);
 	sf::Vector2f menuScreenTopLeft(0.0, 680);
@@ -20,23 +28,7 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 
 	attackFont.loadFromFile("Assets/PIXEARG_.ttf");
 	//Load the background
-	std::string backgr = ""; 
-	backgr += surroundings;
-	if (!backgroundTexture.loadFromFile(surroundings, sf::IntRect(0, 0, 1920, 1080))){
-		std::cout << "Can't load background image: " << backgr << std::endl;
-		if (!backgroundTexture.loadFromFile("error.JPG", sf::IntRect(0, 0, 1920, 1080))) {
-			std::cout << "Can't load background image: " << backgr << std::endl;
-		}
-	}
-	backgroundSprite.setTexture(backgroundTexture);
-	sf::Vector2u backSize = backgroundTexture.getSize();
-	float xScale = static_cast<float>(1920.0 / backSize.x);
-	float yScale = static_cast<float>(680.0 / backSize.y);
-	backgroundSprite.scale(sf::Vector2f(xScale, yScale));
 
-	combatChoices.push_back("1. Attack");
-	combatChoices.push_back("2. Nothing"); 
-	combatChoices.push_back("3. Idle");
 }
 
 
@@ -48,18 +40,73 @@ void Combat::start() {
 };
 
 State* Combat::update() {
-	attackFeedback(monsters[0], 200);
-	//monsters[0]->decreaseHealth(20);
-
-	for(;;){
+	CombatFinished = false;
+	backgrnd.setBackGround(surrounding, sf::Vector2f(animationScreenSize));
+	while(!CombatFinished){
+		combatChoices.clear();
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (event.type == sf::Event::KeyPressed)
+				keyhandle.processKey(event.key.code);
+
 		}
-		
-		draw();
+		auto curChar = initiative[curInitiative];
+		auto actionKeys = curChar->getActions();
+		for (size_t i = 0; i < actionKeys.size(); i++){
+			keyhandle.addListener(sf::Keyboard::Num0, [i, &curChar, this]() {curChar->activateCombatAction(i, this->getMonster(0)); attackFeedback(monsters[0], curChar->getActions()[i]->getModifier()); });
+			std::stringstream tempstring;
+			tempstring << i << ' ' << curChar->getActionName(i);
+			
+			combatChoices.push_back(tempstring.str());
+		}
+		combatChoices.push_back("4. Stop combat");
+		keyhandle.addListener(sf::Keyboard::Num4, [this]()->void {std::cout << "ja gvd Jens\n"; this->CombatFinished = true; });
+
+		window.clear();
+
+		damageScreen.drawSurfaceClear(sf::Color::Transparent);
+		animationScreen.drawSurfaceClear(sf::Color::Red);
+		menuScreen.drawSurfaceClear(sf::Color::Black);
+
+		backgrnd.draw(animationScreen);
+		for (unsigned int i = 0; i < party.size(); i++) {
+			party[i]->update();
+			party[i]->draw(animationScreen);
+		}
+		for (unsigned int j = 0; j < monsters.size(); j++) {
+			monsters[j]->update();
+			monsters[j]->draw(animationScreen);
+		}
+		if (!attackFeedbackDone) {
+			attackFeedback(monsters[0], 200);
+			//attackFeedback(party[0], 250);
+		}
+		else {
+			//Make combat actions
+
+		}
+
+
+		checkMonstersDeath();
+
+		animationScreen.drawSurfaceDisplay();
+		menuScreen.drawSurfaceDisplay();
+		damageScreen.drawSurfaceDisplay();
+
+		window.draw(menuScreen);
+
+		window.draw(animationScreen);
+
+		window.draw(damageScreen);
+
+		diaBox.printPerm(combatChoices);
+		diaBox.draw();
+
+		window.display();
+		/////
 		
 	}
 	
@@ -74,12 +121,12 @@ void Combat::draw() {
 	animationScreen.drawSurfaceClear(sf::Color::Red);
 	menuScreen.drawSurfaceClear(sf::Color::Black);
 
-	animationScreen.drawSurfaceDraw(backgroundSprite);
-	for (int i = 0; i < party.size(); i++) {
+	backgrnd.draw(animationScreen);
+	for (unsigned int i = 0; i < party.size(); i++) {
 		party[i]->update();
 		party[i]->draw(animationScreen);
 	}
-	for (int j = 0; j < monsters.size(); j++) {
+	for (unsigned int j = 0; j < monsters.size(); j++) {
 		monsters[j]->update();
 		monsters[j]->draw(animationScreen);
 	}
@@ -94,14 +141,12 @@ void Combat::draw() {
 	
 	checkMonstersDeath();
 
-
 	animationScreen.drawSurfaceDisplay();
 	menuScreen.drawSurfaceDisplay();
 	damageScreen.drawSurfaceDisplay();
 
 	window.draw(menuScreen);
-	window.draw(backgroundSprite);
-
+	
 	window.draw(animationScreen);
 
 	window.draw(damageScreen);
@@ -178,4 +223,18 @@ void Combat::partyVictory() {
 //Not yet finished
 void Combat::monsterVictory() {
 
+}
+
+void Combat::calculateInitiative(std::vector<std::shared_ptr<Character>> &characterVector) {
+
+	std::sort(characterVector.begin(), characterVector.end(),
+		[](std::shared_ptr<Character> c1, std::shared_ptr<Character> c2) {
+		return (c1->getStat(AbilityScores::dexterity) > c2->getStat(AbilityScores::dexterity));
+	}
+	);
+
+}
+
+std::shared_ptr<Character> Combat::getMonster(unsigned int i) {
+	return monsters[i];
 }

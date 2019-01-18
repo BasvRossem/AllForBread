@@ -2,11 +2,16 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <String>
+#include <sstream>
 #include "State.hpp"
 #include "../Character/Party.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
 #include "../TransformableMovement/TransformableMovement.hpp"
 #include "../Core/dialogBox.h"
+#include "../Core/background.hpp"
+#include "../Core/KeyboardHandler.hpp"
+#include "../Character/action.hpp"
+#include "../Character/Attack.hpp"
 
 class Combat : public State {
 private:
@@ -32,19 +37,22 @@ private:
 	std::shared_ptr<sf::Text> damageText;
 
 	std::vector<std::shared_ptr<Character>> initiative; //Players and monsters
-
-	std::string surroundings;
-
-	sf::Texture backgroundTexture;
-	sf::Sprite backgroundSprite;
-
+	
+	BackGround backgrnd;
 	sf::Clock clock;
 	float deltaTime = 0.0f;
+
+	KeyboardHandler keyhandle;
+
+	uint_fast16_t curInitiative = 0;
+
+	std::string surrounding;
+
 public:
 	bool CombatStarted = false;
 	bool CombatFinished = false;
 
-	Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding);
+	Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding, BackGround & backgrnd);
 	~Combat();
 
 	void start();
@@ -59,4 +67,6 @@ public:
 
 	void partyVictory();
 	void monsterVictory();
+	void calculateInitiative(std::vector<std::shared_ptr<Character>> &characterVector);
+	std::shared_ptr<Character> getMonster(unsigned int i);
 };

@@ -27,6 +27,7 @@ Character::Character(const std::string & characterName, const std::string & text
 Character::Character(const std::string & characterName, const std::string & textureName, const int & frameAmount):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
+	deathTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
 {
 	idleTexture->loadFromFile(textureName);
@@ -45,12 +46,6 @@ Character::Character(const std::string & characterName, const std::string & text
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 	srand(clock.getElapsedTime().asMilliseconds());
-}
-
-void Character::makeMonster() {
-	sprite->scale(-1.0f, 1.0f);
-	//BESTE BAS VAN MORGEN FIX DAT DIT NETJHES MET EEN TESTFRAME EN EEN OFFSET WORDT GEDAAN SetOrigin
-	sprite->setPosition(sf::Vector2f(1770, 400));
 }
 
 void Character::makeMonster() {
@@ -104,6 +99,7 @@ void Character::decreaseHealth(const int & modifier) {
 	else {
 		currentHealth -= modifier;
 	}
+
 }
 
 void Character::increaseHealth(const int & modifier) {
@@ -173,7 +169,7 @@ void Character::decreaseAbilityScore(const AbilityScores & stat, const int & sta
 }
 
 
-void PlayerCharacter::printAbilityStats() {
+void Character::printAbilityStats() {
 	std::cout << "Vit:	" << characterStats[AbilityScores::vitality]	<< "\n";
 	std::cout << "Str:	" << characterStats[AbilityScores::strength]	<< "\n";
 	std::cout << "Dex:	" << characterStats[AbilityScores::dexterity]	<< "\n";
@@ -213,4 +209,8 @@ std::string Character::getActionName(const unsigned int &id) {
 		return actions[id]->getName();
 	}
 	return "";
+}
+
+std::vector<std::shared_ptr<Action>> Character::getActions() {
+	return actions;
 }

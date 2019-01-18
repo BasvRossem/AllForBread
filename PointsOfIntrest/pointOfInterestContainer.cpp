@@ -2,7 +2,7 @@
 
 
 
-void PointOfInterestContainer::add(const sf::Vector2f &position, const float &size, const sf::Color & color, const std::string &locationType, const std::function<void(std::string)> & function, std::vector<sf::Vector2f> path) {
+void PointOfInterestContainer::add(const sf::Vector2f &position, const float &size, const sf::Color & color, const std::string &locationType, const std::function<void()> & function, std::vector<sf::Vector2f> path) {
 	POIList.push_back(std::make_shared<PointOfInterest>(position, size, color, locationType, function, path));
 }
 

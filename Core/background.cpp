@@ -11,9 +11,9 @@ std::string BackGround::getPath(const std::string & backGroundName) {
 			return background.second;
 		}
 	}
-	return 0;
+	throw std::out_of_range(backGroundName);
 }
-void BackGround::SetBackGround(const std::string & backGroundName, sf::RenderWindow & window){
+void BackGround::setBackGround(const std::string & backGroundName, sf::RenderWindow & window){
 	if (backgroundTexture.loadFromFile(getPath(backGroundName))){
 		sf::Vector2f size = sf::Vector2f{ backgroundTexture.getSize() };
 		backgroundSprite.setTexture(backgroundTexture);
@@ -22,7 +22,7 @@ void BackGround::SetBackGround(const std::string & backGroundName, sf::RenderWin
 	}
 }
 
-void BackGround::SetBackGround(const std::string & backGroundName, sf::Vector2f & windowSize) {
+void BackGround::setBackGround(const std::string & backGroundName, const sf::Vector2f & windowSize) {
 	if (backgroundTexture.loadFromFile(getPath(backGroundName))) {
 		sf::Vector2f size = sf::Vector2f{ backgroundTexture.getSize() };
 		backgroundSprite.setTexture(backgroundTexture);

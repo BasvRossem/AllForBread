@@ -1,10 +1,10 @@
 #pragma once
-#include "database/Database.hpp"
+#include "../database/Database.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "Character/Party.hpp"
+#include "../Character/Party.hpp"
 class DataManager
 {
 private:

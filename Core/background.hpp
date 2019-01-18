@@ -3,8 +3,9 @@
 #include <utility> 
 #include <string>
 #include <vector>
-#include "virtualScreen/virtualScreen.hpp"
-
+#include "../virtualScreen/virtualScreen.hpp"
+#include <stdexcept>
+#include <iostream>
 
 ///@file
 
@@ -26,11 +27,11 @@ public:
 	
 	///\brief
 	/// Sets a backgroud from window.
-	void SetBackGround(const std::string &, sf::RenderWindow &);
+	void setBackGround(const std::string &, sf::RenderWindow &);
 
 	///\brief
 	/// Sets a backgroud from a size vector.
-	void SetBackGround(const std::string &, sf::Vector2f &);
+	void setBackGround(const std::string &, const sf::Vector2f &);
 
 
 	///\brief

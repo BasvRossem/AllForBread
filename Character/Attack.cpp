@@ -12,3 +12,8 @@ std::pair<int, int> Attack::activate() {
 std::string Attack::getName() {
 	return name;
 }
+
+
+unsigned int Attack::getModifier() {
+	return damage;
+}

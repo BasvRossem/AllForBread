@@ -12,4 +12,5 @@ public:
 	Attack(const std::string &, const unsigned int &);
 	std::pair<int, int> activate();
 	std::string getName() override;
+	unsigned int getModifier();
 };

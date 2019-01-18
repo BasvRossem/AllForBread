@@ -2,7 +2,7 @@
 
 
 
-PointOfInterest::PointOfInterest(const sf::Vector2f &position, const float &size, const sf::Color & color, const std::string &locationType, const std::function<void(std::string)> & function, std::vector<sf::Vector2f> path) :
+PointOfInterest::PointOfInterest(const sf::Vector2f &position, const float &size, const sf::Color & color, const std::string &locationType, const std::function<void()> & function, std::vector<sf::Vector2f> path) :
 	size(size),
 	position(position),
 	locationType(locationType),
@@ -16,7 +16,7 @@ PointOfInterest::PointOfInterest(const sf::Vector2f &position, const float &size
 
 
 void PointOfInterest::activate() {
-	function(locationType);
+	function();
 }
 
 void PointOfInterest::draw(sf::RenderWindow &window) {

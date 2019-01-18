@@ -1,3 +1,4 @@
+#pragma once
 class State {
 public:
 	virtual State * update() = 0;
