@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <iostream>
 
-Character::Character(std::string characterName, std::string textureName):
+Character::Character(const std::string & characterName, const std::string & textureName):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
 	deathTexture(new(sf::Texture)),
@@ -10,29 +10,27 @@ Character::Character(std::string characterName, std::string textureName):
 {
 	idleTexture->loadFromFile(textureName);
 	idleTexture->setSmooth(true);
-
 	sprite->setPosition(sf::Vector2f(150, 350));
 	//Zorg dat setscale netjes wordt gedaan Dank u
 	sprite->setScale(0.4f, 0.4f);
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
-
 	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
 		std::cout << "Error loading Rip.png, constructor 1" << std::endl;
 	}
-
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 
 	srand(clock.getElapsedTime().asMilliseconds());
 }
 
-Character::Character(std::string characterName, std::string textureName, int frameAmount):
+
+Character::Character(const std::string & characterName, const std::string & textureName, const int & frameAmount):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
-	deathTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
 {
 	idleTexture->loadFromFile(textureName);
+
 	idleTexture->setSmooth(true);
 
 	sprite->setPosition(sf::Vector2f(50, 400));
@@ -46,6 +44,13 @@ Character::Character(std::string characterName, std::string textureName, int fra
 
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
+	srand(clock.getElapsedTime().asMilliseconds());
+}
+
+void Character::makeMonster() {
+	sprite->scale(-1.0f, 1.0f);
+	//BESTE BAS VAN MORGEN FIX DAT DIT NETJHES MET EEN TESTFRAME EN EEN OFFSET WORDT GEDAAN SetOrigin
+	sprite->setPosition(sf::Vector2f(1770, 400));
 }
 
 void Character::makeMonster() {
@@ -72,11 +77,11 @@ void Character::draw(VirtualScreen & window) {
 std::shared_ptr<sf::Sprite> Character::getDrawable() {
 	return sprite;
 }
-void Character::IdleAnimation() {
+void Character::idleAnimation() {
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 }
 
-std::string Character::GetName() {
+std::string Character::getName() {
 	return name;
 }
 
@@ -99,7 +104,6 @@ void Character::decreaseHealth(const int & modifier) {
 	else {
 		currentHealth -= modifier;
 	}
-
 }
 
 void Character::increaseHealth(const int & modifier) {
@@ -120,7 +124,7 @@ void Character::decreaseMana(const int & modifier) {
 		std::cout << "Je probeert de mana te verminderen met een negatief getal\n";
 	}
 	else if (modifier > maxMana) {
-		std::cout << "INSTAKILL!\n";
+		std::cout << "INSTADEPLETE!\n";
 		currentMana = 0;
 	}
 	else {
@@ -141,16 +145,72 @@ void Character::increaseMana(const int & modifier) {
 	}
 }
 
+void Character::increaseAbilityScore(const AbilityScores & stat, const int & statIncrease) {
+	//-Safeguard for negative integers in parameter: "statIncrease"
+	if (statIncrease < 0) {
+		std::cout << "Parameter: 'statIncrease' value is smaller than 0, Value: " << statIncrease << "\n";
+		return;
+	}
+	if (characterStats[stat] + statIncrease > 99) {
+		characterStats[stat] = 99;
+	} else {
+		characterStats[stat] += statIncrease;
+	}
+}
+
+void Character::decreaseAbilityScore(const AbilityScores & stat, const int & statDecrease) {
+	//-Safeguard from negative	 integers in parameter: "statDecrease"
+	if (statDecrease < 0) {
+		std::cout << "Parameter: 'statDecrease' value is smaller than 0, Value: " << statDecrease << "\n";
+		return;
+	}
+
+	if (characterStats[stat] - statDecrease < 0) {
+		characterStats[stat] = 0;
+	} else {
+		characterStats[stat] -= statDecrease;
+	}
+}
+
+
+void PlayerCharacter::printAbilityStats() {
+	std::cout << "Vit:	" << characterStats[AbilityScores::vitality]	<< "\n";
+	std::cout << "Str:	" << characterStats[AbilityScores::strength]	<< "\n";
+	std::cout << "Dex:	" << characterStats[AbilityScores::dexterity]	<< "\n";
+	std::cout << "Arc:	" << characterStats[AbilityScores::arcanism]	<< "\n";
+	std::cout << "Cha:	" << characterStats[AbilityScores::charisma]	<< "\n";
+	std::cout << "Lck:	" << characterStats[AbilityScores::luck]		<< "\n";
+	std::cout << "\n";
+}
+
 int Character::getStat(const AbilityScores & stat) {
 	return characterStats[stat];
 }
 
-//-Added (Niels)
 void Character::doDeath() {
 	showDeathTexture();
 }
 
-//-Added (Niels)
 void Character::showDeathTexture() {
 	currentAnimation = deathAnimation;
+}
+
+void Character::addCombatAction(std::shared_ptr<Action> a) {
+	actions.push_back(a);
+}
+
+void Character::activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c) {
+	if (id < actions.size()) {
+		std::pair<int, int> IDandInfo = actions[id]->activate();
+		if (IDandInfo.first == 0) {
+			c->decreaseHealth(IDandInfo.second);
+		}
+	}
+}
+
+std::string Character::getActionName(const unsigned int &id) {
+	if (id < actions.size()) {
+		return actions[id]->getName();
+	}
+	return "";
 }

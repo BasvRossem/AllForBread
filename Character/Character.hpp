@@ -7,7 +7,12 @@
 #include "EnumClasses.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
 #include <cstdlib>
+#include "Action.hpp"
+#include "Attack.hpp"
+/// @file
 
+/// \brief
+/// The baseclass of characters
 class Character{
 protected:
 	std::shared_ptr<sf::Texture> idleTexture;
@@ -15,6 +20,12 @@ protected:
 	std::shared_ptr<sf::Sprite> sprite;
 	Animation currentAnimation;
 	Animation deathAnimation;
+private:
+	std::shared_ptr<sf::Texture> idleTexture;
+	std::shared_ptr<sf::Sprite> sprite;
+	Animation currentAnimation;
+	
+	std::vector<std::shared_ptr<Action>> actions;
 
 	std::string name;
 	sf::Vector2f position;
@@ -37,27 +48,91 @@ protected:
 	};
 
 public:
-	Character(std::string characterName, std::string textureName);
-	Character(std::string characterName, std::string textureName, int frameAmount);
+	Character(const std::string &, const std::string &);
+	Character(const std::string &, const std::string &, const int &);
 	~Character();
 
+	/// \brief
+	/// Updates current animation
 	void update();
-	void draw(sf::RenderWindow & window);
-	void draw(VirtualScreen & window);
-	void IdleAnimation();
+
+	/// \brief
+	/// Draws character to given window
+	void draw(sf::RenderWindow &);
+
+	/// \brief
+	/// Draws character to given VirtualScreen
+	void draw(VirtualScreen &);
+
+	/// \brief
+	/// Creates an idleAnimation
+	void idleAnimation();
+
+	/// \brief
+	/// Draws character to mirrored position
 	void makeMonster();
-	std::string GetName();
+
+	/// \brief
+	/// Returns charactername
+	std::string getName();
+
+	/// \brief
+	/// Returnes sharedpointer to drawable of character
 	std::shared_ptr<sf::Sprite> getDrawable();
+
+	/// \brief
+	/// Returns current health
 	int getHealth();
+
+	/// \brief
+	/// Returns current mana
 	int getMana();
+
+	/// \brief
+	/// Lowers health by given amount
 	void decreaseHealth(const int &);
+
+	/// \brief
+	/// Increases health by given amount
 	void increaseHealth(const int &);
+
+	/// \brief
+	/// Lowers mana by given amount
 	void decreaseMana(const int &);
+
+	/// \brief
+	/// Increases mana by given amount
 	void increaseMana(const int &);
 
 	//-Added 2 functions (Niels)
 	virtual void doDeath();
 	void showDeathTexture();
 
+	/// \brief
+	/// Lowers given ability score by given amount
+	void decreaseAbilityScore(const AbilityScores &, const int &);
+
+	/// \brief
+	/// Increases given ability score by given amount
+	void increaseAbilityScore(const AbilityScores &, const int &);
+
+	/// \brief
+	/// Prints all abilities and values
+	void printAbilityStats();
+
+	/// \brief
+	/// Returns value of given ability
 	int getStat(const AbilityScores &);
+
+	/// \brief
+	/// Adds a combat action
+	void addCombatAction(std::shared_ptr<Action>);
+
+	/// \brief
+	/// Activates action at given index, target at given character
+	void activateCombatAction(const unsigned int &, const std::shared_ptr<Character> &);
+
+	/// \brief
+	/// Returns action name at given index. If index is out of bounds, return empty string
+	std::string getActionName(const unsigned int &);
 };

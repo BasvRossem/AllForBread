@@ -1,5 +1,15 @@
 #include "PlayerCharacter.hpp"
 
+PlayerCharacter::PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp) :
+	Character(characterName, textureName),
+	experience(exp) {
+};
+
+PlayerCharacter::PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp) :
+	Character(characterName, textureName, frameAmount),
+	experience(exp) {
+};
+
 void PlayerCharacter::increaseExperience(const int & exp) {
 
 	//-Safeguard from negative xpReward Values
@@ -42,42 +52,6 @@ int PlayerCharacter::requiredExperience() {
 	return experienceGauge - experience;
 }
 
-void PlayerCharacter::increaseAbilityScore(const AbilityScores & stat, const int & statIncrease) {
-	//-Safeguard for negative integers in parameter: "statIncrease"
-	if (statIncrease < 0) {
-		std::cout << "Parameter: 'statIncrease' value is smaller than 0, Value: " << statIncrease << "\n";
-		return;
-	}
-	if (characterStats[stat] + statIncrease > 99) {
-		characterStats[stat] = 99;
-	} else {
-		characterStats[stat] += statIncrease;
-	}
-}
-
-void PlayerCharacter::decreaseAbilityScore(const AbilityScores & stat, const int & statDecrease) {
-	//-Safeguard from negative	 integers in parameter: "statDecrease"
-	if (statDecrease < 0) {
-		std::cout << "Parameter: 'statDecrease' value is smaller than 0, Value: " << statDecrease << "\n";
-		return;
-	}
-
-	if (characterStats[stat] - statDecrease < 0) {
-		characterStats[stat] = 0;
-	} else {
-		characterStats[stat] -= statDecrease;
-	}
-}
-
-void PlayerCharacter::printAbilityStats() {
-	std::cout << "Vit:	" << characterStats[AbilityScores::vitality]	<< "\n";
-	std::cout << "Str:	" << characterStats[AbilityScores::strength]	<< "\n";
-	std::cout << "Dex:	" << characterStats[AbilityScores::dexterity]	<< "\n";
-	std::cout << "Arc:	" << characterStats[AbilityScores::arcanism]	<< "\n";
-	std::cout << "Cha:	" << characterStats[AbilityScores::charisma]	<< "\n";
-	std::cout << "Lck:	" << characterStats[AbilityScores::luck]		<< "\n";
-	std::cout << "\n";
-}
 
 void PlayerCharacter::printTotalExperience() {
 	std::cout << "Total experience aquired: " << calculateTotalExperience() << "\n";

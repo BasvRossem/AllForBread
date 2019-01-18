@@ -3,7 +3,10 @@
 #include "EnumClasses.hpp"
 #include "Character.hpp"
 #include <string>
+/// @file
 
+/// \brief
+/// A class that represents a playable character
 class PlayerCharacter : public Character {
 private:
 	int experience = 0;
@@ -11,24 +14,25 @@ private:
 	int abilityPoints = 0;
 
 public:
-	PlayerCharacter(std::string characterName, std::string textureName, const int & exp = 0) :
-		Character(characterName, textureName),
-		experience(exp) {
-	};
+	PlayerCharacter(const std::string &, const std::string &, const int & exp = 0);
+	PlayerCharacter(const std::string &, const std::string &, const int &, const int & exp = 0);
 
-	PlayerCharacter(std::string characterName, std::string textureName, int frameAmount, const int & exp = 0) :
-		Character(characterName, textureName, frameAmount),
-		experience(exp) {
-	};
-
+	/// \brief
+	/// Increases experience by given amount
 	void increaseExperience(const int &);
+
+	/// \brief
+	/// Returns total experience this character has gained
 	int calculateTotalExperience();
+
+
 	int requiredExperience();
 
-	void decreaseAbilityScore(const AbilityScores &, const int &);
-	void increaseAbilityScore(const AbilityScores &, const int &);
-	
-	void printAbilityStats();
+	/// \brief
+	/// Prints current experience
 	void printExperience();
+
+	/// \brief
+	/// Prints total experience this character has gained
 	void printTotalExperience();
 };
