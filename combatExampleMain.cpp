@@ -13,7 +13,7 @@ int main(){
 	window.setFramerateLimit(0);
 
 	PlayerCharacter testCharacter = PlayerCharacter("Anubis, the distructor of hopes and dreams","Assets/AnubisIdle.png");
-	Character testMonster= Character("Big Dick Nigga Jim", "Assets/RobotIdle.png", 12);
+	Character testMonster= Character("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster.makeMonster();
 
 	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(testCharacter)};

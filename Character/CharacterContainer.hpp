@@ -3,30 +3,58 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include <stdexcept>
+/// @file
 
+/// \brief
+/// Templates character base class for containing objects of class T.
 template<typename T, int N = 4>
 class CharacterContainer {
 protected:
 	std::vector<T> characters;
 public:
-	CharacterContainer(std::vector<T> characters) : characters(characters) {	};
+	CharacterContainer(const std::vector<T> & characters) : characters(characters) {	};
+	CharacterContainer() : characters(std::vector<T>()) {};
 
+	/// \brief
+	/// Adds element T to internal container
 	void add(T character) {
 		if (characters.size < N) {
 			characters.push_back(character);
-		} else {
+		}
+		else {
 			std::cout << "Je probeert een character toe te voegen aan een volle container\n";
 		}
 	}
+
+	/// \brief
+	/// Allows access to internal container through [] at given index
 	T &operator[](const unsigned int & index) {
 		if (index < characters.size()) { // Not N, because the party might not be full
 			return characters.at(index);
-		} else {
+		}
+		else {
 			std::cout << "Je probeert een character te vinden die niet bestaat\n";
-			return characters.at(0);
+			throw std::out_of_range("blah");
 		}
 	}
-	int size() {
-		return static_cast<int>(characters.size());
+
+	/// \brief
+	/// Adds a vector of T to internal container
+	template<typename C>
+	void add(C & additionalCharacters) {
+		if (characters.size() + additionalCharacters.size() <= N) {
+			for (unsigned int i = 0; i < additionalCharacters.size(); i++) {
+				characters.push_back(additionalCharacters[i]);
+			}
+		} else {
+			std::cout << "Failed adding vector C to characterVector, combined length is bigger than 4!\n";
+		}
+	}
+
+	/// \brief
+	/// Returns signed integer size of the container
+	unsigned int size() {
+		return characters.size();
 	}
 };

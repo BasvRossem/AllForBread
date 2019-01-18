@@ -9,7 +9,7 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 	animationScreen(animationScreenSize.x , animationScreenSize.y),
 	damageScreen(damageScreenSize.x, damageScreenSize.y),
 	menuScreen(menuScreenSize.x, menuScreenSize.y),
-	diaBox(window, 40, 5, "PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0, animationScreenSize.y))
+	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0, animationScreenSize.y))
 {
 	sf::Vector2f animationScreenTopLeft(0.0, 0.0);
 	sf::Vector2f damageScreenTopLeft(0.0, 0.0);
@@ -18,7 +18,7 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 	damageScreen.setLocation(damageScreenTopLeft);
 	menuScreen.setLocation(menuScreenTopLeft);
 
-	attackFont.loadFromFile("PIXEARG_.ttf");
+	attackFont.loadFromFile("Assets/PIXEARG_.ttf");
 	//Load the background
 	std::string backgr = ""; 
 	backgr += surroundings;
@@ -49,7 +49,8 @@ void Combat::start() {
 
 State* Combat::update() {
 	attackFeedback(monsters[0], 200);
-	monsters[0]->decreaseHealth(20);
+	//monsters[0]->decreaseHealth(20);
+
 	for(;;){
 		sf::Event event;
 		while (window.pollEvent(event))

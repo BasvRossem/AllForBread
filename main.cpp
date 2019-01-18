@@ -10,17 +10,6 @@
 
 int main(){
 
-	//-Monster Disco Party Vector
-	//==========================
-	std::vector<std::shared_ptr<Monster>> MonsterClassVector;
-
-	//for (unsigned int i = 0; i < 20; i++) {
-	//	MonsterClassVector.push_back(std::make_shared<Monster>("Testsubject Zero", "Assets/GorillaIdle.png"));
-	//}
-	//==========================
-
-
-	//test SFML
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
 	window.setFramerateLimit(0);
 
@@ -51,6 +40,6 @@ int main(){
 		testCombat.update();
 
 		window.display();
-	} //END test SFML
+	}
 	return 0;
 }

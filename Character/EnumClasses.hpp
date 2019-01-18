@@ -3,11 +3,12 @@
 //-Character stats		(Issue 39)
 //================================
 enum class AbilityScores {
+	vitality,
 	strength,
 	dexterity,
-	endurance,
 	arcanism,
-	charisma
+	charisma,
+	luck
 };
 
 //-Weapon damage types	(Issue ??)

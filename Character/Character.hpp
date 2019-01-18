@@ -28,11 +28,12 @@ protected:
 	int currentMana = maxMana;
 
 	std::unordered_map<AbilityScores, int> characterStats = {
+		{AbilityScores::vitality,	10},
 		{AbilityScores::strength,	10},
 		{AbilityScores::dexterity,	10},
-		{AbilityScores::endurance,	10},
 		{AbilityScores::arcanism,	10},
-		{AbilityScores::charisma,	10}
+		{AbilityScores::charisma,	10},
+		{AbilityScores::luck,		10}
 	};
 
 public:

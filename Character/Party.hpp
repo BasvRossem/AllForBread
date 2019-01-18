@@ -28,5 +28,4 @@ public:
 			currency += currencyModifier;
 		}
 	}
-
 };

@@ -23,6 +23,8 @@ public:
 
 	void increaseExperience(const int &);
 	int calculateTotalExperience();
+	int requiredExperience();
+
 	void decreaseAbilityScore(const AbilityScores &, const int &);
 	void increaseAbilityScore(const AbilityScores &, const int &);
 	

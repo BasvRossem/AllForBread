@@ -38,6 +38,10 @@ int PlayerCharacter::calculateTotalExperience() {
 	return totalExperience;
 }
 
+int PlayerCharacter::requiredExperience() {
+	return experienceGauge - experience;
+}
+
 void PlayerCharacter::increaseAbilityScore(const AbilityScores & stat, const int & statIncrease) {
 	//-Safeguard for negative integers in parameter: "statIncrease"
 	if (statIncrease < 0) {
@@ -66,11 +70,12 @@ void PlayerCharacter::decreaseAbilityScore(const AbilityScores & stat, const int
 }
 
 void PlayerCharacter::printAbilityStats() {
-	std::cout << "Str:	" << characterStats[AbilityScores::strength] << "\n";
-	std::cout << "Dex:	" << characterStats[AbilityScores::dexterity] << "\n";
-	std::cout << "End:	" << characterStats[AbilityScores::endurance] << "\n";
-	std::cout << "Arc:	" << characterStats[AbilityScores::arcanism] << "\n";
-	std::cout << "Cha:	" << characterStats[AbilityScores::charisma] << "\n";
+	std::cout << "Vit:	" << characterStats[AbilityScores::vitality]	<< "\n";
+	std::cout << "Str:	" << characterStats[AbilityScores::strength]	<< "\n";
+	std::cout << "Dex:	" << characterStats[AbilityScores::dexterity]	<< "\n";
+	std::cout << "Arc:	" << characterStats[AbilityScores::arcanism]	<< "\n";
+	std::cout << "Cha:	" << characterStats[AbilityScores::charisma]	<< "\n";
+	std::cout << "Lck:	" << characterStats[AbilityScores::luck]		<< "\n";
 	std::cout << "\n";
 }
 

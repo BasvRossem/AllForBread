@@ -147,7 +147,6 @@ int Character::getStat(const AbilityScores & stat) {
 
 //-Added (Niels)
 void Character::doDeath() {
-	std::cout << name << " is dead!\n";
 	showDeathTexture();
 }
 
