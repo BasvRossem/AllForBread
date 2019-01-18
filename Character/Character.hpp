@@ -14,7 +14,7 @@
 /// The baseclass of characters
 class Character{
 private:
-	std::shared_ptr<sf::Texture> idleTexture ;
+	std::shared_ptr<sf::Texture> idleTexture;
 	std::shared_ptr<sf::Sprite> sprite;
 	Animation currentAnimation;
 	
@@ -117,7 +117,7 @@ public:
 
 	/// \brief
 	/// Activates action at given index, target at given character
-	void activateCombatAction(const unsigned int &, Character  &c);
+	void activateCombatAction(const unsigned int &, const std::shared_ptr<Character> &);
 
 	/// \brief
 	/// Returns action name at given index. If index is out of bounds, return empty string

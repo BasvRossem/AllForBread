@@ -5,7 +5,7 @@
 
 class Attack : public Action {
 private:
-	const int ID = 1;
+	const int ID = 0;
 	std::string name;
 	unsigned int damage;
 public:

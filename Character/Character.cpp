@@ -170,11 +170,11 @@ void Character::addCombatAction(std::shared_ptr<Action> a) {
 	actions.push_back(a);
 }
 
-void Character::activateCombatAction(const unsigned int & id, Character  &c) {
+void Character::activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c) {
 	if (id < actions.size()) {
 		std::pair<int, int> IDandInfo = actions[id]->activate();
 		if (IDandInfo.first == 0) {
-			c.decreaseHealth(IDandInfo.second);
+			c->decreaseHealth(IDandInfo.second);
 		}
 	}
 }
