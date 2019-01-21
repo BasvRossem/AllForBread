@@ -57,6 +57,7 @@ int main(){
 #include "Core/KeyboardHandler.hpp"
 #include "Character/Party.hpp"
 #include "states/Combat.hpp"
+#include "Core/Menu.hpp"
 
 int main( int argc, char *argv[] ){
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
@@ -85,14 +86,32 @@ int main( int argc, char *argv[] ){
 
 	std::string takatikimap = "takatiki";
 	std::string backgroundImage = "takatikimap.png";
+	
+	std::string menuBackGround = "menu";
+	std::string menuBackGroundImage = "Assets/menu.jpg";
 
 	BackGround background;
 
 	background.add(takatikimap, backgroundImage);
 	background.add(combatBackground, combatBackgroundImage);
+	background.add(menuBackGround, menuBackGroundImage);
 
 	Combat testCombat(window, heroParty, monsters, combatBackground, background);
+	Menu testMenu(menuBackGround, background);
 
+	std::function<void()> close = [&window]() {window.close(); };
+	std::function<void()> niksFunctie = []() {};
+
+	std::string inventoryImage = ("Assets/inventory.png");
+	std::string saveImage = ("Assets/save.png");
+	std::string loadImage = ("Assets/load.png");
+	std::string closeImage = ("Assets/close.png");
+
+	testMenu.addTile(inventoryImage, niksFunctie);
+	testMenu.addTile(saveImage, niksFunctie);
+	testMenu.addTile(loadImage, niksFunctie);
+	testMenu.addTile(closeImage, close);
+	
 	std::function<void()> cout1 = [&testCombat]() {testCombat.update(); };
 
 	PointOfInterestContainer poiCont;
@@ -116,6 +135,8 @@ int main( int argc, char *argv[] ){
 	KeyboardHandler keyHandl;
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&poiCont]() {poiCont.activate(); });
+	
+	keyHandl.addListener(sf::Keyboard::Escape, [&testMenu, &window]() {testMenu.update(window); });
 
 	std::vector<sf::Vector2f> moveList;
 	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
