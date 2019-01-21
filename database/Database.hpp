@@ -26,6 +26,6 @@ public:
 
 template<typename T>
 inline bool Database::cmd(const char * query, T callback, void * firstagumentofcallback, char ** errmsg){
-
-	return (SQLITE_OK == sqlite3_exec(db, query, callback, firstagumentofcallback, errmsg));
+	auto h = sqlite3_exec(db, query, callback, firstagumentofcallback, errmsg);
+	return (SQLITE_OK == h);
 }
