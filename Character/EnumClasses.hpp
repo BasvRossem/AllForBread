@@ -22,7 +22,7 @@ enum class DamageTypes {
 	fire,
 	force,
 	lightning,
-	nectrotic,
+	necrotic,
 	poison,
 	psychic,
 	radiant,

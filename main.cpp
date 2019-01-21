@@ -50,8 +50,8 @@ int main(){
 #include <string>
 
 #include <SFML/Graphics.hpp>
-#include "PointsOfIntrest/PointOfInterest.hpp"
-#include "PointsOfIntrest/pointOfInterestContainer.hpp"
+#include "PointsOfInterest/PointOfInterest.hpp"
+#include "PointsOfInterest/pointOfInterestContainer.hpp"
 #include "core/background.hpp"
 #include "TransformableMovement/TransformableMovement.hpp"
 #include "Core/KeyboardHandler.hpp"
