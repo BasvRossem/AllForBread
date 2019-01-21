@@ -29,10 +29,11 @@ private:
 	template<>
 	void loading<std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&>>(std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&>& box) {
 		std::tuple<Database*, PointOfInterestContainer*, std::map<std::string, std::function<void()>>* > passThrough(&db, &box.first, &box.second);
-		db.cmd("SELECT x, y, size, Color.r, Color.g, Color.b, Color.a, locationType, functionName, pathId FROM POI, Color WHERE Color.id == colorId ORDER BY POI.id ASC", [](void * pt, int argc, char **argv, char **azColName)->int {
+		db.cmd("SELECT x, y, size, Color.r, Color.g, Color.b, Color.a, locationType, functionName, pathId FROM POI, Color WHERE Color.id = colorId ORDER BY POI.id ASC", [](void * pt, int argc, char **argv, char **azColName)->int {
 			auto pass = (std::tuple<Database*, PointOfInterestContainer*, std::map<std::string, std::function<void()>>*>*)pt;
 			std::vector<sf::Vector2f > path = {};
-			std::string q("SELECT x, y FROM PathPoints WHERE pathId == ");
+			//second query
+			std::string q("SELECT x, y FROM PathPoints WHERE pathId = ");
 			q += argv[9];
 			q += " ORDER BY id ASC";
 			std::get<0>(*pass)->cmd(q.c_str(), [](void * p, int argc, char **argv, char **azColName)->int {
@@ -47,15 +48,24 @@ private:
 
 	//specialised template of loading for the party
 	template<>
-	void loading<std::unique_ptr<Party>>(std::unique_ptr<Party>& p) {
-		std::vector<std::shared_ptr<PlayerCharacter>> v;
-		db.cmd("SELECT Name, ImgPath FROM Player", [](void * vector, int argc, char **argv, char **azColName)->int {
-			auto vec = (std::vector<std::shared_ptr<PlayerCharacter>>*)vector;
-			auto player = std::make_shared<PlayerCharacter>(argv[0],argv[1]);
-			vec->push_back(player);
+	void loading<Party*>(Party*& p) {
+		std::vector<std::shared_ptr<PlayerCharacter>> heroVector;
+		std::pair<Database&, std::vector<std::shared_ptr<PlayerCharacter>>&> passThrough(db, heroVector);
+		db.cmd("SELECT id ,name, texturePath FROM Player", [](void * p, int argc, char **argv, char **azColName)->int {
+			auto pass = (std::pair<Database&, std::vector<std::shared_ptr<PlayerCharacter>>&>*)p;
+			auto character = std::make_shared<PlayerCharacter>(argv[1], argv[2]);
+			//second query
+			std::string q("SELECT Attack.name, Attack.damage FROM Player INNER JOIN (Attack INNER JOIN PlayerAttack ON Attack.id = PlayerAttack.attackId) ON Player.id = PlayerAttack.playerId where Player.id = ");
+			q += argv[0];
+			pass->first.cmd(q.c_str(), [](void * c, int argc, char **argv, char **azColName)->int {
+				auto cc = (std::shared_ptr<PlayerCharacter>*)c;
+				(*cc)->addCombatAction(std::make_shared<Attack>(argv[0], std::stoi(argv[1]) ) );
+				return 0;
+			}, &character);
+			pass->second.push_back(character);
 			return 0;
-		}, &v);
-		p = std::make_unique<Party>(v);
+		}, &passThrough);
+		p = new Party(heroVector);
 	}
 
 	//specialised template of loading for the multiple textures

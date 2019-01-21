@@ -17,24 +17,26 @@ int main( int argc, char *argv[] ){
 
 	DataManager DM("dataManager/data.db");
 
-	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
-	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
-	std::vector<sf::Vector2f> notPath = {};
-	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
-	float POI1Size = 15;
-	sf::Color POI1Color = sf::Color::Black;
-	std::string POI1LocationType = "Battle";
-
-	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
-	testCharacter->addCombatAction(std::make_shared<Attack>("Zwaardslag", 12));
+	/*std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
+	testCharacter->addCombatAction(std::make_shared<Attack>("Zwaardslag", 12));*/
 	
 	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };
+	/*std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };*/
 
 	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
 	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
-	Party heroParty(heroVector);
+	/*Party heroParty(heroVector);*/
+
+	Party* hParty;
+
+
+	DM.load(hParty);
+
+	Party heroParty = *hParty;
+	delete hParty;
+	
+
 	std::string combatBackground = "combatBackGround";
 	std::string combatBackgroundImage = "Assets/background680.png";
 
@@ -113,26 +115,6 @@ int main( int argc, char *argv[] ){
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed){
-				/*if (event.key.code == sf::Keyboard::D && moveList.size() == 0) {
-					std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
-					poiCont.forward();
-					if (temp.size() > 0){
-						for (size_t i = 0; i < temp.size(); i++){
-							moveList.insert(moveList.begin(), temp[i]);
-						}
-					}
-					
-				}
-				if (event.key.code == sf::Keyboard::A && moveList.size() == 0) {
-					std::vector<sf::Vector2f> temp = poiCont.getBackPath();
-					poiCont.back();
-					if (temp.size() > 0) {
-						for (size_t i = 0; i < temp.size(); i++) {
-							moveList.insert(moveList.begin(), temp[i]);
-						}
-					}
-
-				}*/
 
 				keyHandl.processKey(event.key.code);
 			}
@@ -149,15 +131,7 @@ int main( int argc, char *argv[] ){
 		if (!POIMove.isFinished()) {
 			POIMove.update();
 		}
-		/*if (!POIMove.isFinished()){
-			POIMove.update();
-		}else if (partey->getPosition() != newLocation) {
-			POIMove = TransformableMovement(partey, newLocation, 4.0f);
-			POIMove.blend();
-		}else {
-			poiCont.next();
-			newLocation = poiCont.getCurrentPointLocation();
-		}*/
+
 		window.clear();
 		background.draw(window);
 		poiCont.draw(window);
