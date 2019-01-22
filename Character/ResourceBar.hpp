@@ -36,19 +36,19 @@ public:
 
 	/// \brief
 	/// Repositions the resourcebar to given position
-	void reposition(const int &, const int &);
+	void setPosition(const int & x, const int & y);
 
 	/// \brief
 	/// Repositions the resourcebar to given position
-	void reposition(const sf::Vector2f &);
+	void setPosition(const sf::Vector2f & newPosition);
 
 	/// \brief
 	/// Resizes the healthbar
-	void resize(const int &, const int &);
+	void resize(const int & x, const int & y);
 
 	/// \brief
 	/// Resizes the health bar
-	void resize(const sf::Vector2f &);
+	void resize(const sf::Vector2f & newSize);
 
 	/// \brief
 	/// Updates the health bar
@@ -56,11 +56,11 @@ public:
 
 	/// \brief
 	/// Decreases the currentValue by given value
-	void decreaseCurrentResource(const int &);
+	void decreaseCurrentResource(const int & resourceModifier);
 
 	/// \brief
 	/// Increases the currentValue by given value
-	void increaseCurrentResource(const int &);
+	void increaseCurrentResource(const int & resourceModifier);
 
 	/// \brief
 	/// Returns current resource value (currentValue)
@@ -70,23 +70,31 @@ public:
 	/// Returns max bar resource (maxValue)
 	int getMaxResource();
 
+	/// \brief 
+	/// Returns sf::Vector2f position
+	sf::Vector2f getPosition();
+
 	/// \brief
 	/// Sets max bar value to given value
-	void setMaxResource(const int &);
+	void setMaxResource(const int & newMaxResource);
 
 	/// \brief
 	/// Sets current resource to given value
-	void setCurrentResource(const int &);
+	void setCurrentResource(const int & newCurrentResource);
 
 	/// \brief
 	/// Sets the resource bar color
-	void setBarColor(const sf::Color &);
+	void setBarColor(const sf::Color & newColor);
 
 	/// \brief
 	/// Sets the background bar color
-	void setBarBackgroundColor(const sf::Color &);
+	void setBarBackgroundColor(const sf::Color & newColor);
 
 	/// \brief
 	/// Draws the bar on the screen
-	void draw(sf::RenderWindow &);
+	void draw(sf::RenderWindow & window);
+
+	/// brief
+	/// Draws the bar on the virtual screen
+	void draw(VirtualScreen & virtualWindow);
 };

@@ -105,15 +105,7 @@ State* Combat::update() {
 		diaBox.printPerm(combatChoices);
 		diaBox.draw();
 
-		//==========================================
-		HealthBar.increaseCurrentResource(1);
-		HealthBar.draw(window);
-
-		//==========================================
-
-		window.display();
-		/////
-		
+		window.display();		
 	}
 	
 	

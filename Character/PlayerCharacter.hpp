@@ -49,4 +49,12 @@ public:
 	/// \brief
 	/// Returns weapon for requested slot
 	Weapon getWeapon(const WeaponSlots & slot);
+
+	/// \brief
+	/// Sets given armor to given armorslot
+	void setArmor(const ArmorSlots & slot, const Armor & newArmor);
+
+	/// \brief
+	/// Sets given weapon to given weaponslot
+	void setWeapon(const WeaponSlots & slot, const Weapon & newWeapon);
 };

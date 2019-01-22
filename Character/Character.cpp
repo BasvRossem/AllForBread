@@ -20,6 +20,8 @@ Character::Character(const std::string & characterName, const std::string & text
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 
+	centreHealthBar();
+
 	srand(clock.getElapsedTime().asMilliseconds());
 }
 
@@ -45,6 +47,9 @@ Character::Character(const std::string & characterName, const std::string & text
 
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
+
+	centreHealthBar();
+
 	srand(clock.getElapsedTime().asMilliseconds());
 }
 
@@ -63,10 +68,12 @@ Character::~Character(){
 
 void Character::draw(sf::RenderWindow & window) {
 	window.draw(*sprite);
+	healthBar.draw(window);
 }
 
 void Character::draw(VirtualScreen & window) {
 	window.drawSurfaceDraw(*sprite);
+	healthBar.draw(window);
 }
 
 std::shared_ptr<sf::Sprite> Character::getDrawable() {
@@ -92,34 +99,35 @@ void Character::decreaseHealth(const int & modifier) {
 	if (modifier < 0) {
 		std::cout << "Je probeert de health te verminderen met een negatief getal\n";
 	}
-	else if (modifier > maxHealth) {
+	else if (currentHealth - modifier < 0) {
 		std::cout << "INSTAKILL!\n";
 		currentHealth = 0;
 	}
 	else {
 		currentHealth -= modifier;
 	}
-
+	healthBar.setCurrentResource(currentHealth);
 }
 
 void Character::increaseHealth(const int & modifier) {
-	if (modifier <= 0) {
+	if (modifier < 0) {
 		std::cout << "Je probeert de health te verhogen met een negatief getal\n";
 	}
-	else if (modifier > maxHealth) {
+	else if (currentHealth + modifier > maxHealth) {
 		std::cout << "INSTAHEAL!!\n";
 		currentHealth = maxHealth;
 	}
 	else {
-		currentHealth += maxHealth;
+		currentHealth += modifier;
 	}
+	healthBar.setCurrentResource(currentHealth);
 }
 
 void Character::decreaseMana(const int & modifier) {
 	if (modifier < 0) {
 		std::cout << "Je probeert de mana te verminderen met een negatief getal\n";
 	}
-	else if (modifier > maxMana) {
+	else if (currentMana - modifier < 0) {
 		std::cout << "INSTADEPLETE!\n";
 		currentMana = 0;
 	}
@@ -129,10 +137,10 @@ void Character::decreaseMana(const int & modifier) {
 }
 
 void Character::increaseMana(const int & modifier) {
-	if (modifier <= 0) {
+	if (modifier < 0) {
 		std::cout << "Je probeert de mana te verhogen met een negatief getal\n";
 	}
-	else if (modifier > maxMana) {
+	else if (currentMana + modifier > maxMana) {
 		std::cout << "INSTAREGEN!!\n";
 		currentMana = maxMana;
 	}
@@ -249,4 +257,12 @@ sf::Vector2f Character::getSpriteMidpoint() {
 		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
 	);
 	return midpoint;
+}
+
+std::shared_ptr<ResourceBar> Character::getHealthBar() {
+	return std::make_shared<ResourceBar>(healthBar);
+}
+
+void Character::centreHealthBar() {
+	healthBar.setPosition(int(getSpriteMidpoint().x), int(getSpriteMidpoint().y - 150));
 }
