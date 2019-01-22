@@ -1,50 +1,3 @@
-/*
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <iterator>
-#include <algorithm>
-#include <string>
-#include <vector>
-#include "Character/Party.hpp"
-#include "states/Combat.hpp"
-#include "Character/Monster.hpp"
-
-int main(){
-
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
-	window.setFramerateLimit(0);
-
-	PlayerCharacter testCharacter = PlayerCharacter("Anubis, the distructor of hopes and dreams","Assets/AnubisIdle.png");
-	Character testMonster= Character("Rupert, the Poopert Robot", "Assets/RobotIdle.png", 12);
-	testMonster.makeMonster();
-
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(testCharacter)};
-
-	std::vector< std::shared_ptr<Character>> monsterVector = { std::make_shared <Character>(testMonster) };
-	CharacterContainer< std::shared_ptr<Character >> monsters = (monsterVector);
-	Party heroParty(heroVector);
-
-	std::string backgroundImage = "Assets/background680.png";
-	Combat testCombat(window, heroParty, monsters, backgroundImage);
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-
-		window.clear();
-		
-		testCombat.update();
-
-		window.display();
-	}
-	return 0;
-}
-*/
 #include <iostream>
 
 #include <string>
@@ -170,27 +123,6 @@ int main( int argc, char *argv[] ){
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed){
-				/*if (event.key.code == sf::Keyboard::D && moveList.size() == 0) {
-					std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
-					poiCont.forward();
-					if (temp.size() > 0){
-						for (size_t i = 0; i < temp.size(); i++){
-							moveList.insert(moveList.begin(), temp[i]);
-						}
-					}
-					
-				}
-				if (event.key.code == sf::Keyboard::A && moveList.size() == 0) {
-					std::vector<sf::Vector2f> temp = poiCont.getBackPath();
-					poiCont.back();
-					if (temp.size() > 0) {
-						for (size_t i = 0; i < temp.size(); i++) {
-							moveList.insert(moveList.begin(), temp[i]);
-						}
-					}
-
-				}*/
-
 				keyHandl.processKey(event.key.code);
 			}
 
@@ -201,20 +133,11 @@ int main( int argc, char *argv[] ){
 			moveList.pop_back();
 			POIMove.blend();
 		}else if (moveList.size() == 0 && POIMove.isFinished()) {
-
+			// niks
 		}
 		if (!POIMove.isFinished()) {
 			POIMove.update();
 		}
-		/*if (!POIMove.isFinished()){
-			POIMove.update();
-		}else if (partey->getPosition() != newLocation) {
-			POIMove = TransformableMovement(partey, newLocation, 4.0f);
-			POIMove.blend();
-		}else {
-			poiCont.next();
-			newLocation = poiCont.getCurrentPointLocation();
-		}*/
 		window.clear();
 		background.draw(window);
 		poiCont.draw(window);
