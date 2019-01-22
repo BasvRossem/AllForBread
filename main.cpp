@@ -10,10 +10,13 @@
 #include "states/Combat.hpp"
 #include "dataManager/DataManager.hpp"
 #include <map>
+#include "Items/Weapon.hpp"
 
-int main( int argc, char *argv[] ){
+int main( int argc, char *argv[] ){ 
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
+  
+  Weapon sword;
 
 	DataManager DM("dataManager/data.db");
 	
@@ -115,6 +118,5 @@ int main( int argc, char *argv[] ){
 		window.display();
 
 	}
-
 	return 0;
 }

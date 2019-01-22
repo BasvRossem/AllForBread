@@ -14,12 +14,12 @@ private:
 	int abilityPoints = 0;
 
 public:
-	PlayerCharacter(const std::string &, const std::string &, const int & exp = 0);
-	PlayerCharacter(const std::string &, const std::string &, const int &, const int & exp = 0);
+	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 0);
+	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp = 0);
 
 	/// \brief
 	/// Increases experience by given amount
-	void increaseExperience(const int &);
+	void increaseExperience(const int & exp);
 
 	/// \brief
 	/// Returns total experience this character has gained

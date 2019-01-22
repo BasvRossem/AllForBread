@@ -22,9 +22,24 @@ enum class DamageTypes {
 	fire,
 	force,
 	lightning,
-	nectrotic,
+	necrotic,
 	poison,
 	psychic,
 	radiant,
 	thunder
+};
+
+enum class ArmorSlots {
+	helmet,
+	chestplate,
+	legs,
+	gauntlets,
+	ring,
+	boots
+};
+
+enum class WeaponSlots {
+	mainhand,
+	offhand,
+	twohanded
 };

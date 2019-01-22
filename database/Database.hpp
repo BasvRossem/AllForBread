@@ -13,10 +13,10 @@ public:
 	bool open(const char* filename, int flags, const char *zVfs);
 	bool close();
 
-	bool cmd(const char *query, int(*callback)(void*, int, char**, char**) = NULL, void * firstagumentofcallback = NULL, char **errmsg = NULL);
+	bool cmd(const char *query, int(*callback)(void*, int, char**, char**) = NULL, void * firstargumentofcallback = NULL, char **errmsg = NULL);
 
 	template <typename T>
-	bool cmd(const char *query, T callback, void * firstagumentofcallback = NULL, char **errmsg = NULL);
+	bool cmd(const char *query, T callback, void * firstargumentofcallback = NULL, char **errmsg = NULL);
 
 	inline sqlite3 * getInstance() { return db; };
 

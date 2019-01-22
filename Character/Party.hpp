@@ -13,19 +13,19 @@ private:
 	int currency = 0;
 	int overworldPosition = 0;
 public:
-	Party(const std::vector<std::shared_ptr<PlayerCharacter>> &);
+	Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players);
 
 	/// \brief
 	/// Awards experience distributed evenly between all members
-	void addExperience(const int &);
+	void addExperience(const int & exp);
 
 	/// \brief
 	/// Adds currency given amount
-	void addCurrency(const int &);
+	void addCurrency(const int & currencyModifier);
 
 	/// \brief
 	/// Lowers currency by given amount
-	void decreaseCurrency(const int &);
+	void decreaseCurrency(const int & currencyModifier);
 
 	/// \brief
 	/// Returns current currency

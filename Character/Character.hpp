@@ -54,11 +54,11 @@ public:
 
 	/// \brief
 	/// Draws character to given window
-	void draw(sf::RenderWindow &);
+	void draw(sf::RenderWindow & window);
 
 	/// \brief
 	/// Draws character to given VirtualScreen
-	void draw(VirtualScreen &);
+	void draw(VirtualScreen & window);
 
 	/// \brief
 	/// Creates an idleAnimation
@@ -85,20 +85,30 @@ public:
 	int getMana();
 
 	/// \brief
+	/// Returns value of given ability
+	int getStat(const AbilityScores & stat);
+
+	/// \brief
+	/// Returns action name at given index. If index is out of bounds, return empty string
+	std::string getActionName(const unsigned int & id);
+
+	std::vector<std::shared_ptr<Action>> getActions();
+
+	/// \brief
 	/// Lowers health by given amount
-	void decreaseHealth(const int &);
+	void decreaseHealth(const int & modifier);
 
 	/// \brief
 	/// Increases health by given amount
-	void increaseHealth(const int &);
+	void increaseHealth(const int & modifier);
 
 	/// \brief
 	/// Lowers mana by given amount
-	void decreaseMana(const int &);
+	void decreaseMana(const int & modifier);
 
 	/// \brief
 	/// Increases mana by given amount
-	void increaseMana(const int &);
+	void increaseMana(const int & modifier);
 
 	//-Added 2 functions (Niels)
 	virtual void doDeath();
@@ -106,19 +116,15 @@ public:
 
 	/// \brief
 	/// Lowers given ability score by given amount
-	void decreaseAbilityScore(const AbilityScores &, const int &);
+	void decreaseAbilityScore(const AbilityScores & stat, const int & statIncrease);
 
 	/// \brief
 	/// Increases given ability score by given amount
-	void increaseAbilityScore(const AbilityScores &, const int &);
+	void increaseAbilityScore(const AbilityScores & stat, const int & statDecrease);
 
 	/// \brief
 	/// Prints all abilities and values
 	void printAbilityStats();
-
-	/// \brief
-	/// Returns value of given ability
-	int getStat(const AbilityScores &);
 
 	/// \brief
 	/// Adds a combat action
@@ -126,11 +132,5 @@ public:
 
 	/// \brief
 	/// Activates action at given index, target at given character
-	void activateCombatAction(const unsigned int &, const std::shared_ptr<Character> &);
-
-	/// \brief
-	/// Returns action name at given index. If index is out of bounds, return empty string
-	std::string getActionName(const unsigned int &);
-
-	std::vector<std::shared_ptr<Action>> getActions();
+	void activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c);
 };
