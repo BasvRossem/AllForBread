@@ -20,8 +20,6 @@ Character::Character(const std::string & characterName, const std::string & text
 	currentAnimation = Animation(sprite, idleTexture, float(1.0));
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 
-	centreHealthBar();
-
 	srand(clock.getElapsedTime().asMilliseconds());
 }
 
@@ -47,8 +45,6 @@ Character::Character(const std::string & characterName, const std::string & text
 
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
-
-	centreHealthBar();
 
 	srand(clock.getElapsedTime().asMilliseconds());
 }
@@ -256,6 +252,9 @@ sf::Vector2f Character::getSpriteMidpoint() {
 		sprite->getGlobalBounds().left + (sprite->getGlobalBounds().width / 2),
 		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
 	);
+	//std::cout << midpoint.x << ", " << midpoint.y << std::endl;
+	std::cout << sprite->getGlobalBounds().width << ", " << sprite->getGlobalBounds().height << std::endl;
+	//std::cout << sprite->getGlobalBounds().left << ", " << sprite->getGlobalBounds().top << std::endl;
 	return midpoint;
 }
 
@@ -264,5 +263,9 @@ std::shared_ptr<ResourceBar> Character::getHealthBar() {
 }
 
 void Character::centreHealthBar() {
-	healthBar.setPosition(int(getSpriteMidpoint().x), int(getSpriteMidpoint().y - 150));
+	healthBar.setPosition(int(getSpriteMidpoint().x), int(getSpriteMidpoint().y) - 150);
+}
+
+void Character::positionHealthbar(const sf::Vector2f & position) {
+	healthBar.setPosition(position);
 }

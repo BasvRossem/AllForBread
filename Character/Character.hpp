@@ -180,4 +180,6 @@ public:
 	/// \brief
 	/// Repositions the healthbar to directly above the characterSprite
 	void centreHealthBar();
+
+	void positionHealthbar(const sf::Vector2f & position);
 };
