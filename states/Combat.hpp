@@ -11,10 +11,11 @@
 #include "../Core/background.hpp"
 #include "../Core/KeyboardHandler.hpp"
 #include "../Character/Attack.hpp"
+#include "../Character/ResourceBar.hpp"
 
 class Combat : public State {
 private:
-	
+
 	Party party;
 	CharacterContainer<std::shared_ptr<Character>> monsters;
 	sf::Vector2u animationScreenSize = sf::Vector2u(1920, 680);

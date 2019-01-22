@@ -8,6 +8,7 @@
 #include "../virtualScreen/virtualScreen.hpp"
 #include <cstdlib>
 #include "Attack.hpp"
+#include "ResourceBar.hpp"
 /// @file
 
 /// \brief
@@ -27,11 +28,14 @@ protected:
 	sf::Clock clock;
 
 	int maxHealth = 10;
+	int currentHealth = maxHealth;
+
 	int maxMana = 100;
+	int currentMana = maxMana;
+
 	int level = 1;
 
-	int currentHealth = maxHealth;
-	int currentMana = maxMana;
+	ResourceBar healthBar = ResourceBar(sf::Vector2f(0.0f, 0.0f), maxHealth, currentHealth);
 
 	std::unordered_map<AbilityScores, int> characterStats = {
 		{AbilityScores::vitality,	10},
@@ -152,9 +156,21 @@ public:
 	/// Returns the coodinates of the midpoint of the sprite
 	sf::Vector2f getSpriteMidpoint();
 
+
 	void activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i);
 
 	std::array<std::pair<std::string, int>, 4> getAttacks();
 
 	unsigned int getModifier(const unsigned int & i);
+
+	/// brief
+	/// Returns a shared pointer to the healthBar
+	std::shared_ptr<ResourceBar> getHealthBar(); \
+
+	/// \brief
+	/// Repositions the healthbar to directly above the characterSprite
+	void centreHealthBar();
+
+	void positionHealthbar(const sf::Vector2f & position);
+
 };

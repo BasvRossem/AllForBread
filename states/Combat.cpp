@@ -134,9 +134,7 @@ State* Combat::update() {
 		diaBox.printPerm(combatChoices);
 		diaBox.draw();
 
-		window.display();
-		/////
-		
+		window.display();		
 	}
 	
 	
