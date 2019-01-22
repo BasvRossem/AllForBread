@@ -16,43 +16,22 @@ int main( int argc, char *argv[] ){
 	window.setFramerateLimit(60);
 
 	DataManager DM("dataManager/data.db");
-
-	/*std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
-	testCharacter->addCombatAction(std::make_shared<Attack>("Zwaardslag", 12));*/
 	
 	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
-	/*std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };*/
 
 	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
 	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
-	/*Party heroParty(heroVector);*/
 
 	Party* hParty;
+	BackGround background;
 
-
-	DM.load(hParty);
+	DM.load(hParty, background);
 
 	Party heroParty = *hParty;
 	delete hParty;
-	
 
-	std::string combatBackground = "combatBackGround";
-	std::string combatBackgroundImage = "Assets/background680.png";
-
-	std::string takatikimap = "takatiki";
-	std::string backgroundImage = "takatikimap.png";
-
-	BackGround background;
-
-	background.add(takatikimap, backgroundImage);
-	background.add(combatBackground, combatBackgroundImage);
-
-	Combat testCombat(window, heroParty, monsters, combatBackground, background);
-
-	std::function<void()> cout1 = [&testCombat]() {testCombat.update(); };
-
-
+	Combat testCombat(window, heroParty, monsters, "combatBackGround", background);
 
 	std::map<std::string, std::function<void()>> functions;
 	functions["function1"] = [&testCombat]() {testCombat.update(); };
@@ -62,11 +41,8 @@ int main( int argc, char *argv[] ){
 	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
 
 	DM.load(poibox);
-	//poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cout1, path);
-	//poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, cout1, notPath);
 
-
-	background.setBackGround(takatikimap, window);
+	background.setBackGround("takatiki", window);
 
 	std::shared_ptr<sf::RectangleShape> partey(new sf::RectangleShape);
 	sf::Vector2f abh(20, 20);

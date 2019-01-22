@@ -7,12 +7,22 @@
 #include "../Character/Party.hpp"
 #include "../PointsOfIntrest/pointOfInterestContainer.hpp"
 #include <map>
+#include "../Core/background.hpp"
 class DataManager
 {
 private:
 	//the database object
 	Database db;
 
+	/*================================================
+	  _      ____          _____ _____ _   _  _____ 
+	 | |    / __ \   /\   |  __ \_   _| \ | |/ ____|
+	 | |   | |  | | /  \  | |  | || | |  \| | |  __ 
+	 | |   | |  | |/ /\ \ | |  | || | | . ` | | |_ |
+	 | |___| |__| / ____ \| |__| || |_| |\  | |__| |
+	 |______\____/_/    \_\_____/_____|_| \_|\_____|
+
+	================================================*/
 	//base template for unpacking
 	template<typename T, typename ... Attributes>
 	void loading(T& t, Attributes& ... attributes) {
@@ -26,6 +36,7 @@ private:
 
 	}
 
+	//poi loading
 	template<>
 	void loading<std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&>>(std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&>& box) {
 		std::tuple<Database*, PointOfInterestContainer*, std::map<std::string, std::function<void()>>* > passThrough(&db, &box.first, &box.second);
@@ -46,7 +57,7 @@ private:
 		}, &passThrough);
 	}
 
-	//specialised template of loading for the party
+	//party loading
 	template<>
 	void loading<Party*>(Party*& p) {
 		std::vector<std::shared_ptr<PlayerCharacter>> heroVector;
@@ -68,6 +79,16 @@ private:
 		p = new Party(heroVector);
 	}
 
+	//background loading
+	template<>
+	void loading<BackGround>(BackGround & background) {
+		db.cmd("SELECT name, texturePath FROM Background", [](void * b, int argc, char **argv, char **azColName)->int {
+			auto bb = (BackGround*)b;
+			bb->add(argv[0], argv[1]);
+			return 0;
+		}, &background);
+	}
+
 	//specialised template of loading for the multiple textures
 	template<>
 	void loading<std::vector<sf::Texture>> (std::vector<sf::Texture>& t) {
@@ -80,6 +101,16 @@ private:
 
 	}
 
+	/*================================================
+	   _____    __      _______ _   _  _____
+	  / ____|  /\ \    / /_   _| \ | |/ ____|
+	 | (___   /  \ \  / /  | | |  \| | |  __
+	  \___ \ / /\ \ \/ /   | | | . ` | | |_ |
+	  ____) / ____ \  /   _| |_| |\  | |__| |
+	 |_____/_/    \_\/   |_____|_| \_|\_____|
+
+	================================================*/
+
 	
 public:
 
@@ -88,6 +119,11 @@ public:
 	template<typename ... T>
 	void load(T& ... t) {
 		loading(t...);
+	}
+
+	template<typename ... T>
+	void save(T& ... t) {
+		saving(t...);
 	}
 
 	//open the data base with the given parameter
