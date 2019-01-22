@@ -54,9 +54,15 @@ State* Combat::update() {
 	//Load background
 	backgrnd.setBackGround(surrounding, sf::Vector2f(animationScreenSize));
 
-	//state machine setup
-	enum combatMenu { main, attack, inventory, flee };
-	combatMenu state = main;
+	//Place health bars
+	for (int i = 0; i < party.size(); i++) {
+		party[i]->update();
+		party[i]->centreHealthBar();
+	}
+	
+	//State machine setup
+	enum class combatMenu { main, attack, inventory, flee };
+	combatMenu state = combatMenu::main;
 	keyhandle.setOverride(true);
 	std::array<std::pair<std::string, int>, 4> attackKeys;
 
@@ -67,34 +73,48 @@ State* Combat::update() {
 			updateAttackFeedback();
 		}
 		else {
-			auto curChar = currentCharacter;
-			//state machine
-			switch (state)
-			{
-			case main:
-				combatChoices.push_back("1. Attacks");
-				keyhandle.addListener(sf::Keyboard::Num1, [&state]()->void {state = attack; });
-				combatChoices.push_back("2. inventory");
-				keyhandle.addListener(sf::Keyboard::Num2, [&state]()->void {state = inventory; });
-				combatChoices.push_back("3. flee");
-				keyhandle.addListener(sf::Keyboard::Num3, [&state]()->void {state = flee; });
-				break;
-			case attack:
-				attackKeys = curChar->getAttacks();
-				for (unsigned int i = 0; i < 4; i++) {
-					keyhandle.addListener(sf::Keyboard::Key(sf::Keyboard::Key::Num1 + i), [&state, i, &curChar, this]() {curChar->activateAttack(this->getMonster(0), i); makeAttackFeedback(monsters[0], curChar->getModifier(i)); state = main; });
-					std::stringstream tempstring;
-					tempstring << i + 1 << ' ' << attackKeys[i].first;
-					combatChoices.push_back(tempstring.str());
+			if (initiative[currentInitiative] == party[0] ) {
+				auto curChar = currentCharacter;
+				//state machine
+				switch (state) {
+				case combatMenu::main:
+					combatChoices.push_back("1. Attacks");
+					keyhandle.addListener(sf::Keyboard::Num1, [&state]()->void {state = combatMenu::attack; });
+					combatChoices.push_back("2. inventory");
+					keyhandle.addListener(sf::Keyboard::Num2, [&state]()->void {state = combatMenu::inventory; });
+					combatChoices.push_back("3. flee");
+					keyhandle.addListener(sf::Keyboard::Num3, [&state]()->void {state = combatMenu::flee; });
+					break;
+				case combatMenu::attack:
+					attackKeys = curChar->getAttacks();
+					for (unsigned int i = 0; i < 4; i++) {
+						keyhandle.addListener(
+							sf::Keyboard::Key(sf::Keyboard::Key::Num1 + i), 
+							[&state, i, &curChar, this]() {
+								curChar->activateAttack(this->getMonster(0), i); 
+								makeAttackFeedback(monsters[0], curChar->getModifier(i)); 
+								state = combatMenu::main; 
+								newCurrentCharacter();
+							});
+						std::stringstream tempstring;
+						tempstring << i + 1 << ' ' << attackKeys[i].first;
+						combatChoices.push_back(tempstring.str());
+					}
+					combatChoices.push_back("5. Back");
+					keyhandle.addListener(sf::Keyboard::Num5, [&state]()->void {state = combatMenu::main; });
+					break;
+				case combatMenu::inventory:
+					combatChoices.push_back("1. Back");
+					keyhandle.addListener(sf::Keyboard::Num1, [&state]()->void {state = combatMenu::main; });
+					break;
+				case combatMenu::flee:
+					CombatFinished = true;
+					break;
 				}
-				combatChoices.push_back("5. Back");
-				keyhandle.addListener(sf::Keyboard::Num5, [&state]()->void {state = main; });
-				break;
-			case inventory:
-				break;
-			case flee:
-				CombatFinished = true;
-				break;
+			}
+			else {
+				std::cout << "monster made a move that good, you didn't even notice." << std::endl;
+				newCurrentCharacter();
 			}
 		}
 		checkMonstersDeath();
@@ -184,10 +204,15 @@ void Combat::attackFeedbackInitialiser(const std::shared_ptr<Character> & target
 
 //-Added (Niels)
 void Combat::checkMonstersDeath() {
+	unsigned int deadMonsters = 0;
 	for (unsigned int i = 0; i < monsters.size(); i++) {
 		if (monsters[i]->getHealth() <= 0) {
 			monsters[i]->doDeath();
+			deadMonsters++;
 		}
+	}
+	if (deadMonsters == monsters.size()) {
+		partyVictory();
 	}
 }
 
@@ -195,7 +220,8 @@ void Combat::checkMonstersDeath() {
 //-Not yet finished, requires monster templated container for 
 // getRewardsExperience/getRewardsCurrency to be functional
 void Combat::partyVictory() {
-	int totalExperienceReward, totalCurrencyReward;
+	int totalExperienceReward = 0;
+	int totalCurrencyReward = 0;
 
 	for (unsigned int i = 0; i < monsters.size(); i++) {
 		//totalRewardExperience += monsters[i]->getRewardExperience();
@@ -205,12 +231,15 @@ void Combat::partyVictory() {
 
 	party.addExperience(totalExperienceReward);
 	party.addCurrency(totalCurrencyReward);
+
+	std::cout << "Jeej you won!" << std::endl;
+	CombatFinished = true;
 }
 
 //-Added (Niels)
 //Not yet finished
 void Combat::monsterVictory() {
-
+	CombatFinished = true;
 }
 
 void Combat::calculateInitiative(std::vector<std::shared_ptr<Character>> &characterVector) {
