@@ -214,3 +214,11 @@ std::string Character::getActionName(const unsigned int &id) {
 std::vector<std::shared_ptr<Action>> Character::getActions() {
 	return actions;
 }
+
+sf::Vector2f Character::getSpriteMidpoint() {
+	sf::Vector2f midpoint = sf::Vector2f(
+		sprite->getGlobalBounds().left + (sprite->getGlobalBounds().width / 2),
+		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
+	);
+	return midpoint;
+}

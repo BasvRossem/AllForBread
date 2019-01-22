@@ -133,4 +133,8 @@ public:
 	/// \brief
 	/// Activates action at given index, target at given character
 	void activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c);
+
+	/// \brief
+	/// Returns the coodinates of the midpoint of the sprite
+	sf::Vector2f getSpriteMidpoint();
 };
