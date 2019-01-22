@@ -10,7 +10,6 @@
 #include "../Core/dialogBox.h"
 #include "../Core/background.hpp"
 #include "../Core/KeyboardHandler.hpp"
-#include "../Character/action.hpp"
 #include "../Character/Attack.hpp"
 
 class Combat : public State {

@@ -71,7 +71,7 @@ int main( int argc, char *argv[] ){
 	std::string POI1LocationType = "Battle";
 
 	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
-	testCharacter->addCombatAction(std::make_shared<Attack>("Zwaardslag", 12));
+
 	
 	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();

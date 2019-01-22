@@ -42,6 +42,16 @@ void Combat::start() {
 State* Combat::update() {
 	CombatFinished = false;
 	backgrnd.setBackGround(surrounding, sf::Vector2f(animationScreenSize));
+	
+
+	//state machine setup
+	enum combatMenu { main, attack, inventory, flee };
+	combatMenu state = main;
+	keyhandle.setOverride(true);
+	std::array<std::pair<std::string, int>, 4> attackKeys;
+
+
+
 	while(!CombatFinished){
 		combatChoices.clear();
 		sf::Event event;
@@ -54,16 +64,35 @@ State* Combat::update() {
 
 		}
 		auto curChar = initiative[curInitiative];
-		auto actionKeys = curChar->getActions();
-		for (size_t i = 0; i < actionKeys.size(); i++){
-			keyhandle.addListener(sf::Keyboard::Num0, [i, &curChar, this]() {curChar->activateCombatAction(i, this->getMonster(0)); attackFeedback(monsters[0], curChar->getActions()[i]->getModifier()); });
-			std::stringstream tempstring;
-			tempstring << i << ' ' << curChar->getActionName(i);
-			
-			combatChoices.push_back(tempstring.str());
+
+		//state machine
+		switch (state)
+		{
+		case main:
+			combatChoices.push_back("1. Attacks");
+			keyhandle.addListener(sf::Keyboard::Num1, [&state]()->void {state = attack; });
+			combatChoices.push_back("2. inventory");
+			keyhandle.addListener(sf::Keyboard::Num2, [&state]()->void {state = inventory; });
+			combatChoices.push_back("3. flee");
+			keyhandle.addListener(sf::Keyboard::Num3, [&state]()->void {state = flee; });
+			break;
+		case attack:
+			attackKeys = curChar->getAttacks();
+			for (unsigned int i = 0; i < 4; i++) {
+				keyhandle.addListener(sf::Keyboard::Key(sf::Keyboard::Key::Num1 + i), [&state, i, &curChar, this]() {curChar->activateAttack(this->getMonster(0), i); attackFeedback(monsters[0], curChar->getModifier(i)); state = main; });
+				std::stringstream tempstring;
+				tempstring << i+1 << ' ' << attackKeys[i].first;
+				combatChoices.push_back(tempstring.str());
+			}
+			combatChoices.push_back("5. Back");
+			keyhandle.addListener(sf::Keyboard::Num5, [&state]()->void {state = main; });
+			break;
+		case inventory:
+			break;
+		case flee:
+			CombatFinished = true;
+			break;
 		}
-		combatChoices.push_back("4. Stop combat");
-		keyhandle.addListener(sf::Keyboard::Num4, [this]()->void {std::cout << "ja gvd Jens\n"; this->CombatFinished = true; });
 
 		window.clear();
 
