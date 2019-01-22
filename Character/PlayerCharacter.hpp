@@ -44,11 +44,11 @@ public:
 
 	/// \brief
 	/// Returns armor for requested slot
-	ArmorSlots getArmor(const ArmorSlots & slot);
+	Armor getArmor(const ArmorSlots & slot);
 
 	/// \brief
 	/// Returns weapon for requested slot
-	WeaponSlots getWeapon(const WeaponSlots & slot);
+	Weapon getWeapon(const WeaponSlots & slot);
 
 	/// \brief
 	/// Sets given armor to given armorslot
