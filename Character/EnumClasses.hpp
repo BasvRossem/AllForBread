@@ -28,3 +28,18 @@ enum class DamageTypes {
 	radiant,
 	thunder
 };
+
+enum class ArmorSlots {
+	helmet,
+	chestplate,
+	legs,
+	gauntlets,
+	ring,
+	boots
+};
+
+enum class WeaponSlots {
+	mainhand,
+	offhand,
+	twohanded
+};
