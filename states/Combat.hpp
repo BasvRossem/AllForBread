@@ -12,9 +12,14 @@
 #include "../Core/KeyboardHandler.hpp"
 #include "../Character/action.hpp"
 #include "../Character/Attack.hpp"
+#include "../Character/ResourceBar.hpp"
 
 class Combat : public State {
 private:
+	//============================================
+	ResourceBar HealthBar = ResourceBar(sf::Vector2f(20.0f, 20.0f), 100, 0);
+
+	//============================================
 	
 	Party party;
 	CharacterContainer<std::shared_ptr<Character>> monsters;

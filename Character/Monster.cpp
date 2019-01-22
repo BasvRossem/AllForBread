@@ -8,11 +8,11 @@ Monster::Monster(const std::string & characterName, const std::string & textureN
 	printRewards();
 }
 
-const int Monster::getRewardExperience() {
+int Monster::getRewardExperience() {
 	return rewardExperience;
 }
 
-const int Monster::getRewardCurrency() {
+int Monster::getRewardCurrency() {
 	return rewardCurrency;
 }
 
