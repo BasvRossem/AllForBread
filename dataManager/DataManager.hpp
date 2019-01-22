@@ -33,7 +33,7 @@ private:
 	//base template for loading please specialise
 	template<typename T>
 	void loading(T& t) {
-
+		std::cerr << "uknown type: " << typeid(t).name() << std::endl;
 	}
 
 	//poi loading
