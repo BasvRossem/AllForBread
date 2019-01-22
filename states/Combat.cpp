@@ -82,7 +82,7 @@ State* Combat::update() {
 			case attack:
 				attackKeys = curChar->getAttacks();
 				for (unsigned int i = 0; i < 4; i++) {
-					keyhandle.addListener(sf::Keyboard::Key(sf::Keyboard::Key::Num1 + i), [&state, i, &curChar, this]() {curChar->activateAttack(this->getMonster(0), i); attackFeedback(monsters[0], curChar->getModifier(i)); state = main; });
+					keyhandle.addListener(sf::Keyboard::Key(sf::Keyboard::Key::Num1 + i), [&state, i, &curChar, this]() {curChar->activateAttack(this->getMonster(0), i); makeAttackFeedback(monsters[0], curChar->getModifier(i)); state = main; });
 					std::stringstream tempstring;
 					tempstring << i + 1 << ' ' << attackKeys[i].first;
 					combatChoices.push_back(tempstring.str());
