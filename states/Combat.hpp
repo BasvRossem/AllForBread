@@ -10,8 +10,8 @@
 #include "../Core/dialogBox.h"
 #include "../Core/background.hpp"
 #include "../Core/KeyboardHandler.hpp"
-#include "../Character/action.hpp"
 #include "../Character/Attack.hpp"
+#include "../Character/ResourceBar.hpp"
 
 class Combat : public State {
 private:
@@ -19,6 +19,7 @@ private:
 	bool CombatFinished = false;
 
 	//Party and monsters
+
 	Party party;
 	CharacterContainer<std::shared_ptr<Character>> monsters;
 	std::vector<std::shared_ptr<Character>> initiative;

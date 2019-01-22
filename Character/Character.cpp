@@ -45,7 +45,9 @@ Character::Character(const std::string & characterName, const std::string & text
 
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
+
 	srand(clock.getElapsedTime().asMilliseconds());
+
 }
 
 void Character::makeMonster() {
@@ -63,10 +65,12 @@ Character::~Character(){
 
 void Character::draw(sf::RenderWindow & window) {
 	window.draw(*sprite);
+	healthBar.draw(window);
 }
 
 void Character::draw(VirtualScreen & window) {
 	window.drawSurfaceDraw(*sprite);
+	healthBar.draw(window);
 }
 
 std::shared_ptr<sf::Sprite> Character::getDrawable() {
@@ -92,34 +96,35 @@ void Character::decreaseHealth(const int & modifier) {
 	if (modifier < 0) {
 		std::cout << "Je probeert de health te verminderen met een negatief getal\n";
 	}
-	else if (modifier > maxHealth) {
+	else if (currentHealth - modifier < 0) {
 		std::cout << "INSTAKILL!\n";
 		currentHealth = 0;
 	}
 	else {
 		currentHealth -= modifier;
 	}
-
+	healthBar.setCurrentResource(currentHealth);
 }
 
 void Character::increaseHealth(const int & modifier) {
-	if (modifier <= 0) {
+	if (modifier < 0) {
 		std::cout << "Je probeert de health te verhogen met een negatief getal\n";
 	}
-	else if (modifier > maxHealth) {
+	else if (currentHealth + modifier > maxHealth) {
 		std::cout << "INSTAHEAL!!\n";
 		currentHealth = maxHealth;
 	}
 	else {
-		currentHealth += maxHealth;
+		currentHealth += modifier;
 	}
+	healthBar.setCurrentResource(currentHealth);
 }
 
 void Character::decreaseMana(const int & modifier) {
 	if (modifier < 0) {
 		std::cout << "Je probeert de mana te verminderen met een negatief getal\n";
 	}
-	else if (modifier > maxMana) {
+	else if (currentMana - modifier < 0) {
 		std::cout << "INSTADEPLETE!\n";
 		currentMana = 0;
 	}
@@ -129,10 +134,10 @@ void Character::decreaseMana(const int & modifier) {
 }
 
 void Character::increaseMana(const int & modifier) {
-	if (modifier <= 0) {
+	if (modifier < 0) {
 		std::cout << "Je probeert de mana te verhogen met een negatief getal\n";
 	}
-	else if (modifier > maxMana) {
+	else if (currentMana + modifier > maxMana) {
 		std::cout << "INSTAREGEN!!\n";
 		currentMana = maxMana;
 	}
@@ -168,6 +173,30 @@ void Character::decreaseAbilityScore(const AbilityScores & stat, const int & sta
 	}
 }
 
+void Character::increaseWeakness(const DamageTypes & modifierName, const float & modifierValue) {
+	if (modifierValue < 0.0) {
+		std::cout << "Parameter: 'modifierValue' is smaller than 0, Value: " << modifierValue << "\n";
+	}
+
+	if (weaknessModifiers[modifierName] + modifierValue > 10.0) {
+		weaknessModifiers[modifierName] = 10.0;
+	} else {
+		weaknessModifiers[modifierName] += modifierValue;
+	}
+}
+
+void Character::decreaseWeakness(const DamageTypes & modifierName, const float & modifierValue) {
+	if (modifierValue < 0.0) {
+		std::cout << "Parameter: 'modifierValue' is smaller than 0, Value: " << modifierValue << "\n";
+		return;
+	}
+
+	if (weaknessModifiers[modifierName] - modifierValue < 0.0) {
+		weaknessModifiers[modifierName] = 0.0;
+	} else {
+		weaknessModifiers[modifierName] -= modifierValue;
+	}
+}
 
 void Character::printAbilityStats() {
 	std::cout << "Vit:	" << characterStats[AbilityScores::vitality]	<< "\n";
@@ -183,6 +212,10 @@ int Character::getStat(const AbilityScores & stat) {
 	return characterStats[stat];
 }
 
+float Character::getModifier(const DamageTypes & modifier) {
+	return weaknessModifiers[modifier];
+}
+
 void Character::doDeath() {
 	showDeathTexture();
 }
@@ -191,34 +224,42 @@ void Character::showDeathTexture() {
 	currentAnimation = deathAnimation;
 }
 
-void Character::addCombatAction(std::shared_ptr<Action> a) {
-	actions.push_back(a);
+
+void Character::activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i) {
+	c->decreaseHealth(attacks.activate(i).second);
 }
 
-void Character::activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c) {
-	if (id < actions.size()) {
-		std::pair<int, int> IDandInfo = actions[id]->activate();
-		if (IDandInfo.first == 0) {
-			c->decreaseHealth(IDandInfo.second);
-		}
-	}
+
+std::array<std::pair<std::string, int>, 4> Character::getAttacks() {
+	return attacks.getAttacks();
 }
 
-std::string Character::getActionName(const unsigned int &id) {
-	if (id < actions.size()) {
-		return actions[id]->getName();
-	}
-	return "";
-}
 
-std::vector<std::shared_ptr<Action>> Character::getActions() {
-	return actions;
-}
 
 sf::Vector2f Character::getSpriteMidpoint() {
 	sf::Vector2f midpoint = sf::Vector2f(
 		sprite->getGlobalBounds().left + (sprite->getGlobalBounds().width / 2),
 		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
 	);
+	//std::cout << midpoint.x << ", " << midpoint.y << std::endl;
+	std::cout << sprite->getGlobalBounds().width << ", " << sprite->getGlobalBounds().height << std::endl;
+	//std::cout << sprite->getGlobalBounds().left << ", " << sprite->getGlobalBounds().top << std::endl;
 	return midpoint;
+}
+
+
+unsigned int Character::getModifier(const unsigned int & i) {
+	return attacks.getModifier(i);
+}
+
+std::shared_ptr<ResourceBar> Character::getHealthBar() {
+	return std::make_shared<ResourceBar>(healthBar);
+}
+
+void Character::centreHealthBar() {
+	healthBar.setPosition(int(getSpriteMidpoint().x), int(getSpriteMidpoint().y) - 150);
+}
+
+void Character::positionHealthbar(const sf::Vector2f & position) {
+	healthBar.setPosition(position);
 }

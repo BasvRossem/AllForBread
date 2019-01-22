@@ -1,54 +1,7 @@
-/*
-#include <SFML/Graphics.hpp>
+
 #include <iostream>
-#include <iterator>
-#include <algorithm>
 #include <string>
-#include <vector>
-#include "Character/Party.hpp"
-#include "states/Combat.hpp"
-#include "Character/Monster.hpp"
-
-int main(){
-
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
-	window.setFramerateLimit(0);
-
-	PlayerCharacter testCharacter = PlayerCharacter("Anubis, the distructor of hopes and dreams","Assets/AnubisIdle.png");
-	Character testMonster= Character("Rupert, the Poopert Robot", "Assets/RobotIdle.png", 12);
-	testMonster.makeMonster();
-
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = {std::make_shared<PlayerCharacter>(testCharacter)};
-
-	std::vector< std::shared_ptr<Character>> monsterVector = { std::make_shared <Character>(testMonster) };
-	CharacterContainer< std::shared_ptr<Character >> monsters = (monsterVector);
-	Party heroParty(heroVector);
-
-	std::string backgroundImage = "Assets/background680.png";
-	Combat testCombat(window, heroParty, monsters, backgroundImage);
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-
-		window.clear();
-		
-		testCombat.update();
-
-		window.display();
-	}
-	return 0;
-}
-*/
-#include <iostream>
-
-#include <string>
-
+#include "Items/Weapon.hpp"
 #include <SFML/Graphics.hpp>
 #include "PointsOfInterest/PointOfInterest.hpp"
 #include "PointsOfInterest/pointOfInterestContainer.hpp"
@@ -58,7 +11,11 @@ int main(){
 #include "Character/Party.hpp"
 #include "states/Combat.hpp"
 
-int main( int argc, char *argv[] ){
+
+
+int main(int argc, char *argv[]) {
+	Weapon sword;
+
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
 
@@ -71,8 +28,8 @@ int main( int argc, char *argv[] ){
 	std::string POI1LocationType = "Battle";
 
 	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
-	testCharacter->addCombatAction(std::make_shared<Attack>("Zwaardslag", 12));
-	
+
+
 	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
 	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };
@@ -142,13 +99,13 @@ int main( int argc, char *argv[] ){
 		}
 	});
 
-	while (window.isOpen()){
+	while (window.isOpen()) {
 		sf::Event event;
-		while (window.pollEvent(event)){
+		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
-			if (event.type == sf::Event::KeyPressed){
+			if (event.type == sf::Event::KeyPressed) {
 				/*if (event.key.code == sf::Keyboard::D && moveList.size() == 0) {
 					std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
 					poiCont.forward();
@@ -157,7 +114,7 @@ int main( int argc, char *argv[] ){
 							moveList.insert(moveList.begin(), temp[i]);
 						}
 					}
-					
+
 				}
 				if (event.key.code == sf::Keyboard::A && moveList.size() == 0) {
 					std::vector<sf::Vector2f> temp = poiCont.getBackPath();
@@ -174,12 +131,13 @@ int main( int argc, char *argv[] ){
 			}
 
 		}
-		
-		if (moveList.size() > 0 && POIMove.isFinished()){
+
+		if (moveList.size() > 0 && POIMove.isFinished()) {
 			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
 			moveList.pop_back();
 			POIMove.blend();
-		}else if (moveList.size() == 0 && POIMove.isFinished()) {
+		}
+		else if (moveList.size() == 0 && POIMove.isFinished()) {
 
 		}
 		if (!POIMove.isFinished()) {

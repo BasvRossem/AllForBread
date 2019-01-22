@@ -7,8 +7,8 @@
 #include "EnumClasses.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
 #include <cstdlib>
-#include "Action.hpp"
 #include "Attack.hpp"
+#include "ResourceBar.hpp"
 /// @file
 
 /// \brief
@@ -21,18 +21,21 @@ protected:
 	Animation currentAnimation;
 	Animation deathAnimation;
 	
-	std::vector<std::shared_ptr<Action>> actions;
+	Attacks attacks;
 
 	std::string name;
 	sf::Vector2f position;
 	sf::Clock clock;
 
 	int maxHealth = 10;
+	int currentHealth = maxHealth;
+
 	int maxMana = 100;
+	int currentMana = maxMana;
+
 	int level = 1;
 
-	int currentHealth = maxHealth;
-	int currentMana = maxMana;
+	ResourceBar healthBar = ResourceBar(sf::Vector2f(0.0f, 0.0f), maxHealth, currentHealth);
 
 	std::unordered_map<AbilityScores, int> characterStats = {
 		{AbilityScores::vitality,	10},
@@ -41,6 +44,22 @@ protected:
 		{AbilityScores::arcanism,	10},
 		{AbilityScores::charisma,	10},
 		{AbilityScores::luck,		10}
+	};
+
+	std::unordered_map<DamageTypes, float> weaknessModifiers = {
+		{DamageTypes::piercing,		1.0f},
+		{DamageTypes::bludgeoning,	1.0f},
+		{DamageTypes::slashing,		1.0f},
+		{DamageTypes::acid,			1.0f},
+		{DamageTypes::frost,		1.0f},
+		{DamageTypes::fire,			1.0f},
+		{DamageTypes::force,		1.0f},
+		{DamageTypes::lightning,	1.0f},
+		{DamageTypes::necrotic,		1.0f},
+		{DamageTypes::poison,		1.0f},
+		{DamageTypes::psychic,		1.0f},
+		{DamageTypes::radiant,		1.0f},
+		{DamageTypes::thunder,		1.0f}
 	};
 
 public:
@@ -89,10 +108,8 @@ public:
 	int getStat(const AbilityScores & stat);
 
 	/// \brief
-	/// Returns action name at given index. If index is out of bounds, return empty string
-	std::string getActionName(const unsigned int & id);
-
-	std::vector<std::shared_ptr<Action>> getActions();
+	/// Returns DamageType modifier float
+	float getModifier(const DamageTypes & modifier);
 
 	/// \brief
 	/// Lowers health by given amount
@@ -123,18 +140,37 @@ public:
 	void increaseAbilityScore(const AbilityScores & stat, const int & statDecrease);
 
 	/// \brief
+	/// Increases given weakness modifier by given amount
+	void increaseWeakness(const DamageTypes & modifierName, const float & modifierValue);
+
+	/// \brief
+	/// Decreases given weakness modifier by given amount
+	void decreaseWeakness(const DamageTypes & modifierName, const float & modifierValue);
+
+	/// \brief
 	/// Prints all abilities and values
 	void printAbilityStats();
 
-	/// \brief
-	/// Adds a combat action
-	void addCombatAction(std::shared_ptr<Action>);
-
-	/// \brief
-	/// Activates action at given index, target at given character
-	void activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c);
 
 	/// \brief
 	/// Returns the coodinates of the midpoint of the sprite
 	sf::Vector2f getSpriteMidpoint();
+
+
+	void activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i);
+
+	std::array<std::pair<std::string, int>, 4> getAttacks();
+
+	unsigned int getModifier(const unsigned int & i);
+
+	/// brief
+	/// Returns a shared pointer to the healthBar
+	std::shared_ptr<ResourceBar> getHealthBar(); \
+
+	/// \brief
+	/// Repositions the healthbar to directly above the characterSprite
+	void centreHealthBar();
+
+	void positionHealthbar(const sf::Vector2f & position);
+
 };

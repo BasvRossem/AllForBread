@@ -1,6 +1,6 @@
 #include "Monster.hpp"
 
-Monster::Monster(std::string characterName, std::string textureName):
+Monster::Monster(const std::string & characterName, const std::string & textureName):
 	Character(characterName, textureName),
 	rewardExperience((rand() % 6 + 5) * level),
 	rewardCurrency((rand() % 5 + 1) * level)
@@ -8,11 +8,11 @@ Monster::Monster(std::string characterName, std::string textureName):
 	printRewards();
 }
 
-const int Monster::getRewardExperience() {
+int Monster::getRewardExperience() {
 	return rewardExperience;
 }
 
-const int Monster::getRewardCurrency() {
+int Monster::getRewardCurrency() {
 	return rewardCurrency;
 }
 
