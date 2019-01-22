@@ -8,12 +8,12 @@ Menu::Menu(std::string & surroundings, BackGround & backGround):
 	size(200,200)
 {
 	selectRectangle.setFillColor(sf::Color::Blue);
-	selectRectangle.setPosition(855, 95);
+	selectRectangle.setPosition(850, 435);
 	selectRectangle.setSize(sf::Vector2f{ size.x + 10 , size.y + 10 });
 }
 
 void Menu::addTile(std::string & imageName, std::function<void()> & f) {
-	auto p = sf::Vector2f{ 860, float(100 + 210 * tiles.size()) };
+	auto p = sf::Vector2f{ 435 + float(210 * tiles.size()), 440 };
 	Tile(imageName, p, size, f);
 	tiles.push_back(std::make_shared<Tile>(imageName, p, size, f));
 }
@@ -21,7 +21,7 @@ void Menu::addTile(std::string & imageName, std::function<void()> & f) {
 void Menu::selectChangePosition(const int & id) {
 	if (id >= 0 && id < tiles.size()) {
 		selectedID = id;
-		selectRectangle.setPosition(sf::Vector2f{ 855, float(95 + id * 210 )});
+		selectRectangle.setPosition(sf::Vector2f{ 430 + float(210 * id), 435 });
 	}
 }
 
@@ -36,8 +36,8 @@ void Menu::update(sf::RenderWindow & window) {
 	sf::Vector2f mousePosition = sf::Vector2f{ sf::Mouse::getPosition(window) };
 	keyHandl.addListener(sf::Keyboard::Enter, [&]() {select(); });
 	keyHandl.addListener(sf::Keyboard::Escape, [&menu]() {menu = false; });
-	keyHandl.addListener(sf::Keyboard::W, [&]() {selectChangePosition(selectedID - 1); });
-	keyHandl.addListener(sf::Keyboard::S, [&]() {selectChangePosition(selectedID + 1); });
+	keyHandl.addListener(sf::Keyboard::A, [&]() {selectChangePosition(selectedID - 1); });
+	keyHandl.addListener(sf::Keyboard::D, [&]() {selectChangePosition(selectedID + 1); });
 
 	while (menu == true) {
 		sf::Event event;
