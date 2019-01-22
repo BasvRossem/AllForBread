@@ -33,7 +33,7 @@ private:
 	//base template for loading please specialise
 	template<typename T>
 	void loading(T& t) {
-
+		
 	}
 
 	//poi loading
@@ -111,6 +111,16 @@ private:
 
 	================================================*/
 
+	template<typename T, typename ... Attributes>
+	void saving(T& t, Attributes& ... attributes) {
+		saving(t);
+		saving(attributes...)
+	}
+
+	template<typename T>
+	void saving(T& t) {
+		std::cerr << "uknown saving type: " << typeid(t).name() << std::endl;
+	}
 	
 public:
 
