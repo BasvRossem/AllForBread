@@ -5,13 +5,15 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 	State(window),
 	party(party),
 	monsters(monster),
-	surrounding(surrounding),
 	animationScreen(animationScreenSize.x , animationScreenSize.y),
 	damageScreen(damageScreenSize.x, damageScreenSize.y),
 	menuScreen(menuScreenSize.x, menuScreenSize.y),
 	backgrnd(backgrnd),
+	surrounding(surrounding),
 	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)))
 {
+	//Calculate initiative
+	currentCharacter = party[0];
 	for (size_t i = 0; i < party.size(); i++){
 		initiative.push_back(party[i]);
 	}
@@ -19,30 +21,43 @@ Combat::Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std:
 		initiative.push_back(monster[i]);
 	}
 	calculateInitiative(initiative);
+
+	//Prepare virtual screens
 	sf::Vector2f animationScreenTopLeft(0.0, 0.0);
 	sf::Vector2f damageScreenTopLeft(0.0, 0.0);
 	sf::Vector2f menuScreenTopLeft(0.0, 680);
 	animationScreen.setLocation(animationScreenTopLeft);
 	damageScreen.setLocation(damageScreenTopLeft);
 	menuScreen.setLocation(menuScreenTopLeft);
-
+	
+	//Load a font
 	attackFont.loadFromFile("Assets/PIXEARG_.ttf");
-	//Load the background
-
 }
 
 
 Combat::~Combat(){
 }
 
-void Combat::start() {
-
-};
+void Combat::checkEvents() {
+	sf::Event event;
+	while (window.pollEvent(event)){
+		if (event.type == sf::Event::Closed) {
+			window.close();
+		}
+		if (attackFeedbackFinished && event.type == sf::Event::KeyPressed) {
+			keyhandle.processKey(event.key.code);
+		}
+	}
+}
 
 State* Combat::update() {
-	CombatFinished = false;
+	//Load background
 	backgrnd.setBackGround(surrounding, sf::Vector2f(animationScreenSize));
-	while(!CombatFinished){
+
+	/*while(!CombatFinished){
+		if (!attackFeedbackFinished) {
+			updateAttackFeedback();
+		}
 		combatChoices.clear();
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -63,7 +78,7 @@ State* Combat::update() {
 			combatChoices.push_back(tempstring.str());
 		}
 		combatChoices.push_back("4. Stop combat");
-		keyhandle.addListener(sf::Keyboard::Num4, [this]()->void {std::cout << "ja gvd Jens\n"; this->CombatFinished = true; });
+		keyhandle.addListener(sf::Keyboard::Num4, [this]()->void {this->CombatFinished = true; });
 
 		window.clear();
 
@@ -80,10 +95,7 @@ State* Combat::update() {
 			monsters[j]->update();
 			monsters[j]->draw(animationScreen);
 		}
-		if (!attackFeedbackDone) {
-			attackFeedback(monsters[0], 200);
-			//attackFeedback(party[0], 250);
-		}
+		
 		else {
 			//Make combat actions
 
@@ -108,11 +120,42 @@ State* Combat::update() {
 		window.display();
 		/////
 		
+	}*/
+	
+	while (!CombatFinished) {
+		checkEvents();
+		combatChoices.clear();
+		if (!attackFeedbackFinished) {
+			updateAttackFeedback();
+		}
+		else {
+			auto curChar = currentCharacter;
+			auto actions = currentCharacter->getActions();
+			for (size_t i = 0; i < actions.size(); i++) {
+				keyhandle.addListener(sf::Keyboard::Num0, [i, &curChar, this]() {
+					curChar->activateCombatAction(i, this->getMonster(0));
+					makeAttackFeedback(monsters[0], "boop");
+				});
+				std::stringstream tempstring;
+				tempstring << i << ' ' << curChar->getActionName(i);
+
+				combatChoices.push_back(tempstring.str());
+			}
+		}
+		checkMonstersDeath();
+		draw();
 	}
-	
-	
+
 	return nullptr;
 };
+
+void Combat::newCurrentCharacter() {
+	currentInitiative++;
+	if (currentInitiative >= initiative.size()) {
+		currentInitiative = 0;
+	}
+	currentCharacter = initiative[currentInitiative];
+}
 
 void Combat::draw() {
 	window.clear();
@@ -122,33 +165,22 @@ void Combat::draw() {
 	menuScreen.drawSurfaceClear(sf::Color::Black);
 
 	backgrnd.draw(animationScreen);
-	for (unsigned int i = 0; i < party.size(); i++) {
-		party[i]->update();
-		party[i]->draw(animationScreen);
-	}
-	for (unsigned int j = 0; j < monsters.size(); j++) {
-		monsters[j]->update();
-		monsters[j]->draw(animationScreen);
-	}
-	if (!attackFeedbackDone) {
-		attackFeedback(monsters[0], 200);
-		//attackFeedback(party[0], 250);
-	}
-	else {
-		//Make combat actions
+
+	for (auto character : initiative) {
+		character->update();
+		character->draw(animationScreen);
 	}
 
-	
-	checkMonstersDeath();
+	if (!attackFeedbackFinished) {
+		damageScreen.drawSurfaceDraw(*damageText);
+	}
 
 	animationScreen.drawSurfaceDisplay();
 	menuScreen.drawSurfaceDisplay();
 	damageScreen.drawSurfaceDisplay();
 
 	window.draw(menuScreen);
-	
 	window.draw(animationScreen);
-
 	window.draw(damageScreen);
 
 	diaBox.printPerm(combatChoices);
@@ -157,41 +189,42 @@ void Combat::draw() {
 	window.display();
 }
 
-void Combat::Stop() {
+void Combat::stop() {
 	CombatFinished = true;
 }
 
-void Combat::attackFeedback(std::shared_ptr<Character> & attacked, int dmg) {
-	if (attackFeedbackDone) {
-		attackFeedbackDone = 0;
-		sf::String damage = std::to_string(dmg);
-		damageText = std::shared_ptr < sf::Text>(new sf::Text);
+void Combat::makeAttackFeedback(const std::shared_ptr<Character> & target, const int & info) {
+	sf::String information = std::to_string(info);
+	attackFeedbackInitialiser(target, information);
+}
 
-		damageText->setFont(attackFont);
-		damageText->setString(damage);
-		damageText->setCharacterSize(24);
-		damageText->setFillColor(sf::Color::White);
-		damageText->setOutlineColor(sf::Color::Black);
-		damageTextMidPoint = sf::Vector2f(damageText->getLocalBounds().width / 2, damageText->getLocalBounds().height / 2);
-		damageText->setOrigin(damageTextMidPoint);
-		characterMidpoint = sf::Vector2f(
-			attacked->getDrawable()->getPosition().x + 0,
-			attacked->getDrawable()->getPosition().y);
-		damageText->setPosition(characterMidpoint);
-		std::cout << characterMidpoint.x << ", " << characterMidpoint.y << std::endl;
-		std::cout << damageText->getPosition().x << ", " << damageText->getPosition().y << std::endl;
-		damageMover = TransformableMovement(damageText, characterMidpoint + sf::Vector2f(0, -200), 1.0);
-		damageMover.blend();
-		std::cout << "attack feedback made" << std::endl;
+void Combat::makeAttackFeedback(const std::shared_ptr<Character> & target, const std::string & info) {
+	attackFeedbackInitialiser(target, info);
+}
+
+void Combat::updateAttackFeedback() {
+	damageMover.update();
+	if (damageMover.isFinished()) {
+		attackFeedbackFinished = 1;
 	}
-	else {
-		//std::cout << "floating" << std::endl;
-		damageMover.update();
-		damageScreen.drawSurfaceDraw(*damageText);
-		if (damageMover.isFinished()) {
-			attackFeedbackDone = 1;
-		}
-	}
+}
+
+void Combat::attackFeedbackInitialiser(const std::shared_ptr<Character> & target, const sf::String & info) {
+	attackFeedbackFinished = 0;
+	characterMidpoint = target->getSpriteMidpoint();
+	
+	damageText = std::shared_ptr < sf::Text>(new sf::Text);
+	damageText->setFont(attackFont);
+	damageText->setString(info);
+	damageText->setCharacterSize(24);
+	damageText->setFillColor(sf::Color::White);
+	damageText->setOutlineColor(sf::Color::Black);
+	damageTextMidPoint = sf::Vector2f(damageText->getLocalBounds().width / 2, damageText->getLocalBounds().height / 2);
+	damageText->setOrigin(damageTextMidPoint);
+	damageText->setPosition(characterMidpoint);
+	
+	damageMover = TransformableMovement(damageText, characterMidpoint + sf::Vector2f(0, -200), 1.0);
+	damageMover.blend();
 }
 
 //-Added (Niels)
@@ -226,13 +259,14 @@ void Combat::monsterVictory() {
 }
 
 void Combat::calculateInitiative(std::vector<std::shared_ptr<Character>> &characterVector) {
-
-	std::sort(characterVector.begin(), characterVector.end(),
+	std::sort(
+		characterVector.begin(), 
+		characterVector.end(),
 		[](std::shared_ptr<Character> c1, std::shared_ptr<Character> c2) {
-		return (c1->getStat(AbilityScores::dexterity) > c2->getStat(AbilityScores::dexterity));
-	}
+			return (c1->getStat(AbilityScores::dexterity) > c2->getStat(AbilityScores::dexterity));
+		}
 	);
-
+	currentCharacter = initiative[0];
 }
 
 std::shared_ptr<Character> Combat::getMonster(unsigned int i) {

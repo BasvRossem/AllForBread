@@ -15,9 +15,17 @@
 
 class Combat : public State {
 private:
-	
+	//End of Combat
+	bool CombatFinished = false;
+
+	//Party and monsters
 	Party party;
 	CharacterContainer<std::shared_ptr<Character>> monsters;
+	std::vector<std::shared_ptr<Character>> initiative;
+	uint_fast16_t currentInitiative = 0;
+	std::shared_ptr<Character> currentCharacter;
+
+	//Virtual screens
 	sf::Vector2u animationScreenSize = sf::Vector2u(1920, 680);
 	sf::Vector2u damageScreenSize = sf::Vector2u(1920, 680);
 	sf::Vector2u menuScreenSize = sf::Vector2u(1920, 450);
@@ -26,41 +34,46 @@ private:
 	VirtualScreen damageScreen;
 	VirtualScreen menuScreen;
 
+	//Dialog box
 	DialogBox diaBox;
 	std::vector<std::string> combatChoices;
 
-	bool attackFeedbackDone = 1;
+	//Attack feedback
+	bool attackFeedbackFinished = 1;
 	sf::Vector2f damageTextMidPoint;
 	sf::Vector2f characterMidpoint;
 	TransformableMovement damageMover;
 	sf::Font attackFont;
 	std::shared_ptr<sf::Text> damageText;
 
-	std::vector<std::shared_ptr<Character>> initiative; //Players and monsters
-	
+	//Background
 	BackGround backgrnd;
-	sf::Clock clock;
-	float deltaTime = 0.0f;
-
-	KeyboardHandler keyhandle;
-
-	uint_fast16_t curInitiative = 0;
-
 	std::string surrounding;
 
+	//Keyboard
+	KeyboardHandler keyhandle;
+
+	//Functions
+	void attackFeedbackInitialiser(const std::shared_ptr<Character> & target, const sf::String& info);
+
+	bool attackFeedbackDone = true;
 public:
-	bool CombatStarted = false;
-	bool CombatFinished = false;
+
 
 	Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding, BackGround & backgrnd);
 	~Combat();
 
-	void start();
-	virtual State* update();
-	void draw();
-	void Stop();
+	void checkEvents();
 
-	void attackFeedback(std::shared_ptr<Character> & attacked, int dmg);
+	virtual State* update();
+	void newCurrentCharacter();
+	void draw();
+	void stop();
+
+
+	void makeAttackFeedback(const std::shared_ptr<Character> & target, const int & info);
+	void makeAttackFeedback(const std::shared_ptr<Character> & target, const std::string & info);
+	void updateAttackFeedback();
 
 	//-Added 3 function (Niels)
 	void checkMonstersDeath();
