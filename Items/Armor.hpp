@@ -24,4 +24,8 @@ public:
 	void setPropertyModifiers(const std::vector<std::pair<AbilityScores, int>> & newPropertyModifiers);
 
 	void addPropertyModifier(const std::pair<AbilityScores, int> & propertyModifier);
+
+	// Inherited via Equipable
+	virtual void equip(PlayerCharacter * pc) override;
+	virtual void unequip() override;
 };
