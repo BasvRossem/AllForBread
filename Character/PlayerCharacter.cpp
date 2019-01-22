@@ -63,3 +63,11 @@ void PlayerCharacter::printExperience() {
 	std::cout << "Player Level:		" << level << "\n";
 	std::cout << "\n";
 }
+
+Armor PlayerCharacter::getArmor(const ArmorSlots & slot) {
+	return armor.at(slot);
+}
+
+Weapon PlayerCharacter::getWeapon(const WeaponSlots & slot) {
+	return weapons.at(slot);
+}

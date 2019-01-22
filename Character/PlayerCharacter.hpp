@@ -1,8 +1,11 @@
 #pragma once
 #include <unordered_map>
+#include <string>
 #include "EnumClasses.hpp"
 #include "Character.hpp"
-#include <string>
+#include "../Items/Weapon.hpp"
+#include "../Items/Armor.hpp"
+
 /// @file
 
 /// \brief
@@ -12,6 +15,9 @@ private:
 	int experience = 0;
 	int experienceGauge = 100;
 	int abilityPoints = 0;
+
+	std::unordered_map<WeaponSlots, Weapon> weapons;
+	std::unordered_map<ArmorSlots, Armor> armor;
 
 public:
 	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 0);
@@ -35,4 +41,12 @@ public:
 	/// \brief
 	/// Prints total experience this character has gained
 	void printTotalExperience();
+
+	/// \brief
+	/// Returns armor for requested slot
+	Armor getArmor(const ArmorSlots & slot);
+
+	/// \brief
+	/// Returns weapon for requested slot
+	Weapon getWeapon(const WeaponSlots & slot);
 };
