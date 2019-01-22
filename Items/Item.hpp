@@ -4,7 +4,7 @@ private:
 	int weight = 0;
 	int baseValue = 0;
 public:
-	Item();
+
 	int getWeight();
 	int getBaseValue();
 	void setWeight(const int & newWeight);
