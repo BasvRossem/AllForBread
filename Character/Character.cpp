@@ -46,6 +46,7 @@ Character::Character(const std::string & characterName, const std::string & text
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 	srand(clock.getElapsedTime().asMilliseconds());
+
 }
 
 void Character::makeMonster() {
@@ -219,29 +220,17 @@ void Character::showDeathTexture() {
 	currentAnimation = deathAnimation;
 }
 
-void Character::addCombatAction(std::shared_ptr<Action> a) {
-	actions.push_back(a);
+
+void Character::activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i) {
+	c->decreaseHealth(attacks.activate(i).second);
 }
 
-void Character::activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c) {
-	if (id < actions.size()) {
-		std::pair<int, int> IDandInfo = actions[id]->activate();
-		if (IDandInfo.first == 0) {
-			c->decreaseHealth(IDandInfo.second);
-		}
-	}
+
+std::array<std::pair<std::string, int>, 4> Character::getAttacks() {
+	return attacks.getAttacks();
 }
 
-std::string Character::getActionName(const unsigned int &id) {
-	if (id < actions.size()) {
-		return actions[id]->getName();
-	}
-	return "";
-}
 
-std::vector<std::shared_ptr<Action>> Character::getActions() {
-	return actions;
-}
 
 sf::Vector2f Character::getSpriteMidpoint() {
 	sf::Vector2f midpoint = sf::Vector2f(
@@ -249,4 +238,8 @@ sf::Vector2f Character::getSpriteMidpoint() {
 		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
 	);
 	return midpoint;
+}
+
+unsigned int Character::getModifier(const unsigned int & i) {
+	return attacks.getModifier(i);
 }
