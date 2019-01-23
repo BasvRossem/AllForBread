@@ -92,6 +92,7 @@ void DialogBox::print(std::string& str, bool sound, int speed) {
 	clear();
 	draw();
 	while (true) {
+		w.clear();
 		unsigned int maxLTimesPage = (maxLines)* page;
 		if (maxLTimesPage > strVect.size()) {
 			break;
@@ -154,60 +155,88 @@ void DialogBox::clear() {
 void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices) {
 	
 	uint_fast16_t page = 0;
-	uint_fast16_t oldPage = 1;
+	uint_fast16_t oldPage = 0;
+	bool change = true;
+	bool needNext = false;
 	size_t choiceMax = 8;
 	size_t max = 0;
 	size_t overAllMax = 0;
 	size_t begin = 0;
 	size_t end = 0;
+
 	KeyboardHandler keyHandle;
 	keyHandle.setOverride(true);
 
 	clear();
 	if (choices.size() > 0){
 		while (true) {
-			if (oldPage != page) {
-				std::string tempStr;
+			if (change) {
+				std::stringstream tempStr;
+				int oldmax = max;
 
-				maxLines < choiceMax ? max = maxLines : max = choiceMax;
-				overAllMax = max;
-				if (max + (page * overAllMax) > choices.size()) {
-					max = choices.size() - (page * overAllMax);
-				}
-					std::function<void()> func = [&]() {page--; };
-				if (page > 0) {
+
+				max = maxLines < choiceMax ? maxLines : choiceMax;
+				if (page > 0){
 					begin = 1;
-					int index = 26 + 1;
-					tempStr.append("1. previous").append("\n");
-					keyHandle.addListener((sf::Keyboard::Key)index, func);
-
-				}
-				else {
+					max -= 1;
+					int keyIndex = 26 + 1;
+					tempStr << "1. previous\n";
+					std::function<void()> func = [&] {page--; change = true; };
+					keyHandle.addListener((sf::Keyboard::Key)keyIndex, func);
+				}else {
 					begin = 0;
 				}
-				end = max + begin + (page * overAllMax);
-				std::cout << end << '\n';
-				std::cout << begin + page * overAllMax << '\n';
-				for (size_t i = begin + page * overAllMax; i < end; i++) {
-					std::cout << i << '\n';
-					int index = 26 + i + 1 - (page * overAllMax);
-					std::stringstream ss;
-					ss << (index - 26) << ". " << choices[i - begin].first << '\n';
-					tempStr.append(ss.str());
-					keyHandle.addListener((sf::Keyboard::Key)index, choices[i - begin].second);
+				if (page >= oldPage){
+					if (overAllMax + max > choices.size() - 1) {
+						max = choices.size() - overAllMax - 1;
+						overAllMax = choices.size() - 1;
+						needNext = false;
+					}
+					else {
+						max -= 1;
+						overAllMax += max;
+						needNext = true;
+					}
+				}else if(page < oldPage) {
+					if (overAllMax - max > choices.size() - 1) {
+						max = choices.size() - overAllMax - 1;
+						overAllMax = choices.size() - 1;
+						needNext = false;
+					}
+					else {
+						max -= 1;
+						overAllMax -= max;
+						needNext = true;
+					}
+					if (page == 0){
+						overAllMax = max;
+					}
+				}
+				
+				int index = overAllMax - max;
+				for (size_t i = 0; i < max; i++){
+					int keyIndex = 27 + i + begin;
+					tempStr << (i + begin + 1) << ". " << choices[index + i].first << '\n';
+					keyHandle.addListener((sf::Keyboard::Key)keyIndex, choices[index + i].second);
 
 				}
-				if (page * 8 < choices.size()) {
-					int index = 26;
-					tempStr.append("0. next").append("\n");
-					std::function<void()> func = [&]() {page++; };
-					keyHandle.addListener((sf::Keyboard::Key)index, func);
+
+				if (needNext){
+					int keyIndex = 26;
+					tempStr << "0. next\n";
+					std::function<void()> func = [&]() {page++; change = true; };
+					keyHandle.addListener((sf::Keyboard::Key)keyIndex, func);
+				}else {
+					int keyIndex = 26;
+					keyHandle.removeListener((sf::Keyboard::Key)keyIndex);
 				}
-				text.setString(tempStr);
+
+				text.setString(tempStr.str());
 				oldPage = page;
 
-			}
-			else {
+				change = false;
+				
+			}else {
 				sf::Event event;
 				while (w.pollEvent(event)) {
 					if (event.type == sf::Event::KeyPressed) {
