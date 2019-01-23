@@ -5,7 +5,8 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "../Character/Party.hpp"
-#include "../PointsOfIntrest/pointOfInterestContainer.hpp"
+#include "../Character/EnumClasses.hpp"
+#include "../PointsOfInterest/pointOfInterestContainer.hpp"
 #include <map>
 #include "../Core/background.hpp"
 class DataManager
@@ -13,6 +14,11 @@ class DataManager
 private:
 	//the database object
 	Database db;
+
+	std::map<std::string, AbilityScores> abilityScores;
+	std::map<std::string, DamageTypes> damageTypes;
+	std::map<std::string, ArmorSlots> armorSlots;
+	std::map<std::string, WeaponSlots> weaponSlots;
 
 	/*================================================
 	  _      ____          _____ _____ _   _  _____ 
