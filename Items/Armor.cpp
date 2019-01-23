@@ -1,7 +1,12 @@
 #include "Armor.hpp"
 
-Armor::Armor(const ArmorSlots & slot) {
+Armor::Armor() {
+
 }
+
+Armor::Armor(const ArmorSlots & slot) :
+	armorSlot(slot)
+{}
 
 ArmorSlots Armor::getArmorSlot() {
 	return armorSlot;
@@ -41,10 +46,4 @@ void Armor::setPropertyModifiers(const std::vector<std::pair<AbilityScores, int>
 
 void Armor::addPropertyModifier(const std::pair<AbilityScores, int>& propertyModifier) {
 	propertyModifiers.push_back(propertyModifier);
-}
-
-void Armor::equip(PlayerCharacter * pc) {
-}
-
-void Armor::unequip() {
 }

@@ -1,9 +1,13 @@
 #include "Weapon.hpp"
 
-Weapon::Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int>& damage) {
-	weaponSlot = slot;
-	primaryDamageEffect = damage;
+Weapon::Weapon() {
+
 }
+
+Weapon::Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int>& damage):
+	weaponSlot(slot),
+	primaryDamageEffect(damage)
+{}
 
 WeaponSlots Weapon::getWeaponSlot() {
 	return weaponSlot;
@@ -31,17 +35,4 @@ void Weapon::setSecondaryDamageEffects(const std::vector<std::pair<DamageTypes, 
 
 void Weapon::addSecondaryDamageEffect(const std::pair<DamageTypes, int> & damage) {
 	secondaryDamageEffects.push_back(damage);
-}
-
-void Weapon::equip(PlayerCharacter * pc) {
-	unequip();
-	equipped = pc;
-	//Set weapon to pc
-	pc->setWeapon(weaponSlot, *this);
-}
-
-void Weapon::unequip() {
-	if (equipped != nullptr) {
-		//remove from equipped pc
-	}
 }

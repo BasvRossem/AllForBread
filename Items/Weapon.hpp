@@ -1,16 +1,16 @@
 #pragma once
-#include "Equipable.hpp"
 #include "Item.hpp"
 #include "../Character/EnumClasses.hpp"
 #include <utility>
 #include <vector>
 
-class Weapon : public Item, public Equipable {
+class Weapon : public Item {
 private:
-	WeaponSlots weaponSlot;
+	WeaponSlots weaponSlot = WeaponSlots::mainhand;
 	std::pair<DamageTypes, int> primaryDamageEffect;
 	std::vector<std::pair<DamageTypes, int>> secondaryDamageEffects;
 public:
+	Weapon();
 	Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int> & damage);
 
 	WeaponSlots getWeaponSlot();
@@ -22,8 +22,5 @@ public:
 	void setSecondaryDamageEffects(const std::vector<std::pair<DamageTypes, int>> & newSecondaryDamageEffects);
 
 	void addSecondaryDamageEffect(const std::pair<DamageTypes, int> & damage);
-
-	virtual void equip(PlayerCharacter * pc) override;
-	virtual void unequip() override;
 };
 
