@@ -13,9 +13,9 @@ public:
 	Weapon();
 	Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int> & damage);
 
-	WeaponSlots getWeaponSlot();
-	std::pair<DamageTypes, int> getPrimaryDamageEffect();
-	std::vector<std::pair<DamageTypes, int>> getSecondaryDamageEffects();
+	const WeaponSlots getWeaponSlot() const;
+	const std::pair<DamageTypes, int> getPrimaryDamageEffect() const;
+	const std::vector<std::pair<DamageTypes, int>> getSecondaryDamageEffects() const;
 
 	void setWeaponSlot(const WeaponSlots & newSlot);
 	void setPrimaryDamageEffect(const std::pair<DamageTypes, int> & newPrimaryDamageEffect);
