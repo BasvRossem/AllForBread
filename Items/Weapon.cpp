@@ -9,15 +9,15 @@ Weapon::Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int>& dama
 	primaryDamageEffect(damage)
 {}
 
-WeaponSlots Weapon::getWeaponSlot() {
+const WeaponSlots Weapon::getWeaponSlot() const {
 	return weaponSlot;
 }
 
-std::pair<DamageTypes, int> Weapon::getPrimaryDamageEffect() {
+const std::pair<DamageTypes, int> Weapon::getPrimaryDamageEffect() const {
 	return primaryDamageEffect;
 }
 
-std::vector<std::pair<DamageTypes, int>> Weapon::getSecondaryDamageEffects() {
+const std::vector<std::pair<DamageTypes, int>> Weapon::getSecondaryDamageEffects() const {
 	return secondaryDamageEffects;
 }
 

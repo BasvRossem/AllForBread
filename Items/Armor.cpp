@@ -8,19 +8,19 @@ Armor::Armor(const ArmorSlots & slot) :
 	armorSlot(slot)
 {}
 
-ArmorSlots Armor::getArmorSlot() {
+const ArmorSlots Armor::getArmorSlot() const {
 	return armorSlot;
 }
 
-int Armor::getPhysicalProtection() {
+const int Armor::getPhysicalProtection() const {
 	return physicalProtection;
 }
 
-int Armor::getMagicalProtection() {
+const int Armor::getMagicalProtection() const {
 	return magicalProtecton;
 }
 
-std::vector<std::pair<AbilityScores, int>> Armor::getPropertyModifiers() {
+const std::vector<std::pair<AbilityScores, int>> Armor::getPropertyModifiers() const {
 	return propertyModifiers;
 }
 

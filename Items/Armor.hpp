@@ -13,10 +13,10 @@ public:
 	Armor();
 	Armor(const ArmorSlots & slot);
 
-	ArmorSlots getArmorSlot();
-	int getPhysicalProtection();
-	int getMagicalProtection();
-	std::vector<std::pair<AbilityScores, int>> getPropertyModifiers();
+	const ArmorSlots getArmorSlot() const;
+	const int getPhysicalProtection() const;
+	const int getMagicalProtection() const;
+	const std::vector<std::pair<AbilityScores, int>> getPropertyModifiers() const;
 
 	void setArmorSlot(const ArmorSlots & slot);
 	void setPhysicalProtection(const int & newPhysicalProtection);
