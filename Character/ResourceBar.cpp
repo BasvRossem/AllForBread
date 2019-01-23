@@ -62,7 +62,7 @@ void ResourceBar::resize(const sf::Vector2f & newSize) {
 
 
 void ResourceBar::update() {
-	int unitsPerPixel = static_cast<int> (size.x / maxValue);
+	float unitsPerPixel = size.x / maxValue;
 	barInnerMeter.setSize(sf::Vector2f(static_cast<float>(currentValue * unitsPerPixel), size.y));
 }
 

@@ -47,7 +47,6 @@ Character::Character(const std::string & characterName, const std::string & text
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 
 	srand(clock.getElapsedTime().asMilliseconds());
-
 }
 
 void Character::makeMonster() {

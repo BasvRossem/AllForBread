@@ -21,6 +21,7 @@ private:
 
 public:
 	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 0);
+	//- Fix constructor initialization sequence to a logical order
 	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp = 0);
 
 	/// \brief

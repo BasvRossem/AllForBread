@@ -10,7 +10,7 @@ private:
 	sf::IntRect textureRect;
 
 	int currentImage;
-	int imageCount;
+	int imageCount = 1;
 
 	float totalTime = 0.0;
 	float switchTime;

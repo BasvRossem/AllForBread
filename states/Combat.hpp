@@ -12,6 +12,7 @@
 #include "../Core/KeyboardHandler.hpp"
 #include "../Character/Attack.hpp"
 #include "../Character/ResourceBar.hpp"
+#include "../Character/Mob.hpp"
 
 class Combat : public State {
 private:
@@ -19,9 +20,12 @@ private:
 	bool CombatFinished = false;
 
 	//Party and monsters
-
 	Party party;
-	CharacterContainer<std::shared_ptr<Character>> monsters;
+	Mob monsters;
+
+	std::vector<std::shared_ptr<Character>> allCharacters = {};
+
+	//Combat initiative (Character turn order)
 	std::vector<std::shared_ptr<Character>> initiative;
 	uint_fast16_t currentInitiative = 0;
 	std::shared_ptr<Character> currentCharacter;
@@ -38,6 +42,7 @@ private:
 	//Dialog box
 	DialogBox diaBox;
 	std::vector<std::string> combatChoices;
+	DialogBox afterCombatBox;
 
 	//Attack feedback
 	bool attackFeedbackFinished = 1;
@@ -61,7 +66,7 @@ private:
 public:
 
 
-	Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding, BackGround & backgrnd);
+	Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::string surrounding, BackGround & backgrnd);
 	~Combat();
 
 	void checkEvents();
@@ -76,11 +81,29 @@ public:
 	void makeAttackFeedback(const std::shared_ptr<Character> & target, const std::string & info);
 	void updateAttackFeedback();
 
-	//-Added 3 function (Niels)
-	void checkMonstersDeath();
 
+	void checkMonstersDeath();
+	void checkPlayerDeath();
+
+	/// \brief
+	/// Party victory function, closes the combat screen and state as if the players won
 	void partyVictory();
+
+	/// \brief
+	/// Monster victory function, closes the combat screen and state as if monsters won
 	void monsterVictory();
+
+	/// \brief
+	/// Sorts the initiative vector by dexterity value (high to low)
 	void calculateInitiative(std::vector<std::shared_ptr<Character>> &characterVector);
-	std::shared_ptr<Character> getMonster(unsigned int i);
+
+	/// \brief
+	/// Removed given character from the initiative vector
+	void removeFromInitiative(const std::shared_ptr<Character> & character);
+
+	/// \brief
+	/// Checks wether the given parameter is a player or a monster
+	bool isPlayer(const std::shared_ptr<Character> & character);
+
+	std::shared_ptr<Monster> getMonster(unsigned int i);
 };

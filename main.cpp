@@ -2,6 +2,7 @@
 #include <string>
 #include "Items/Weapon.hpp"
 #include "Character/PlayerCharacter.hpp"
+#include "Character/Monster.hpp"
 #include <SFML/Graphics.hpp>
 #include "PointsOfInterest/PointOfInterest.hpp"
 #include "PointsOfInterest/pointOfInterestContainer.hpp"
@@ -10,12 +11,13 @@
 #include "Core/KeyboardHandler.hpp"
 #include "Character/Party.hpp"
 #include "states/Combat.hpp"
+#include "Character/Mob.hpp"
 
 
 
-int main( int argc, char *argv[] ){
-	Weapon sword(WeaponSlots::twohanded, std::pair<DamageTypes, int>(DamageTypes::slashing, 6));
-	PlayerCharacter anubis("Anubis, de simpele ziel", "Assets/AnubisIdle");
+int main(int argc, char *argv[]) {
+	//Weapon sword(WeaponSlots::twohanded, std::pair<DamageTypes, int>(DamageTypes::slashing, 6));
+	//PlayerCharacter anubis("Anubis, de simpele ziel", "Assets/AnubisIdle");
 
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
@@ -29,15 +31,16 @@ int main( int argc, char *argv[] ){
 	std::string POI1LocationType = "Battle";
 
 	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
+	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 
-
-	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };
 
-	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
-	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };
+	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
+
+	Mob monsterParty(monsterVector);
 	Party heroParty(heroVector);
+
 	std::string combatBackground = "combatBackGround";
 	std::string combatBackgroundImage = "Assets/background680.png";
 
@@ -49,7 +52,7 @@ int main( int argc, char *argv[] ){
 	background.add(takatikimap, backgroundImage);
 	background.add(combatBackground, combatBackgroundImage);
 
-	Combat testCombat(window, heroParty, monsters, combatBackground, background);
+	Combat testCombat(window, heroParty, monsterParty, combatBackground, background);
 
 	std::function<void()> cout1 = [&testCombat]() {testCombat.update(); };
 
@@ -115,7 +118,6 @@ int main( int argc, char *argv[] ){
 							moveList.insert(moveList.begin(), temp[i]);
 						}
 					}
-
 				}
 				if (event.key.code == sf::Keyboard::A && moveList.size() == 0) {
 					std::vector<sf::Vector2f> temp = poiCont.getBackPath();
@@ -125,7 +127,6 @@ int main( int argc, char *argv[] ){
 							moveList.insert(moveList.begin(), temp[i]);
 						}
 					}
-
 				}*/
 
 				keyHandl.processKey(event.key.code);
