@@ -3,6 +3,7 @@
 #include "../Character/EnumClasses.hpp"
 #include <utility>
 #include <vector>
+#include <tuple>
 
 class Weapon : public Item {
 private:
@@ -22,5 +23,7 @@ public:
 	void setSecondaryDamageEffects(const std::vector<std::pair<DamageTypes, int>> & newSecondaryDamageEffects);
 
 	void addSecondaryDamageEffect(const std::pair<DamageTypes, int> & damage);
+
+	std::vector<std::tuple<DamageTypes, int, const Weapon*>> compareTo(const Weapon & otherWeapon);
 };
 
