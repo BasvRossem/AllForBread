@@ -10,10 +10,10 @@ private:
 public:
 	Item();
 
-	int getWeight();
-	int getBaseValue();
-	std::string getName();
-	std::string getDescription();
+	const int getWeight() const;
+	const int getBaseValue() const;
+	const std::string getName() const;
+	const std::string getDescription() const;
 
 
 	void setWeight(const int & newWeight);
