@@ -12,5 +12,7 @@ public:
 
 	int getQuantityUses();
 	void setQuantityUses(const int & uses);
+
+	void activate();
 };
 
