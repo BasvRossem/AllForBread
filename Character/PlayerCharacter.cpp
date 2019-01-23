@@ -63,3 +63,36 @@ void PlayerCharacter::printExperience() {
 	std::cout << "Player Level:		" << level << "\n";
 	std::cout << "\n";
 }
+
+Armor PlayerCharacter::getArmor(const ArmorSlots & slot) {
+	return armor.at(slot);
+}
+
+Weapon PlayerCharacter::getWeapon(const WeaponSlots & slot) {
+	return weapons.at(slot);
+}
+
+void PlayerCharacter::setArmor(const ArmorSlots & slot, const Armor & newArmor) {
+	armor[slot] = newArmor;
+}
+
+void PlayerCharacter::setWeapon(const WeaponSlots & slot, const Weapon & newWeapon) {
+	switch (slot) {
+	case WeaponSlots::twohanded:
+		if (weapons.find(WeaponSlots::mainhand) != weapons.end()) {
+			weapons.erase(WeaponSlots::mainhand);
+		}
+		if (weapons.find(WeaponSlots::offhand) != weapons.end()) {
+			weapons.erase(WeaponSlots::offhand);
+		}
+		break;
+
+	case WeaponSlots::offhand:
+	case WeaponSlots::mainhand:
+		if (weapons.find(slot) != weapons.end()) {
+			weapons.erase(WeaponSlots::twohanded);
+		}
+		break;
+	}
+	weapons[slot] = newWeapon;
+}

@@ -43,6 +43,22 @@ protected:
 		{AbilityScores::luck,		10}
 	};
 
+	std::unordered_map<DamageTypes, float> weaknessModifiers = {
+		{DamageTypes::piercing,		1.0f},
+		{DamageTypes::bludgeoning,	1.0f},
+		{DamageTypes::slashing,		1.0f},
+		{DamageTypes::acid,			1.0f},
+		{DamageTypes::frost,		1.0f},
+		{DamageTypes::fire,			1.0f},
+		{DamageTypes::force,		1.0f},
+		{DamageTypes::lightning,	1.0f},
+		{DamageTypes::necrotic,		1.0f},
+		{DamageTypes::poison,		1.0f},
+		{DamageTypes::psychic,		1.0f},
+		{DamageTypes::radiant,		1.0f},
+		{DamageTypes::thunder,		1.0f}
+	};
+
 public:
 	Character(const std::string &, const std::string &);
 	Character(const std::string &, const std::string &, const int &);
@@ -89,9 +105,16 @@ public:
 	int getStat(const AbilityScores & stat);
 
 	/// \brief
+	/// Returns DamageType modifier float
+	float getModifier(const DamageTypes & modifier);
+
+	/// \brief
 	/// Returns action name at given index. If index is out of bounds, return empty string
 	std::string getActionName(const unsigned int & id);
 
+
+	/// \brief
+	/// Returns all character actions in a vector
 	std::vector<std::shared_ptr<Action>> getActions();
 
 	/// \brief
@@ -123,6 +146,14 @@ public:
 	void increaseAbilityScore(const AbilityScores & stat, const int & statDecrease);
 
 	/// \brief
+	/// Increases given weakness modifier by given amount
+	void increaseWeakness(const DamageTypes & modifierName, const float & modifierValue);
+
+	/// \brief
+	/// Decreases given weakness modifier by given amount
+	void decreaseWeakness(const DamageTypes & modifierName, const float & modifierValue);
+
+	/// \brief
 	/// Prints all abilities and values
 	void printAbilityStats();
 
@@ -133,4 +164,8 @@ public:
 	/// \brief
 	/// Activates action at given index, target at given character
 	void activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c);
+
+	/// \brief
+	/// Returns the coodinates of the midpoint of the sprite
+	sf::Vector2f getSpriteMidpoint();
 };

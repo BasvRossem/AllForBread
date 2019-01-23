@@ -168,6 +168,30 @@ void Character::decreaseAbilityScore(const AbilityScores & stat, const int & sta
 	}
 }
 
+void Character::increaseWeakness(const DamageTypes & modifierName, const float & modifierValue) {
+	if (modifierValue < 0.0) {
+		std::cout << "Parameter: 'modifierValue' is smaller than 0, Value: " << modifierValue << "\n";
+	}
+
+	if (weaknessModifiers[modifierName] + modifierValue > 10.0) {
+		weaknessModifiers[modifierName] = 10.0;
+	} else {
+		weaknessModifiers[modifierName] += modifierValue;
+	}
+}
+
+void Character::decreaseWeakness(const DamageTypes & modifierName, const float & modifierValue) {
+	if (modifierValue < 0.0) {
+		std::cout << "Parameter: 'modifierValue' is smaller than 0, Value: " << modifierValue << "\n";
+		return;
+	}
+
+	if (weaknessModifiers[modifierName] - modifierValue < 0.0) {
+		weaknessModifiers[modifierName] = 0.0;
+	} else {
+		weaknessModifiers[modifierName] -= modifierValue;
+	}
+}
 
 void Character::printAbilityStats() {
 	std::cout << "Vit:	" << characterStats[AbilityScores::vitality]	<< "\n";
@@ -181,6 +205,10 @@ void Character::printAbilityStats() {
 
 int Character::getStat(const AbilityScores & stat) {
 	return characterStats[stat];
+}
+
+float Character::getModifier(const DamageTypes & modifier) {
+	return weaknessModifiers[modifier];
 }
 
 void Character::doDeath() {
@@ -213,4 +241,12 @@ std::string Character::getActionName(const unsigned int &id) {
 
 std::vector<std::shared_ptr<Action>> Character::getActions() {
 	return actions;
+}
+
+sf::Vector2f Character::getSpriteMidpoint() {
+	sf::Vector2f midpoint = sf::Vector2f(
+		sprite->getGlobalBounds().left + (sprite->getGlobalBounds().width / 2),
+		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
+	);
+	return midpoint;
 }
