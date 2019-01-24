@@ -21,8 +21,8 @@ InventoryDisplay::InventoryDisplay(Party & party, sf::RenderWindow & window) :
 		pTile.first.push_back(
 			std::make_shared<PlayerInventoryTile>(
 				party[i], 
-				sf::Vector2f(0, i * leftScreenSize.y / 4), 
-				sf::Vector2f(leftScreenSize.x, leftScreenSize.y / 4)
+				sf::Vector2f(0.0f, static_cast<float>(i * leftScreenSize.y / 4)),
+				sf::Vector2f(static_cast<float>(leftScreenSize.x), static_cast<float>(leftScreenSize.y / 4))
 			)
 		);
 	}
@@ -32,8 +32,8 @@ InventoryDisplay::InventoryDisplay(Party & party, sf::RenderWindow & window) :
 		pTile.second.push_back(
 			std::make_shared<InventoryTile>(
 				partyInventory[i],
-				sf::Vector2f( 0, i * 100 ), 
-				sf::Vector2f( rightScreenSize.x, 100.0 )
+				sf::Vector2f( 0.0f , static_cast<float>(i * 100) ),
+				sf::Vector2f(static_cast<float>(rightScreenSize.x), 100.0f )
 			)
 		);
 	}
@@ -155,8 +155,8 @@ void InventoryDisplay::deleteItem() {
 			pTile.second.push_back(
 				std::make_shared<InventoryTile>(
 					partyInventory[i],
-					sf::Vector2f(0, i * 100),
-					sf::Vector2f(rightScreenSize.x, 100.0)
+					sf::Vector2f(0.0f, static_cast<float>(i * 100)),
+					sf::Vector2f(static_cast<float>(rightScreenSize.x), 100.0f)
 					)
 			);
 		}
