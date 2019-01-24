@@ -115,12 +115,14 @@ void InventoryDisplay::drawRightScreen() {
 }
 
 void InventoryDisplay::switchCollumSelectbox() {
-	firstCollum = !firstCollum;
-	i = 0;
-	if (firstCollum && pTile.second.size() > 0) {
+	if (pTile.second.size() > 0) {
+		firstCollum = !firstCollum;
+		i = 0;
+	}
+	if (firstCollum) {
 		selectBox.setPosition(pTile.first[i]->getSelectboxPosition());
 	}
-	else if(pTile.second.size() > 0) {
+	else if (firstCollum == false && pTile.second.size() > 0) {
 		selectBox.setPosition(pTile.second[i]->getSelectboxPosition());
 	}
 }
