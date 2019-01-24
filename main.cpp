@@ -12,7 +12,7 @@
 #include "Character/Party.hpp"
 #include "states/Combat.hpp"
 #include "Character/Mob.hpp"
-
+#include <cstdlib>
 
 
 int main(int argc, char *argv[]) {
@@ -75,10 +75,10 @@ int main(int argc, char *argv[]) {
 	POIMove.blend();
 
 	KeyboardHandler keyHandl;
-
-	keyHandl.addListener(sf::Keyboard::Enter, [&poiCont]() {poiCont.activate(); });
-
 	std::vector<sf::Vector2f> moveList;
+
+	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
+
 	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
 		if (moveList.size() == 0) {
 			std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
@@ -135,6 +135,19 @@ int main(int argc, char *argv[]) {
 		}
 
 		if (moveList.size() > 0 && POIMove.isFinished()) {
+			// calc random encounter
+			int encounterChange = rand() % 100 + 1;
+			if (encounterChange > 90){
+				testMonster = std::make_shared<Monster>("U snap it is u", "Assets/AnubisIdle.png");
+				testMonster->makeMonster();
+				std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
+				Mob monsterParty(monsterVector);
+				Combat testCombat(window, heroParty, monsterParty, combatBackground, background);
+				std::cout << "QUEUEUEUE battle music" << '\n';
+				std::cout << encounterChange << '\n';
+				testCombat.update();
+				
+			}
 			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
 			moveList.pop_back();
 			POIMove.blend();
