@@ -5,19 +5,19 @@ Item::Item() :
 	description(std::string())
 {}
 
-int Item::getWeight() {
+const int Item::getWeight() const {
 	return weight;
 }
 
-int Item::getBaseValue() {
+const int Item::getBaseValue() const {
 	return baseValue;
 }
 
-std::string Item::getName() {
+const std::string Item::getName() const {
 	return name;
 }
 
-std::string Item::getDescription() {
+const std::string Item::getDescription() const {
 	return description;
 }
 

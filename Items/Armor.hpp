@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <tuple>
 #include "Item.hpp"
 #include "../Character/EnumClasses.hpp"
 
@@ -24,4 +25,6 @@ public:
 	void setPropertyModifiers(const std::vector<std::pair<AbilityScores, int>> & newPropertyModifiers);
 
 	void addPropertyModifier(const std::pair<AbilityScores, int> & propertyModifier);
+
+	std::vector<std::tuple<AbilityScores, int, const Armor*>> compareTo(const Armor & otherArmor);
 };
