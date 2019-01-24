@@ -1,0 +1,175 @@
+#include <iostream>
+#include <string>
+#include "Items/Weapon.hpp"
+#include "Character/PlayerCharacter.hpp"
+#include <SFML/Graphics.hpp>
+#include "PointsOfInterest/PointOfInterest.hpp"
+#include "PointsOfInterest/pointOfInterestContainer.hpp"
+#include "core/background.hpp"
+#include "TransformableMovement/TransformableMovement.hpp"
+#include "Core/KeyboardHandler.hpp"
+#include "Character/Party.hpp"
+#include "states/Combat.hpp"
+#include "Inventory/InventoryDisplay.hpp"
+
+
+int main(int argc, char *argv[]) {
+	//Weapon sword(WeaponSlots::twohanded, std::pair<DamageTypes, int>(DamageTypes::slashing, 6));
+	//PlayerCharacter anubis("Anubis, de simpele ziel", "Assets/AnubisIdle");
+
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
+	window.setFramerateLimit(60);
+
+	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
+	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
+	std::vector<sf::Vector2f> notPath = {};
+	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
+	float POI1Size = 15;
+	sf::Color POI1Color = sf::Color::Black;
+	std::string POI1LocationType = "Battle";
+
+	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter2 = std::make_shared<PlayerCharacter>("Bnubis", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter3 = std::make_shared<PlayerCharacter>("Cnubis", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter4 = std::make_shared<PlayerCharacter>("Dnubis", "Assets/AnubisIdle.png");
+
+
+	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
+	testMonster->makeMonster();
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter, testCharacter2, testCharacter3, testCharacter4 };
+
+	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
+	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
+	Party heroParty(heroVector);
+	std::string combatBackground = "combatBackGround";
+	std::string combatBackgroundImage = "Assets/background680.png";
+
+	std::string takatikimap = "takatiki";
+	std::string backgroundImage = "takatikimap.png";
+
+	BackGround background;
+
+	background.add(takatikimap, backgroundImage);
+	background.add(combatBackground, combatBackgroundImage);
+
+	Combat testCombat(window, heroParty, monsters, combatBackground, background);
+
+	std::function<void()> cout1 = [&testCombat]() {testCombat.update(); };
+
+	PointOfInterestContainer poiCont;
+	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cout1, path);
+	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, cout1, notPath);
+
+
+	background.setBackGround(takatikimap, window);
+
+	std::shared_ptr<sf::RectangleShape> partey(new sf::RectangleShape);
+	sf::Vector2f abh(20, 20);
+	sf::Vector2f newLocation;
+	newLocation = poiCont.getCurrentPointLocation();
+	partey->setSize(abh);
+	partey->setPosition(newLocation);
+	partey->setFillColor(sf::Color::Black);
+	
+	TransformableMovement POIMove(partey, newLocation, 0.0f);
+	POIMove.blend();
+
+	KeyboardHandler keyHandl;
+
+	keyHandl.addListener(sf::Keyboard::Enter, [&poiCont]() {poiCont.activate(); });
+
+	std::vector<sf::Vector2f> moveList;
+	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
+		if (moveList.size() == 0) {
+			std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
+			poiCont.forward();
+			if (temp.size() > 0) {
+				for (size_t i = 0; i < temp.size(); i++) {
+					moveList.insert(moveList.begin(), temp[i]);
+				}
+			}
+		}
+	});
+
+	for (unsigned int i = 0; i < 5; i++) {
+		auto newItem = std::make_shared<Item>();
+		std::string name = std::to_string(i);
+		newItem->setName("Woopie");
+		heroParty.addToInventory(newItem);
+	}
+	InventoryDisplay InventoryD(heroParty, window);
+	keyHandl.addListener(sf::Keyboard::I, [&InventoryD]() {InventoryD.use(); });
+	
+		keyHandl.addListener(sf::Keyboard::A, [&moveList, &poiCont]()->void {
+		if (moveList.size() == 0) {
+			std::vector<sf::Vector2f> temp = poiCont.getBackPath();
+			poiCont.back();
+			if (temp.size() > 0) {
+				for (size_t i = 0; i < temp.size(); i++) {
+					moveList.insert(moveList.begin(), temp[i]);
+				}
+			}
+		}
+	});
+
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+			}
+			if (event.type == sf::Event::KeyPressed) {
+				/*if (event.key.code == sf::Keyboard::D && moveList.size() == 0) {
+					std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
+					poiCont.forward();
+					if (temp.size() > 0){
+						for (size_t i = 0; i < temp.size(); i++){
+							moveList.insert(moveList.begin(), temp[i]);
+						}
+					}
+				}
+				if (event.key.code == sf::Keyboard::A && moveList.size() == 0) {
+					std::vector<sf::Vector2f> temp = poiCont.getBackPath();
+					poiCont.back();
+					if (temp.size() > 0) {
+						for (size_t i = 0; i < temp.size(); i++) {
+							moveList.insert(moveList.begin(), temp[i]);
+						}
+					}
+				}*/
+
+				keyHandl.processKey(event.key.code);
+			}
+
+		}
+
+		if (moveList.size() > 0 && POIMove.isFinished()) {
+			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
+			moveList.pop_back();
+			POIMove.blend();
+		}
+		else if (moveList.size() == 0 && POIMove.isFinished()) {
+
+		}
+		if (!POIMove.isFinished()) {
+			POIMove.update();
+		}
+		/*if (!POIMove.isFinished()){
+			POIMove.update();
+		}else if (partey->getPosition() != newLocation) {
+			POIMove = TransformableMovement(partey, newLocation, 4.0f);
+			POIMove.blend();
+		}else {
+			poiCont.next();
+			newLocation = poiCont.getCurrentPointLocation();
+		}*/
+		window.clear();
+		background.draw(window);
+		poiCont.draw(window);
+		window.draw(*partey);
+		window.display();
+
+	}
+
+	return 0;
+}
