@@ -11,6 +11,7 @@
 #include "Character/Party.hpp"
 #include "states/Combat.hpp"
 #include "Core/Menu.hpp"
+#include "Inventory/InventoryDisplay.hpp"
 
 
 //=======================================================
@@ -74,6 +75,18 @@ std::string armorTypeText(const AbilityScores & slot) {
 
 int main( int argc, char *argv[] ){
 
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
+	window.setFramerateLimit(60);
+
+	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
+	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
+	std::vector<sf::Vector2f> notPath = {};
+	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
+	float POI1Size = 15;
+	sf::Color POI1Color = sf::Color::Black;
+	std::string POI1LocationType = "Battle";
+
+
 	//=======================================================
 	// Weapon testing
 	//=======================================================
@@ -91,10 +104,15 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Character
 	//=======================================================
-	
+
+	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter2 = std::make_shared<PlayerCharacter>("Bnubis", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter3 = std::make_shared<PlayerCharacter>("Cnubis", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter4 = std::make_shared<PlayerCharacter>("Dnubis", "Assets/AnubisIdle.png");
+
 	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter, testCharacter2, testCharacter3, testCharacter4 };
 
 	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
 	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
@@ -126,11 +144,18 @@ int main( int argc, char *argv[] ){
 	Combat testCombat(window, heroParty, monsters, combatBackground, background);
 	
 	//=======================================================
+	// Creating Inventory
+	//=======================================================
+
+	InventoryDisplay InventoryD(heroParty, window);
+
+	//=======================================================
 	// Creating Menu
 	//=======================================================
 
 	Menu testMenu(menuBackGround, background);
 
+	std::function<void()> inventoryOpen = [&InventoryD]() {InventoryD.use(); };
 	std::function<void()> close = [&window]() {window.close(); };
 	std::function<void()> niksFunctie = []() {};
 
@@ -139,7 +164,7 @@ int main( int argc, char *argv[] ){
 	std::string loadImage = ("Assets/load.png");
 	std::string closeImage = ("Assets/close.png");
 
-	testMenu.addTile(inventoryImage, niksFunctie);
+	testMenu.addTile(inventoryImage, inventoryOpen);
 	testMenu.addTile(saveImage, niksFunctie);
 	testMenu.addTile(loadImage, niksFunctie);
 	testMenu.addTile(closeImage, close);
@@ -179,6 +204,35 @@ int main( int argc, char *argv[] ){
 	keyHandl.addListener(sf::Keyboard::Escape, [&testMenu, &window]() {testMenu.update(window); });
 
 
+	std::vector<sf::Vector2f> moveList;
+	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
+		if (moveList.size() == 0) {
+			std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
+			poiCont.forward();
+			if (temp.size() > 0) {
+				for (size_t i = 0; i < temp.size(); i++) {
+					moveList.insert(moveList.begin(), temp[i]);
+				}
+			}
+		}
+	});
+
+	keyHandl.addListener(sf::Keyboard::A, [&moveList, &poiCont]()->void {
+		if (moveList.size() == 0) {
+			std::vector<sf::Vector2f> temp = poiCont.getBackPath();
+			poiCont.back();
+			if (temp.size() > 0) {
+				for (size_t i = 0; i < temp.size(); i++) {
+					moveList.insert(moveList.begin(), temp[i]);
+				}
+			}
+		}
+	});
+
+	//=======================================================
+	// Armor testing
+	//=======================================================
+
 	auto differences = zweihander.compareTo(dagger);
 	std::cout << "Als je dagger equipped, volgen er de volgende verschillen.\n";
 
@@ -196,9 +250,6 @@ int main( int argc, char *argv[] ){
 			<< '\n';
 	}
 	
-	//=======================================================
-	// Armor testing
-	//=======================================================
 	Armor chainmail(ArmorSlots::chestplate);
 	chainmail.setName("Chainmail");
 	chainmail.addPropertyModifier({ AbilityScores::charisma,	2 });
