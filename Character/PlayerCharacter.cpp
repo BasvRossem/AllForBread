@@ -117,6 +117,11 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 
 	DialogBox textBox(window, 100, 10, "Assets/arial.ttf", sf::Vector2i(400, 750), sf::Vector2f(0, 150), sf::Color::Transparent);
 
+	textBox.setTextFillColor(sf::Color::Black);
+	textBox.setTextOutlineColor(sf::Color::White);
+	textBox.setTextPosition(sf::Vector2f{ 20.0f,20.0f });
+	textBox.setTextLineSpacing(2.0f);
+
 	std::vector<std::string> stringVector = {name};
 	std::stringstream ss;
 	ss << "Ability points: " << abilityPoints;
