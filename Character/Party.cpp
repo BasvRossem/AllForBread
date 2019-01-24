@@ -5,8 +5,8 @@ Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players) :
 };
 
 void Party::addExperience(const int & exp) {
-	int splitExp = static_cast<int>(exp / this->characters.size());
-	for (auto p : this->characters) {
+	int splitExp = static_cast<int>(exp / characters.size());
+	for (auto p : characters) {
 		p->increaseExperience(splitExp);
 	}
 }
