@@ -106,27 +106,6 @@ int main(int argc, char *argv[]) {
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed) {
-				/*if (event.key.code == sf::Keyboard::D && moveList.size() == 0) {
-					std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
-					poiCont.forward();
-					if (temp.size() > 0){
-						for (size_t i = 0; i < temp.size(); i++){
-							moveList.insert(moveList.begin(), temp[i]);
-						}
-					}
-
-				}
-				if (event.key.code == sf::Keyboard::A && moveList.size() == 0) {
-					std::vector<sf::Vector2f> temp = poiCont.getBackPath();
-					poiCont.back();
-					if (temp.size() > 0) {
-						for (size_t i = 0; i < temp.size(); i++) {
-							moveList.insert(moveList.begin(), temp[i]);
-						}
-					}
-
-				}*/
-
 				keyHandl.processKey(event.key.code);
 			}
 
@@ -143,15 +122,6 @@ int main(int argc, char *argv[]) {
 		if (!POIMove.isFinished()) {
 			POIMove.update();
 		}
-		/*if (!POIMove.isFinished()){
-			POIMove.update();
-		}else if (partey->getPosition() != newLocation) {
-			POIMove = TransformableMovement(partey, newLocation, 4.0f);
-			POIMove.blend();
-		}else {
-			poiCont.next();
-			newLocation = poiCont.getCurrentPointLocation();
-		}*/
 		window.clear();
 		background.draw(window);
 		poiCont.draw(window);
@@ -159,6 +129,5 @@ int main(int argc, char *argv[]) {
 		window.display();
 
 	}
-
 	return 0;
 }
