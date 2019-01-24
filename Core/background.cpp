@@ -22,11 +22,11 @@ void BackGround::setBackGround(const std::string & backGroundName, sf::RenderWin
 	}
 }
 
-void BackGround::setBackGround(const std::string & backGroundName, const sf::Vector2f & windowSize) {
+void BackGround::setBackGround(const std::string & backGroundName, const sf::Vector2f & position, const sf::Vector2f & windowSize ) {
 	if (backgroundTexture.loadFromFile(getPath(backGroundName))) {
 		sf::Vector2f size = sf::Vector2f{ backgroundTexture.getSize() };
 		backgroundSprite.setTexture(backgroundTexture);
-		backgroundSprite.setPosition(0, 0);
+		backgroundSprite.setPosition(position);
 		backgroundSprite.scale(sf::Vector2f{ windowSize.x / size.x, windowSize.y / size.y });
 	}
 }

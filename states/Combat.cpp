@@ -41,7 +41,7 @@ void Combat::start() {
 
 State* Combat::update() {
 	CombatFinished = false;
-	backgrnd.setBackGround(surrounding, sf::Vector2f(animationScreenSize));
+	backgrnd.setBackGround(surrounding, sf::Vector2f(0,0), sf::Vector2f(animationScreenSize));
 	while(!CombatFinished){
 		combatChoices.clear();
 		sf::Event event;

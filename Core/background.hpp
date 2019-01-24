@@ -31,7 +31,7 @@ public:
 
 	///\brief
 	/// Sets a backgroud from a size vector.
-	void setBackGround(const std::string & backGroundName, const sf::Vector2f & windowSize);
+	void setBackGround(const std::string & backGroundName, const sf::Vector2f & position, const sf::Vector2f & windowSize );
 
 
 	///\brief
