@@ -10,8 +10,8 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	menuScreen(menuScreenSize.x, menuScreenSize.y),
 	backgrnd(backgrnd),
 	surrounding(surrounding),
-	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y))),
-	afterCombatBox(window,80, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)))
+	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black),
+	afterCombatBox(window,80, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black)
 {
 	//Calculate initiative
 	currentCharacter = party[0];
@@ -117,7 +117,7 @@ State* Combat::update() {
 						break;
 					}
 
-			//-Player Actions
+			//-Monster Actions
 			//===========================================================================================================================================
 			} else if(!isPlayer(initiative[currentInitiative])) {
 				std::cout << "monster made a move that good, you didn't even notice." << std::endl;
@@ -256,9 +256,6 @@ void Combat::partyVictory() {
 
 	}
 
-	party.addExperience(totalExperienceReward);
-	party.addCurrency(totalCurrencyReward);
-
 	draw();
 	sf::sleep(sf::seconds(1.50));
 
@@ -271,7 +268,16 @@ void Combat::partyVictory() {
 	afterCombatInfo += std::to_string(totalExperienceReward);
 	afterCombatInfo += " experience points \n";
 
-	afterCombatBox.print(afterCombatInfo);
+	afterCombatBox.print(afterCombatInfo, false, 0);
+
+	party.addCurrency(totalCurrencyReward);
+	party.addExperience(totalExperienceReward);
+
+	for (unsigned int i = 0; i < party.size(); i++) {
+		if (party[i]->getLevelUp()) {
+			party[i]->levelUp(window);
+		}
+	}
 }
 
 void Combat::monsterVictory() {

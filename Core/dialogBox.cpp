@@ -1,10 +1,11 @@
 #include "dialogBox.h"
 
-DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, std::string soundFileName) :
+DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, sf::Color backgroundColor) :
 	w(window),
 	bufferWidth(bufferWidth),
 	maxLines(maxLines),
-	diaBox(size.x, size.y)
+	diaBox(size.x, size.y),
+	backgroundColor(backgroundColor)
 {
 
 	if (!font.loadFromFile(fontFileLocation)) {
@@ -17,6 +18,17 @@ DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_
 	text.setOutlineColor(sf::Color::Black);
 	diaBox.setLocation(position);
 
+
+}
+
+void DialogBox::draw() {
+	diaBox.drawSurfaceClear(backgroundColor);
+	diaBox.drawSurfaceDraw(text);
+	diaBox.drawSurfaceDisplay();
+	w.draw(diaBox);
+}
+
+void DialogBox::setSound(std::string soundFileName){
 	if (!soundBuffer.loadFromFile(soundFileName)) {
 		//throw error
 	}
@@ -25,11 +37,32 @@ DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_
 	feedbackSound.setVolume(20);
 }
 
-void DialogBox::draw() {
-	diaBox.drawSurfaceClear();
-	diaBox.drawSurfaceDraw(text);
-	diaBox.drawSurfaceDisplay();
-	w.draw(diaBox);
+void DialogBox::setBackgroundColor(sf::Color color){
+	backgroundColor = color;
+}
+
+void DialogBox::setTextFillColor(sf::Color color){
+	text.setFillColor(color);
+}
+
+void DialogBox::setTextOutlineColor(sf::Color color){
+	text.setOutlineColor(color);
+}
+
+void DialogBox::setTextCharacterSize(int size){
+	text.setCharacterSize(size);
+}
+
+void DialogBox::setTextLetterSpacing(float spacingFactor){
+	text.setLetterSpacing(spacingFactor);
+}
+
+void DialogBox::setTextLineSpacing(float spacingFactor){
+	text.setLineSpacing(spacingFactor);
+}
+
+void DialogBox::setTextPosition(sf::Vector2f position){
+	text.setPosition(position);
 }
 
 
@@ -114,7 +147,7 @@ void DialogBox::print(std::string& str, bool sound, int speed) {
 			for (size_t i = 0; i < tempStr.size(); i++) {
 				w.clear();
 				text.setString(tempStr.substr(0, i));
-				if (sound){
+				if (sound && tempStr[i] != ' ' && feedbackSound.getBuffer() != NULL){
 					float pitch = 1.0f;
 					feedbackSound.setPitch(pitch);
 					feedbackSound.play();

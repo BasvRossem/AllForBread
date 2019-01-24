@@ -27,16 +27,35 @@ private:
 
 	sf::Font font;
 	sf::Text text;
-
 	sf::SoundBuffer soundBuffer;
 	sf::Sound feedbackSound;
+	sf::Color backgroundColor;
 
 public:
-	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, std::string soundFileName);
+	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, sf::Color backgroundColor);
 	///\brief
 	/// draws the screen part and the text
 	void draw();
 
+
+	void setSound(std::string soundFileName);
+
+	void setBackgroundColor(sf::Color color);
+
+	void setTextFillColor(sf::Color color);
+
+	void setTextOutlineColor(sf::Color color);
+
+	void setTextCharacterSize(int size);
+
+	void setTextLetterSpacing(float spacingFactor);
+
+	void setTextLineSpacing(float spacingFactor);
+
+	void setTextPosition(sf::Vector2f position);
+
+
+	
 	///\brief
 	/// Prints the given string in the dialog box.
 	///\details
