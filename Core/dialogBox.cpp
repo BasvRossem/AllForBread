@@ -41,6 +41,30 @@ void DialogBox::setBackgroundColor(sf::Color color){
 	backgroundColor = color;
 }
 
+void DialogBox::setTextFillColor(sf::Color color){
+	text.setFillColor(color);
+}
+
+void DialogBox::setTextOutlineColor(sf::Color color){
+	text.setOutlineColor(color);
+}
+
+void DialogBox::setTextCharacterSize(int size){
+	text.setCharacterSize(size);
+}
+
+void DialogBox::setTextLetterSpacing(float spacingFactor){
+	text.setLetterSpacing(spacingFactor);
+}
+
+void DialogBox::setTextLineSpacing(float spacingFactor){
+	text.setLineSpacing(spacingFactor);
+}
+
+void DialogBox::setTextPosition(sf::Vector2f position){
+	text.setPosition(position);
+}
+
 
 std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 	std::vector<std::string> returnstring;
