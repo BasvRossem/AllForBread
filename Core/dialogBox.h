@@ -41,6 +41,20 @@ public:
 	void setSound(std::string soundFileName);
 
 	void setBackgroundColor(sf::Color color);
+
+	void setTextFillColor(sf::Color color);
+
+	void setTextOutlineColor(sf::Color color);
+
+	void setTextCharacterSize(int size);
+
+	void setTextLetterSpacing(float spacingFactor);
+
+	void setTextLineSpacing(float spacingFactor);
+
+	void setTextPosition(sf::Vector2f position);
+
+
 	
 	///\brief
 	/// Prints the given string in the dialog box.
