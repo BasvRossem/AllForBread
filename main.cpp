@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <SFML/Graphics.hpp>
+
 #include "Items/Weapon.hpp"
 #include "Character/PlayerCharacter.hpp"
-#include <SFML/Graphics.hpp>
+#include "Character/Monster.hpp"
 #include "PointsOfInterest/PointOfInterest.hpp"
 #include "PointsOfInterest/pointOfInterestContainer.hpp"
 #include "core/background.hpp"
@@ -12,6 +15,8 @@
 #include "states/Combat.hpp"
 #include "Core/Menu.hpp"
 #include "Inventory/InventoryDisplay.hpp"
+#include "Character/Mob.hpp"
+
 
 
 //=======================================================
@@ -78,15 +83,6 @@ int main( int argc, char *argv[] ){
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
 
-	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
-	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
-	std::vector<sf::Vector2f> notPath = {};
-	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
-	float POI1Size = 15;
-	sf::Color POI1Color = sf::Color::Black;
-	std::string POI1LocationType = "Battle";
-
-
 	//=======================================================
 	// Weapon testing
 	//=======================================================
@@ -110,13 +106,32 @@ int main( int argc, char *argv[] ){
 	std::shared_ptr<PlayerCharacter> testCharacter3 = std::make_shared<PlayerCharacter>("Cnubis", "Assets/AnubisIdle.png");
 	std::shared_ptr<PlayerCharacter> testCharacter4 = std::make_shared<PlayerCharacter>("Dnubis", "Assets/AnubisIdle.png");
 
-	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
+	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
 	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter, testCharacter2, testCharacter3, testCharacter4 };
 
-	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
-	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
+	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
+	Mob monsters = (monsterVector);
 	Party heroParty(heroVector);
+
+
+	//=======================================================
+	// Creating items
+	//=======================================================
+
+	Item stick;
+	stick.setName("Stick of Truth");
+	
+	Weapon pointyStick;
+	pointyStick.setName("Slightly pointy stick");
+
+	Armor boots;
+	boots.setName("Normal boots");
+
+	heroParty.addToInventory(std::make_shared<Item>(stick));
+	heroParty.addToInventory(std::make_shared<Weapon>(pointyStick));
+	heroParty.addToInventory(std::make_shared<Armor>(boots));
+
 
 	//=======================================================
 	// Creating BackGround
@@ -127,7 +142,7 @@ int main( int argc, char *argv[] ){
 
 	std::string takatikimap = "takatiki";
 	std::string backgroundImage = "takatikimap.png";
-	
+
 	std::string menuBackGround = "menu";
 	std::string menuBackGroundImage = "Assets/menu.jpg";
 
@@ -144,20 +159,14 @@ int main( int argc, char *argv[] ){
 	Combat testCombat(window, heroParty, monsters, combatBackground, background);
 	
 	//=======================================================
-	// Creating Inventory
-	//=======================================================
-
-	InventoryDisplay InventoryD(heroParty, window);
-
-	//=======================================================
 	// Creating Menu
 	//=======================================================
 
 	Menu testMenu(menuBackGround, background);
 
-	std::function<void()> inventoryOpen = [&InventoryD]() {InventoryD.use(); };
+	std::function<void()> inventoryOpen = [&heroParty, &window]() {InventoryDisplay InventoryD(heroParty, window); InventoryD.use(); };
 	std::function<void()> close = [&window]() {window.close(); };
-	std::function<void()> niksFunctie = []() {};
+	std::function<void()> niksFunctie = [](){};
 
 	std::string inventoryImage = ("Assets/inventory.png");
 	std::string saveImage = ("Assets/save.png");
@@ -172,13 +181,20 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Point Of Interest
 	//=======================================================
-	
+
+	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
+	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
+	std::vector<sf::Vector2f> notPath = {};
+	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
+	float POI1Size = 15;
+	sf::Color POI1Color = sf::Color::Black;
+	std::string POI1LocationType = "Battle";
+
 	std::function<void()> cout1 = [&testCombat]() {testCombat.update(); };
 
 	PointOfInterestContainer poiCont;
 	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cout1, path);
 	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, cout1, notPath);
-
 
 	background.setBackGround(takatikimap, window);
 
@@ -192,6 +208,7 @@ int main( int argc, char *argv[] ){
 
 	TransformableMovement POIMove(partey, newLocation, 0.0f);
 	POIMove.blend();
+	std::vector<sf::Vector2f> moveList;
 
 	//=======================================================
 	// Creating KeyBoard Handler
@@ -199,12 +216,10 @@ int main( int argc, char *argv[] ){
 
 	KeyboardHandler keyHandl;
 
-	keyHandl.addListener(sf::Keyboard::Enter, [&poiCont]() {poiCont.activate(); });
+	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
 	
 	keyHandl.addListener(sf::Keyboard::Escape, [&testMenu, &window]() {testMenu.update(window); });
 
-
-	std::vector<sf::Vector2f> moveList;
 	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
 		if (moveList.size() == 0) {
 			std::vector<sf::Vector2f> temp = poiCont.getForwardPath();
@@ -307,20 +322,33 @@ int main( int argc, char *argv[] ){
 			if (event.type == sf::Event::KeyPressed) {
 				keyHandl.processKey(event.key.code);
 			}
-
 		}
 
 		if (moveList.size() > 0 && POIMove.isFinished()) {
+			// calc random encounter
+			int encounterChange = rand() % 100 + 1;
+			if (encounterChange > 90){
+				testMonster = std::make_shared<Monster>("U snap it is u", "Assets/AnubisIdle.png");
+				testMonster->makeMonster();
+				std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
+				Mob monsterParty(monsterVector);
+				Combat testCombat(window, heroParty, monsterParty, combatBackground, background);
+				std::cout << "QUEUEUEUE battle music" << '\n';
+				std::cout << encounterChange << '\n';
+				testCombat.update();
+				
+			}
 			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
 			moveList.pop_back();
 			POIMove.blend();
 		}
 		else if (moveList.size() == 0 && POIMove.isFinished()) {
-			// niks
+			//doe niks
 		}
 		if (!POIMove.isFinished()) {
 			POIMove.update();
 		}
+
 		window.clear();
 		background.draw(window);
 		poiCont.draw(window);
@@ -328,4 +356,6 @@ int main( int argc, char *argv[] ){
 		window.display();
 
 	}
+	return 0;
 }
+

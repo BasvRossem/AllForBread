@@ -14,6 +14,7 @@ private:
 
 public:
 	Monster(const std::string & characterName, const std::string & textureName);
+	Monster(const std::string & characterName, const std::string & textureName, const int & frameAmount);
 
 
 	/// \brief

@@ -7,8 +7,8 @@
 #include "EnumClasses.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
 #include <cstdlib>
-#include "Action.hpp"
 #include "Attack.hpp"
+#include "ResourceBar.hpp"
 /// @file
 
 /// \brief
@@ -21,18 +21,21 @@ protected:
 	Animation currentAnimation;
 	Animation deathAnimation;
 	
-	std::vector<std::shared_ptr<Action>> actions;
+	Attacks attacks;
 
 	std::string name;
 	sf::Vector2f position;
 	sf::Clock clock;
 
-	int maxHealth = 10;
+	int maxHealth = 1;
+	int currentHealth = maxHealth;
+
 	int maxMana = 100;
+	int currentMana = maxMana;
+
 	int level = 1;
 
-	int currentHealth = maxHealth;
-	int currentMana = maxMana;
+	ResourceBar healthBar = ResourceBar(sf::Vector2f(0.0f, 0.0f), maxHealth, currentHealth);
 
 	std::unordered_map<AbilityScores, int> characterStats = {
 		{AbilityScores::vitality,	10},
@@ -109,15 +112,6 @@ public:
 	float getModifier(const DamageTypes & modifier);
 
 	/// \brief
-	/// Returns action name at given index. If index is out of bounds, return empty string
-	std::string getActionName(const unsigned int & id);
-
-
-	/// \brief
-	/// Returns all character actions in a vector
-	std::vector<std::shared_ptr<Action>> getActions();
-
-	/// \brief
 	/// Lowers health by given amount
 	void decreaseHealth(const int & modifier);
 
@@ -157,15 +151,26 @@ public:
 	/// Prints all abilities and values
 	void printAbilityStats();
 
-	/// \brief
-	/// Adds a combat action
-	void addCombatAction(std::shared_ptr<Action>);
-
-	/// \brief
-	/// Activates action at given index, target at given character
-	void activateCombatAction(const unsigned int & id, const std::shared_ptr<Character> &c);
 
 	/// \brief
 	/// Returns the coodinates of the midpoint of the sprite
 	sf::Vector2f getSpriteMidpoint();
+
+
+	void activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i);
+
+	std::array<std::pair<std::string, int>, 4> getAttacks();
+
+	unsigned int getModifier(const unsigned int & i);
+
+	/// brief
+	/// Returns a shared pointer to the healthBar
+	std::shared_ptr<ResourceBar> getHealthBar(); \
+
+	/// \brief
+	/// Repositions the healthbar to directly above the characterSprite
+	void centreHealthBar();
+
+	void positionHealthbar(const sf::Vector2f & position);
+
 };

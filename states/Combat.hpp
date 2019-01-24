@@ -10,14 +10,27 @@
 #include "../Core/dialogBox.h"
 #include "../Core/background.hpp"
 #include "../Core/KeyboardHandler.hpp"
-#include "../Character/action.hpp"
 #include "../Character/Attack.hpp"
+#include "../Character/ResourceBar.hpp"
+#include "../Character/Mob.hpp"
 
 class Combat : public State {
 private:
-	
+	//End of Combat
+	bool CombatFinished = false;
+
+	//Party and monsters
 	Party party;
-	CharacterContainer<std::shared_ptr<Character>> monsters;
+	Mob monsters;
+
+	std::vector<std::shared_ptr<Character>> allCharacters = {};
+
+	//Combat initiative (Character turn order)
+	std::vector<std::shared_ptr<Character>> initiative;
+	uint_fast16_t currentInitiative = 0;
+	std::shared_ptr<Character> currentCharacter;
+
+	//Virtual screens
 	sf::Vector2u animationScreenSize = sf::Vector2u(1920, 680);
 	sf::Vector2u damageScreenSize = sf::Vector2u(1920, 680);
 	sf::Vector2u menuScreenSize = sf::Vector2u(1920, 450);
@@ -26,47 +39,71 @@ private:
 	VirtualScreen damageScreen;
 	VirtualScreen menuScreen;
 
+	//Dialog box
 	DialogBox diaBox;
 	std::vector<std::string> combatChoices;
+	DialogBox afterCombatBox;
 
-	bool attackFeedbackDone = 1;
+	//Attack feedback
+	bool attackFeedbackFinished = 1;
 	sf::Vector2f damageTextMidPoint;
 	sf::Vector2f characterMidpoint;
 	TransformableMovement damageMover;
 	sf::Font attackFont;
 	std::shared_ptr<sf::Text> damageText;
 
-	std::vector<std::shared_ptr<Character>> initiative; //Players and monsters
-	
+	//Background
 	BackGround backgrnd;
-	sf::Clock clock;
-	float deltaTime = 0.0f;
-
-	KeyboardHandler keyhandle;
-
-	uint_fast16_t curInitiative = 0;
-
 	std::string surrounding;
 
-public:
-	bool CombatStarted = false;
-	bool CombatFinished = false;
+	//Keyboard
+	KeyboardHandler keyhandle;
 
-	Combat(sf::RenderWindow & window, Party & party, CharacterContainer<std::shared_ptr<Character>> & monster, std::string surrounding, BackGround & backgrnd);
+	//Functions
+	void attackFeedbackInitialiser(const std::shared_ptr<Character> & target, const sf::String& info);
+
+	bool attackFeedbackDone = true;
+public:
+
+
+	Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::string surrounding, BackGround & backgrnd);
 	~Combat();
 
-	void start();
+	void checkEvents();
+
 	virtual State* update();
+	void newCurrentCharacter();
 	void draw();
-	void Stop();
+	void stop();
 
-	void attackFeedback(std::shared_ptr<Character> & attacked, int dmg);
 
-	//-Added 3 function (Niels)
+	void makeAttackFeedback(const std::shared_ptr<Character> & target, const int & info);
+	void makeAttackFeedback(const std::shared_ptr<Character> & target, const std::string & info);
+	void updateAttackFeedback();
+
+
 	void checkMonstersDeath();
+	void checkPlayerDeath();
 
+	/// \brief
+	/// Party victory function, closes the combat screen and state as if the players won
 	void partyVictory();
+
+	/// \brief
+	/// Monster victory function, closes the combat screen and state as if monsters won
 	void monsterVictory();
+
+	/// \brief
+	/// Sorts the initiative vector by dexterity value (high to low)
 	void calculateInitiative(std::vector<std::shared_ptr<Character>> &characterVector);
-	std::shared_ptr<Character> getMonster(unsigned int i);
+
+	/// \brief
+	/// Removed given character from the initiative vector
+	void removeFromInitiative(const std::shared_ptr<Character> & character);
+
+	/// \brief
+	/// Checks wether the given parameter is a player or a monster
+	bool isPlayer(const std::shared_ptr<Character> & character);
+
+	std::shared_ptr<Monster> getMonster(unsigned int i);
 };

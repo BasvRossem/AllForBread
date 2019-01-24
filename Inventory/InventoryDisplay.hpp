@@ -14,7 +14,7 @@ private:
 	bool isOpen = false;
 
 	std::shared_ptr<Consumable> itemToUse = nullptr;
-	Party party;
+	Party & party;
 
 	sf::RenderWindow & window;
 	sf::Vector2u leftScreenSize = sf::Vector2u(930, 1040);
