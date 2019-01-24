@@ -112,6 +112,7 @@ void DialogBox::print(std::string& str, bool sound, int speed) {
 			
 
 			for (size_t i = 0; i < tempStr.size(); i++) {
+				w.clear();
 				text.setString(tempStr.substr(0, i));
 				if (sound){
 					float pitch = 1.0f;
@@ -119,9 +120,8 @@ void DialogBox::print(std::string& str, bool sound, int speed) {
 					feedbackSound.play();
 				}
 				draw();
-				w.display();
 				sf::sleep(sf::milliseconds(speed));
-
+				w.display();
 			}
 			draw();
 			oldpage = page;
