@@ -2,6 +2,20 @@
 #include <string>
 #include "Items/Weapon.hpp"
 #include "Character/PlayerCharacter.hpp"
+#include <SFML/Graphics.hpp>
+#include "PointsOfInterest/PointOfInterest.hpp"
+#include "PointsOfInterest/pointOfInterestContainer.hpp"
+#include "core/background.hpp"
+#include "TransformableMovement/TransformableMovement.hpp"
+#include "Core/KeyboardHandler.hpp"
+#include "Character/Party.hpp"
+#include "states/Combat.hpp"
+#include "Core/Menu.hpp"
+
+
+//=======================================================
+// Dummy Functions (Ask Jens)
+//=======================================================
 
 std::string damageTypeText(const DamageTypes & type) {
 	std::string toReturn;
@@ -57,6 +71,7 @@ std::string armorTypeText(const AbilityScores & slot) {
 	return toReturn;
 }
 
+
 int main( int argc, char *argv[] ){
 
 	//=======================================================
@@ -72,7 +87,97 @@ int main( int argc, char *argv[] ){
 	dagger.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::force, 4));
 	dagger.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::poison, 3));
 	dagger.setName("Dagger");
+
+	//=======================================================
+	// Creating Character
+	//=======================================================
 	
+	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
+	testMonster->makeMonster();
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };
+
+	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
+	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
+	Party heroParty(heroVector);
+
+	//=======================================================
+	// Creating BackGround
+	//=======================================================
+
+	std::string combatBackground = "combatBackGround";
+	std::string combatBackgroundImage = "Assets/background680.png";
+
+	std::string takatikimap = "takatiki";
+	std::string backgroundImage = "takatikimap.png";
+	
+	std::string menuBackGround = "menu";
+	std::string menuBackGroundImage = "Assets/menu.jpg";
+
+	BackGround background;
+
+	background.add(takatikimap, backgroundImage);
+	background.add(combatBackground, combatBackgroundImage);
+	background.add(menuBackGround, menuBackGroundImage);
+
+	//=======================================================
+	// Creating Combat
+	//=======================================================
+
+	Combat testCombat(window, heroParty, monsters, combatBackground, background);
+	
+	//=======================================================
+	// Creating Menu
+	//=======================================================
+
+	Menu testMenu(menuBackGround, background);
+
+	std::function<void()> close = [&window]() {window.close(); };
+	std::function<void()> niksFunctie = []() {};
+
+	std::string inventoryImage = ("Assets/inventory.png");
+	std::string saveImage = ("Assets/save.png");
+	std::string loadImage = ("Assets/load.png");
+	std::string closeImage = ("Assets/close.png");
+
+	testMenu.addTile(inventoryImage, niksFunctie);
+	testMenu.addTile(saveImage, niksFunctie);
+	testMenu.addTile(loadImage, niksFunctie);
+	testMenu.addTile(closeImage, close);
+
+	//=======================================================
+	// Creating Point Of Interest
+	//=======================================================
+	
+	std::function<void()> cout1 = [&testCombat]() {testCombat.update(); };
+
+	PointOfInterestContainer poiCont;
+	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cout1, path);
+	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, cout1, notPath);
+
+
+	background.setBackGround(takatikimap, window);
+
+	std::shared_ptr<sf::RectangleShape> partey(new sf::RectangleShape);
+	sf::Vector2f abh(20, 20);
+	sf::Vector2f newLocation;
+	newLocation = poiCont.getCurrentPointLocation();
+	partey->setSize(abh);
+	partey->setPosition(newLocation);
+	partey->setFillColor(sf::Color::Black);
+
+	TransformableMovement POIMove(partey, newLocation, 0.0f);
+	POIMove.blend();
+
+	//=======================================================
+	// Creating KeyBoard Handler
+	//=======================================================
+
+	KeyboardHandler keyHandl;
+
+	keyHandl.addListener(sf::Keyboard::Enter, [&poiCont]() {poiCont.activate(); });
+	
+	keyHandl.addListener(sf::Keyboard::Escape, [&testMenu, &window]() {testMenu.update(window); });
+
 
 	auto differences = zweihander.compareTo(dagger);
 	std::cout << "Als je dagger equipped, volgen er de volgende verschillen.\n";
@@ -118,19 +223,58 @@ int main( int argc, char *argv[] ){
 			} else {
 				std::cout << "Je verliest ";
 			}
-		} else if(std::get<1>(difference) > 0){
+		}
+		else if (std::get<1>(difference) > 0) {
 			if (std::get<2>(difference) == &chainmail) {
 				std::cout << "Je verliest ";
-			} else {
+			}
+			else {
 				std::cout << "Je krijgt ";
 			}
-		} else {
+		}
+		else {
 			std::cout << "Er gebeurt iets?:";
 		}
+		
 		std::cout << std::get<1>(difference)
-			<< ' '
-			<< armorTypeText(std::get<0>(difference))
-			<< " ability!"
-			<< '\n';
+		<< ' '
+		<< armorTypeText(std::get<0>(difference))
+		<< " ability!"
+		<< '\n';
+
+	}
+	//=======================================================
+	// While Loop
+	//=======================================================
+
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+			}
+			if (event.type == sf::Event::KeyPressed) {
+				keyHandl.processKey(event.key.code);
+			}
+
+		}
+
+		if (moveList.size() > 0 && POIMove.isFinished()) {
+			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
+			moveList.pop_back();
+			POIMove.blend();
+		}
+		else if (moveList.size() == 0 && POIMove.isFinished()) {
+			// niks
+		}
+		if (!POIMove.isFinished()) {
+			POIMove.update();
+		}
+		window.clear();
+		background.draw(window);
+		poiCont.draw(window);
+		window.draw(*partey);
+		window.display();
+
 	}
 }
