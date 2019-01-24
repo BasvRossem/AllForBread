@@ -96,3 +96,11 @@ void PlayerCharacter::setWeapon(const WeaponSlots & slot, const Weapon & newWeap
 	}
 	weapons[slot] = newWeapon;
 }
+
+std::unordered_map<WeaponSlots, Weapon> PlayerCharacter::getWeaponMap(){
+	return weapons;
+}
+
+std::unordered_map<ArmorSlots, Armor> PlayerCharacter::getArmorMap(){
+	return armor;
+}

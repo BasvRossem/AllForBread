@@ -5,7 +5,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "../Character/Party.hpp"
-#include "../PointsOfIntrest/pointOfInterestContainer.hpp"
+#include "../PointsOfInterest/pointOfInterestContainer.hpp"
 #include <map>
 #include "../Core/background.hpp"
 class DataManager

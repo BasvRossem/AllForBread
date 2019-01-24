@@ -106,10 +106,11 @@ void ResourceBar::setCurrentResource(const int & newCurrentResource) {
 
 void ResourceBar::setBarColor(const sf::Color & newColor) {
 	barColor = newColor;
+	barInnerMeter.setFillColor(barColor);
 }
 
 void ResourceBar::setBarBackgroundColor(const sf::Color & newColor) {
-	barBackground = newColor;
+	barBackground.setFillColor(newColor);
 }
 
 void ResourceBar::draw(sf::RenderWindow & window) {

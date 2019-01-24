@@ -18,11 +18,11 @@ public:
 
 	/// \brief
 	/// Returns rewardExperience 
-	int getRewardExperience();
+	const int getRewardExperience();
 
 	/// \brief
 	/// Returns rewardCurrency
-	int getRewardCurrency();
+	const int getRewardCurrency();
 
 	/// \brief
 	/// Function call for when monster dies

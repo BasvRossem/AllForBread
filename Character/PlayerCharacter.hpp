@@ -57,4 +57,8 @@ public:
 	/// \brief
 	/// Sets given weapon to given weaponslot
 	void setWeapon(const WeaponSlots & slot, const Weapon & newWeapon);
+
+	std::unordered_map<WeaponSlots, Weapon> getWeaponMap();
+
+	std::unordered_map<ArmorSlots, Armor> getArmorMap();
 };
