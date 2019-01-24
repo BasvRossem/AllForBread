@@ -20,6 +20,6 @@ public:
 	void addTile(std::string & imageName, std::function<void()> & f);
 	void update(sf::RenderWindow & window);
 	void select();
-	void selectChangePosition(const int & id);
+	void selectChangePosition(const unsigned int & id);
 };
 

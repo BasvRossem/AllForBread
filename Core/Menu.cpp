@@ -18,7 +18,7 @@ void Menu::addTile(std::string & imageName, std::function<void()> & f) {
 	tiles.push_back(std::make_shared<Tile>(imageName, p, size, f));
 }
 
-void Menu::selectChangePosition(const int & id) {
+void Menu::selectChangePosition(const unsigned int & id) {
 	if (id >= 0 && id < tiles.size()) {
 		selectedID = id;
 		selectRectangle.setPosition(sf::Vector2f{ 430 + float(210 * id), 435 });
@@ -31,7 +31,7 @@ void Menu::select() {
 
 void Menu::update(sf::RenderWindow & window) {
 	bool menu = true;
-	backGround.setBackGround(surroundings, sf::Vector2f{ 1920,1080 });
+	backGround.setBackGround(surroundings, sf::Vector2f{ 0,0 }, sf::Vector2f{ 1920,1080 });
 	KeyboardHandler keyHandl;
 	sf::Vector2f mousePosition = sf::Vector2f{ sf::Mouse::getPosition(window) };
 	keyHandl.addListener(sf::Keyboard::Enter, [&]() {select(); });
