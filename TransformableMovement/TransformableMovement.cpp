@@ -25,7 +25,6 @@ void TransformableMovement::blend(){
 		double fps = 1.0 / currentTime;
 		
 		sf::Vector2f movement = position - targetPosition;
-		std::cout << movement.x << ", " << movement.y << std::endl;
 		if (duration < 0) {
 			TransformableMovementBlend = 0;
 			return;

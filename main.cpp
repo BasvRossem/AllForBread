@@ -10,14 +10,14 @@
 #include "Core/KeyboardHandler.hpp"
 #include "Character/Party.hpp"
 #include "states/Combat.hpp"
-
+#include "Character/PartyOverview.hpp"
 
 
 int main(int argc, char *argv[]) {
-	Weapon sword;
-
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
+	Weapon sword;
+
 
 	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
 	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
@@ -70,9 +70,12 @@ int main(int argc, char *argv[]) {
 	TransformableMovement POIMove(partey, newLocation, 0.0f);
 	POIMove.blend();
 
+	PartyOverview overview(heroParty);
+
 	KeyboardHandler keyHandl;
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&poiCont]() {poiCont.activate(); });
+	keyHandl.addListener(sf::Keyboard::C, [&overview, &window]() {overview.open(window); });
 
 	std::vector<sf::Vector2f> moveList;
 	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
@@ -99,6 +102,8 @@ int main(int argc, char *argv[]) {
 		}
 	});
 
+	heroParty[0]->decreaseHealth(4);
+
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -123,6 +128,7 @@ int main(int argc, char *argv[]) {
 			POIMove.update();
 		}
 		window.clear();
+
 		background.draw(window);
 		poiCont.draw(window);
 		window.draw(*partey);

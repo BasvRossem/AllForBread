@@ -7,9 +7,10 @@ ResourceBar::ResourceBar(const sf::Vector2f & position, const sf::Vector2f & siz
 	currentValue(currentValue),
 	barColor(barColor)
 {
+	this->setPosition(position);
 	barBackground.setSize(size);
-	barBackground.setPosition(position);
-	barInnerMeter.setPosition(position);
+	barBackground.setPosition(this->position);
+	barInnerMeter.setPosition(this->position);
 	barBackground.setFillColor(sf::Color::White);
 	barInnerMeter.setFillColor(barColor);
 };
@@ -19,9 +20,10 @@ ResourceBar::ResourceBar(const sf::Vector2f & position, const int & maxValue, co
 	maxValue(maxValue),
 	currentValue(currentValue)
 {
+	this->setPosition(position);
 	barBackground.setSize(size);
-	barBackground.setPosition(position);
-	barInnerMeter.setPosition(position);
+	barBackground.setPosition(this->position);
+	barInnerMeter.setPosition(this->position);
 	barBackground.setFillColor(sf::Color::White);
 	barInnerMeter.setFillColor(sf::Color::Red);
 }
@@ -37,27 +39,32 @@ void ResourceBar::setPosition(const int & x, const int & y) {
 }
 
 
-void ResourceBar::setPosition(const sf::Vector2f & newPosition) {
-	position = sf::Vector2f(
-		newPosition.x - (size.x / 2),
-		newPosition.y - (size.y / 2)
-	);
-
+void ResourceBar::setPosition(const sf::Vector2f & newPosition, const bool & recalculatePositionCentre) {
+	if (recalculatePositionCentre) {
+		position = sf::Vector2f(
+			newPosition.x - (size.x / 2),
+			newPosition.y - (size.y / 2)
+		);
+	} else {
+		position = newPosition;
+	}
 	barBackground.setPosition(position);
 	barInnerMeter.setPosition(position);
 }
 
 
-void ResourceBar::resize(const int & x, const int & y) {
-	size = sf::Vector2f(
+void ResourceBar::setSize(const int & x, const int & y) {
+	setSize( sf::Vector2f(
 		static_cast<float>(x),
 		static_cast<float>(y)
-	);
+	));
 }
 
 
-void ResourceBar::resize(const sf::Vector2f & newSize) {
+void ResourceBar::setSize(const sf::Vector2f & newSize) {
 	size = newSize;
+	barBackground.setSize(newSize);
+	barInnerMeter.setSize(newSize);
 }
 
 

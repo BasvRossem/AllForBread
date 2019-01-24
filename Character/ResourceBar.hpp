@@ -40,15 +40,15 @@ public:
 
 	/// \brief
 	/// Repositions the resourcebar to given position
-	void setPosition(const sf::Vector2f & newPosition);
+	void setPosition(const sf::Vector2f & newPosition, const bool & recalculatePositionCentre = true);
 
 	/// \brief
 	/// Resizes the healthbar
-	void resize(const int & x, const int & y);
+	void setSize(const int & x, const int & y);
 
 	/// \brief
 	/// Resizes the health bar
-	void resize(const sf::Vector2f & newSize);
+	void setSize(const sf::Vector2f & newSize);
 
 	/// \brief
 	/// Updates the health bar
