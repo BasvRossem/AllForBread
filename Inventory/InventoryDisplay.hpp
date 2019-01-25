@@ -32,6 +32,7 @@ private:
 	std::pair<std::vector<std::shared_ptr<PlayerInventoryTile>>, std::vector<std::shared_ptr<InventoryTile>>> pTile;
 	bool firstCollum = true;
 	int i = 0;
+	int selected = 4;
 
 	KeyboardHandler keyHandler;
 public:
@@ -41,7 +42,12 @@ public:
 	void draw();
 	void drawLeftScreen();
 	void drawRightScreen();
+	void del();
+	void deletePlayerItem();
 	void deleteItem();
+	void select();
+	void selectPlayer();
+	void selectItem();
 
 	void switchCollumSelectbox();
 	void switchRowSelectbox(unsigned int index);

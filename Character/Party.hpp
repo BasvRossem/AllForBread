@@ -47,4 +47,10 @@ public:
 	void addToInventory(const std::shared_ptr<Item> & item);
 	
 	void eraseItem(std::shared_ptr<Item> i);
+
+	void addWeapontoPartyMember(std::shared_ptr<PlayerCharacter> ,std::shared_ptr<Weapon> i);
+
+	void addArmortoPartyMember(std::shared_ptr<PlayerCharacter>, std::shared_ptr<Armor> i);
+
+
 };

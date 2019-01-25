@@ -57,7 +57,8 @@ InventoryDisplay::InventoryDisplay(Party & party, sf::RenderWindow & window) :
 	keyHandler.addListener(sf::Keyboard::Down, [&]() {switchRowSelectbox(i + 1); });
 	keyHandler.addListener(sf::Keyboard::Left, [&]() {switchCollumSelectbox(); });
 	keyHandler.addListener(sf::Keyboard::Right, [&]() {switchCollumSelectbox(); });
-	keyHandler.addListener(sf::Keyboard::Delete, [&]() {deleteItem(); });
+	keyHandler.addListener(sf::Keyboard::Delete, [&]() {del(); });
+	keyHandler.addListener(sf::Keyboard::Enter, [&]() {select(); });
 	keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false; });
 }
 
@@ -69,7 +70,7 @@ InventoryDisplay::~InventoryDisplay()
 
 void InventoryDisplay::use() {
 	isOpen = true;
-	while (isOpen ) {
+	while (isOpen && window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)){
 			if (event.type == sf::Event::Closed)
@@ -142,6 +143,19 @@ void InventoryDisplay::switchRowSelectbox(unsigned int index) {
 	}
 }
 
+void InventoryDisplay::del() {
+	if (firstCollum) {
+		deletePlayerItem();
+	}
+	else {
+		deleteItem();
+	}
+}
+
+void InventoryDisplay::deletePlayerItem() {
+	party.addToInventory(pTile.second[i]->getItem());
+}
+
 void InventoryDisplay::deleteItem() {
 	if (firstCollum == false) {
 		party.eraseItem(pTile.second[i]->getItem());
@@ -160,5 +174,52 @@ void InventoryDisplay::deleteItem() {
 					)
 			);
 		}
+	}
+}
+
+void InventoryDisplay::select() {
+	if (firstCollum) {
+		selectPlayer();
+	}
+	else {
+		selectItem();
+	}
+}
+
+void InventoryDisplay::selectPlayer() {
+	if (selected == i ) {
+		pTile.first[i]->setColor(sf::Color::Black);
+		selected = 4;
+	}
+	else if (selected == 4){
+		pTile.first[i]->setColor(sf::Color::Green);
+		selected = i;
+	}
+	
+}
+
+void InventoryDisplay::selectItem() {
+	if (selected != 4) {
+		std::shared_ptr<Weapon> a = std::dynamic_pointer_cast<Weapon>(pTile.second[i]->getItem());
+		std::shared_ptr<Armor> b = std::dynamic_pointer_cast<Armor>(pTile.second[i]->getItem());
+		if (a != nullptr) {
+			party.addWeapontoPartyMember(pTile.first[selected]->getCharacter(), a);
+			deleteItem();
+		}
+		else if (b != nullptr) {
+			party.addArmortoPartyMember(pTile.first[selected]->getCharacter(), b);
+			deleteItem();
+		}
+		pTile.first.clear();
+		for (unsigned int i = 0; i < party.size(); i++) {
+			pTile.first.push_back(
+				std::make_shared<PlayerInventoryTile>(
+					party[i],
+					sf::Vector2f(0.0f, static_cast<float>(i * leftScreenSize.y / 4)),
+					sf::Vector2f(static_cast<float>(leftScreenSize.x), static_cast<float>(leftScreenSize.y / 4))
+					)
+			);
+		}
+		selected = 4;
 	}
 }

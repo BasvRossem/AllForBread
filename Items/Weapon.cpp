@@ -13,6 +13,10 @@ Weapon::Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int>& dama
 	primaryDamageEffect(damage)
 {}
 
+Weapon::~Weapon() {
+
+}
+
 const WeaponSlots Weapon::getWeaponSlot() const {
 	return weaponSlot;
 }

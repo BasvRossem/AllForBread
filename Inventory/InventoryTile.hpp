@@ -3,6 +3,7 @@
 #include <string>
 #include "../Items/Item.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
+#include "../Items/Weapon.hpp"
 
 class InventoryTile
 {

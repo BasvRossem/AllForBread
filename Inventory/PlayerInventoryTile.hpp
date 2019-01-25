@@ -6,14 +6,15 @@
 #include "../Character/PlayerCharacter.hpp"
 #include "../Items/Weapon.hpp"
 #include "../Items/Armor.hpp"
+#include "InventoryTile.hpp"
 
 class PlayerInventoryTile{
 private:
 	sf::RectangleShape rect;
 	sf::Font font;
 	sf::Text textPlayerName;
-	std::vector<sf::Text> textWaponNames;
-	std::vector<sf::Text> textArmorNames;
+	std::vector<std::shared_ptr<InventoryTile>> tileWaponNames;
+	std::vector<std::shared_ptr<InventoryTile>> tileArmorNames;
 	std::unordered_map<WeaponSlots, Weapon> weapons;
 	std::unordered_map<ArmorSlots, Armor> armor;
 	std::shared_ptr<PlayerCharacter> character;
@@ -22,4 +23,8 @@ public:
 	void draw(sf::RenderWindow & window);
 	void draw(VirtualScreen & vScreen);
 	sf::Vector2f getSelectboxPosition();
+	void setColor(sf::Color color);
+	std::shared_ptr<PlayerCharacter> getCharacter();
+	std::unordered_map<WeaponSlots, Weapon> getWeapons();
+	std::unordered_map<ArmorSlots, Armor> getArmor();
 };

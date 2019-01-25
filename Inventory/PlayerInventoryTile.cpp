@@ -8,10 +8,14 @@ PlayerInventoryTile::PlayerInventoryTile(std::shared_ptr<PlayerCharacter> charac
 	weapons = character->getWeaponMap();
 	armor = character->getArmorMap();
 
+	float outLine = 2;
+	float spaceBetweenTiles = 5; 
 
-	rect.setPosition(position);
-	rect.setSize(size);
+	rect.setPosition(sf::Vector2f{ position.x + outLine + spaceBetweenTiles, position.y + outLine + spaceBetweenTiles});
+	rect.setSize(sf::Vector2f{ size.x - 2* (outLine +spaceBetweenTiles), size.y - 2* (outLine +spaceBetweenTiles)});
 	rect.setFillColor(sf::Color::Black);
+	rect.setOutlineThickness(outLine);
+	rect.setOutlineColor(sf::Color::White);
 
 	font.loadFromFile("Assets/PIXEARG_.ttf");
 	textPlayerName.setFont(font);
@@ -22,6 +26,25 @@ PlayerInventoryTile::PlayerInventoryTile(std::shared_ptr<PlayerCharacter> charac
 	textPlayerName.setString(character->getName());
 
 	int i = 0;
+	for (auto & w : weapons) {
+		tileWaponNames.push_back(
+			std::make_shared<InventoryTile>(std::make_shared<Weapon>(w.second),
+				sf::Vector2f(sf::Vector2f{ position.x + 10, position.y + size.y / 3 * i + 100}),
+				sf::Vector2f(350.0f ,float(size.y / 4))));
+		i++;
+	}
+	i = 0;
+	for (auto & a : armor) {
+		tileArmorNames.push_back(
+			std::make_shared<InventoryTile>(std::make_shared<Armor>(a.second),
+				sf::Vector2f(sf::Vector2f{ position.x + 400, position.y + size.y / 6 * i  }),
+				sf::Vector2f(350.0f, float(size.y / 6))));
+		i++;
+	}
+
+
+
+	/*int i = 0;
 	for (auto & w : weapons) {
 		textWaponNames.push_back(sf::Text());
 		textWaponNames[i].setFont(font);
@@ -43,18 +66,18 @@ PlayerInventoryTile::PlayerInventoryTile(std::shared_ptr<PlayerCharacter> charac
 		textArmorNames[i].setFillColor(sf::Color::White);
 		textArmorNames[i].setString(a.second.getName());
 		i++;
-	}
+	}*/
 }
 
 
 void PlayerInventoryTile::draw(sf::RenderWindow & window) {
 	window.draw(rect);
 	window.draw(textPlayerName);
-	for (const auto &w : textWaponNames) {
-		window.draw(w);
+	for (const auto &w : tileWaponNames) {
+		w->draw(window);
 	}
-	for (const auto &a : textArmorNames) {
-		window.draw(a);
+	for (const auto &a : tileArmorNames) {
+		a->draw(window);
 	}
 
 }
@@ -62,15 +85,30 @@ void PlayerInventoryTile::draw(sf::RenderWindow & window) {
 void PlayerInventoryTile::draw(VirtualScreen & vScreen) {
 	vScreen.drawSurfaceDraw(rect);
 	vScreen.drawSurfaceDraw(textPlayerName);
-	for (const auto &w : textWaponNames) {
-		vScreen.drawSurfaceDraw(w);
+	for (const auto &w : tileWaponNames) {
+		w->draw(vScreen);
 	}
-	for (const auto &a : textArmorNames) {
-		vScreen.drawSurfaceDraw(a);
+	for (const auto &a : tileArmorNames) {
+		a->draw(vScreen);
 	}
 }
 
 sf::Vector2f PlayerInventoryTile::getSelectboxPosition() {
 	return sf::Vector2f{ rect.getPosition().x + 20 + (rect.getSize().x - 110), rect.getPosition().y + 10 + 20 };
+}
+
+void PlayerInventoryTile::setColor(sf::Color color) {
+	rect.setFillColor(color);
+}
+
+std::shared_ptr<PlayerCharacter> PlayerInventoryTile::getCharacter() {
+	return character;
+}
+
+std::unordered_map<WeaponSlots, Weapon> PlayerInventoryTile::getWeapons() {
+	return weapons;
+}
+std::unordered_map<ArmorSlots, Armor> PlayerInventoryTile::getArmor() {
+	return armor;
 }
 

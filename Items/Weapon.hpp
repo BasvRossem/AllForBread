@@ -13,6 +13,7 @@ private:
 public:
 	Weapon();
 	Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int> & damage);
+	virtual ~Weapon() override;
 
 	const WeaponSlots getWeaponSlot() const;
 	const std::pair<DamageTypes, int> getPrimaryDamageEffect() const;

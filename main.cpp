@@ -132,7 +132,9 @@ int main( int argc, char *argv[] ){
 	heroParty.addToInventory(std::make_shared<Weapon>(pointyStick));
 	heroParty.addToInventory(std::make_shared<Armor>(boots));
 
-
+	heroParty[0]->setArmor(boots.getArmorSlot(), boots);
+	heroParty[0]->setWeapon(pointyStick.getWeaponSlot(), pointyStick);
+	
 	//=======================================================
 	// Creating BackGround
 	//=======================================================

@@ -5,6 +5,10 @@ Item::Item() :
 	description(std::string())
 {}
 
+Item::~Item() {
+
+}
+
 const int Item::getWeight() const {
 	return weight;
 }

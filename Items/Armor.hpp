@@ -13,6 +13,7 @@ private:
 public:
 	Armor();
 	Armor(const ArmorSlots & slot);
+	virtual ~Armor() override;
 
 	const ArmorSlots getArmorSlot() const;
 	const int getPhysicalProtection() const;

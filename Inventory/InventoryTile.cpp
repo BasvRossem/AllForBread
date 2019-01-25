@@ -5,9 +5,14 @@
 InventoryTile::InventoryTile(std::shared_ptr<Item> item, const sf::Vector2f & position, const sf::Vector2f & size) :
 	item(item)
 {
-	rect.setPosition(position);
-	rect.setSize(size);
+	float outLine = 2;
+	float spaceBetweenTiles = 5;
+
+	rect.setPosition(sf::Vector2f{ position.x + outLine + spaceBetweenTiles, position.y + outLine + spaceBetweenTiles });
+	rect.setSize(sf::Vector2f{ size.x - 2 * (outLine + spaceBetweenTiles), size.y - 2 * (outLine + spaceBetweenTiles) });
 	rect.setFillColor(sf::Color::Black);
+	rect.setOutlineThickness(outLine);
+	rect.setOutlineColor(sf::Color::White);
 
 	font.loadFromFile("Assets/PIXEARG_.ttf");
 	text.setFont(font);
@@ -50,7 +55,7 @@ std::string InventoryTile::getDescription() {
 }
 
 sf::Vector2f InventoryTile::getSelectboxPosition() {
-	return sf::Vector2f{ rect.getPosition().x + (rect.getSize().x - 110) + 970, rect.getPosition().y + 10 +20 };
+	return sf::Vector2f{ rect.getPosition().x + (rect.getSize().x - 110) + 970, rect.getPosition().y + 23  };
 }
 
 std::shared_ptr<Item> InventoryTile::getItem() {

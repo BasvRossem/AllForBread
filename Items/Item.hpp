@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "../Character/EnumClasses.hpp"
 
 class Item {
 private:
@@ -9,12 +10,11 @@ private:
 	std::string description;
 public:
 	Item();
-
+	virtual ~Item();
 	const int getWeight() const;
 	const int getBaseValue() const;
 	const std::string getName() const;
 	const std::string getDescription() const;
-
 
 	void setWeight(const int & newWeight);
 	void setBaseValue(const int & newBaseValue);
