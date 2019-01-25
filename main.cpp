@@ -162,21 +162,26 @@ int main( int argc, char *argv[] ){
 	// Creating Menu
 	//=======================================================
 
-	Menu testMenu(menuBackGround, background);
+	Menu menu(menuBackGround, background);
 
-	std::function<void()> inventoryOpen = [&heroParty, &window]() {InventoryDisplay InventoryD(heroParty, window); InventoryD.use(); };
-	std::function<void()> close = [&window]() {window.close(); };
-	std::function<void()> niksFunctie = [](){};
+	std::function<void()> inventoryFunctie = [&heroParty, &window]() {InventoryDisplay InventoryD(heroParty, window); InventoryD.use(); };
+	std::function<void()> partyFunctie = []() {};
+	std::function<void()> saveFunctie = []() {};
+	std::function<void()> loadFunctie = []() {};
+	std::function<void()> closeFunctie = [&window]() {window.close(); };
 
 	std::string inventoryImage = ("Assets/inventory.png");
+	std::string partyImage = ("");
 	std::string saveImage = ("Assets/save.png");
 	std::string loadImage = ("Assets/load.png");
 	std::string closeImage = ("Assets/close.png");
+	
 
-	testMenu.addTile(inventoryImage, inventoryOpen);
-	testMenu.addTile(saveImage, niksFunctie);
-	testMenu.addTile(loadImage, niksFunctie);
-	testMenu.addTile(closeImage, close);
+	menu.addTile(inventoryImage, inventoryFunctie);
+	menu.addTile(partyImage, partyFunctie);
+	menu.addTile(saveImage, saveFunctie);
+	menu.addTile(loadImage, loadFunctie);
+	menu.addTile(closeImage, closeFunctie);
 
 	//=======================================================
 	// Creating Point Of Interest
@@ -218,7 +223,7 @@ int main( int argc, char *argv[] ){
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
 	
-	keyHandl.addListener(sf::Keyboard::Escape, [&testMenu, &window]() {testMenu.update(window); });
+	keyHandl.addListener(sf::Keyboard::Escape, [&menu, &window]() {menu.update(window); });
 
 	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
 		if (moveList.size() == 0) {
