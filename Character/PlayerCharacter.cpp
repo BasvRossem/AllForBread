@@ -20,6 +20,7 @@ void PlayerCharacter::increaseExperience(const int & exp) {
 		int excessExperience = (experience + exp) - experienceGauge;
 		experience = 0;
 		level++;
+		isLevelUp = true;
 		abilityPoints++;
 		float newExperienceGauge = experienceGauge * float(1.2);
 		experienceGauge = static_cast<int>(newExperienceGauge);
@@ -27,7 +28,6 @@ void PlayerCharacter::increaseExperience(const int & exp) {
 
 	} else {
 		experience += exp;
-		isLevelUp = true;
 		return;
 	}
 }
@@ -202,7 +202,7 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 	});
 
 	keyhandle.addListener(sf::Keyboard::Enter, [&window, &vectorIndex, &levelUpVector, &characterStats = characterStats, &abilityPoints = abilityPoints, &name = name, &textBox, &sound, &buffer]()->void {
-		if (characterStats[levelUpVector[vectorIndex].first] < 99) {
+		if (characterStats[levelUpVector[vectorIndex].first] < 99 && abilityPoints > 0) {
 			characterStats[levelUpVector[vectorIndex].first]++;
 			abilityPoints--;
 
