@@ -18,8 +18,8 @@ public:
 	Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players);
 
 	/// \brief
-	/// Awards experience distributed evenly between all members
-	void addExperience(const int & exp);
+	/// Awards experience distributed evenly between all members and returns a vector of characters who got double xp
+	std::vector<std::pair<std::shared_ptr<PlayerCharacter>, bool>> addExperience(const int & exp);
 
 	/// \brief
 	/// Adds currency given amount
@@ -33,6 +33,9 @@ public:
 	/// Returns current currency
 	int getCurrency();
 
+	/// \brief
+	/// Returns party average stat
+	int getAverageStat(const AbilityScores & stat);
 
 	/// \brief
 	/// sets Overworld Position to given value

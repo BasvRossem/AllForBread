@@ -262,3 +262,10 @@ void Character::centreHealthBar() {
 void Character::positionHealthbar(const sf::Vector2f & position) {
 	healthBar.setPosition(position);
 }
+
+bool Character::checkLuckStat() {
+	if ((rand() % 100 + 1) <= characterStats[AbilityScores::luck]) {
+		return true;
+	}
+	return false;
+}

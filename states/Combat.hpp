@@ -45,7 +45,7 @@ private:
 	DialogBox afterCombatBox;
 
 	//Attack feedback
-	bool attackFeedbackFinished = 1;
+	bool attackFeedbackFinished = true;
 	sf::Vector2f damageTextMidPoint;
 	sf::Vector2f characterMidpoint;
 	TransformableMovement damageMover;

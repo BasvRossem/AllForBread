@@ -10,6 +10,16 @@ PlayerCharacter::PlayerCharacter(const std::string & characterName, const std::s
 	experience(exp) {
 };
 
+void PlayerCharacter::draw(sf::RenderWindow & window) {
+	window.draw(*sprite);
+	healthBar.draw(window);
+}
+
+void PlayerCharacter::draw(VirtualScreen & virtualWindow) {
+	virtualWindow.drawSurfaceDraw(*sprite);
+	healthBar.draw(virtualWindow);
+}
+
 void PlayerCharacter::increaseExperience(const int & exp) {
 	//-Safeguard from negative xpReward Values
 	if (exp <= 0) {
@@ -20,6 +30,7 @@ void PlayerCharacter::increaseExperience(const int & exp) {
 		int excessExperience = (experience + exp) - experienceGauge;
 		experience = 0;
 		level++;
+		isLevelUp = true;
 		abilityPoints++;
 		float newExperienceGauge = experienceGauge * float(1.2);
 		experienceGauge = static_cast<int>(newExperienceGauge);
@@ -27,7 +38,6 @@ void PlayerCharacter::increaseExperience(const int & exp) {
 
 	} else {
 		experience += exp;
-		isLevelUp = true;
 		return;
 	}
 }
@@ -202,7 +212,7 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 	});
 
 	keyhandle.addListener(sf::Keyboard::Enter, [&window, &vectorIndex, &levelUpVector, &characterStats = characterStats, &abilityPoints = abilityPoints, &name = name, &textBox, &sound, &buffer]()->void {
-		if (characterStats[levelUpVector[vectorIndex].first] < 99) {
+		if (characterStats[levelUpVector[vectorIndex].first] < 99 && abilityPoints > 0) {
 			characterStats[levelUpVector[vectorIndex].first]++;
 			abilityPoints--;
 
@@ -233,7 +243,6 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 			ss.str(std::string());
 
 			ss << "Luck:		" << characterStats[AbilityScores::luck];
-			std::cout << "Luck:		" << characterStats[AbilityScores::luck] << "\n";
 			stringVector.push_back(ss.str());
 			ss.str(std::string());
 

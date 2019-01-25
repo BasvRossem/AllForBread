@@ -11,7 +11,7 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	backgrnd(backgrnd),
 	surrounding(surrounding),
 	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black),
-	afterCombatBox(window,80, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black)
+	afterCombatBox(window, 1000, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black)
 {
 	//dialogue config
 	diaBox.setTextPosition(sf::Vector2f{ 20.0f, 20.0f });
@@ -251,6 +251,15 @@ void Combat::checkPlayerDeath() {
 
 void Combat::partyVictory() {
 	CombatFinished = true;
+	//=======================================================================================
+	//Last frames before end of battle
+	//=======================================================================================
+	draw();
+	sf::sleep(sf::seconds(1.50));
+
+	//=======================================================================================
+	//-Calculate total rewards
+	//=======================================================================================
 	int totalExperienceReward = 0;
 	int totalCurrencyReward = 0;
 
@@ -260,10 +269,13 @@ void Combat::partyVictory() {
 
 	}
 
-	draw();
-	sf::sleep(sf::seconds(1.50));
+	//=======================================================================================
+	// Construct and show rewards screen
+	//=======================================================================================
 
-	// Show victory screen
+	party.addCurrency(totalCurrencyReward);
+	std::vector<std::pair<std::shared_ptr<PlayerCharacter>, bool>> luckyBastards = party.addExperience(totalExperienceReward);
+
 	std::string afterCombatInfo;
 	afterCombatInfo += "You recieved ";
 	afterCombatInfo += std::to_string(totalCurrencyReward);
@@ -272,10 +284,13 @@ void Combat::partyVictory() {
 	afterCombatInfo += std::to_string(totalExperienceReward);
 	afterCombatInfo += " experience points \n";
 
-	afterCombatBox.print(afterCombatInfo);
+	for (unsigned int i = 0; i < luckyBastards.size(); i++) {
+		if (luckyBastards[i].second) {
+			afterCombatInfo += (luckyBastards[i].first->getName() + " recieved double XP! \n");
+		}
+	}
 
-	party.addCurrency(totalCurrencyReward);
-	party.addExperience(totalExperienceReward);
+	afterCombatBox.print(afterCombatInfo);
 
 	for (unsigned int i = 0; i < party.size(); i++) {
 		if (party[i]->getLevelUp()) {

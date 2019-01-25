@@ -21,7 +21,7 @@ private:
 	bool isLevelUp = false;
 	int experience = 0;
 	int experienceGauge = 100;
-	int abilityPoints = 2;
+	int abilityPoints = 0;
 
 	std::unordered_map<WeaponSlots, Weapon> weapons;
 	std::unordered_map<ArmorSlots, Armor> armor;
@@ -30,6 +30,14 @@ public:
 	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 99);
 	//- Fix constructor initialization sequence to a logical order
 	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp = 99);
+
+	/// \brief 
+	/// Draws the playercharacter on the renderwindow
+	void draw(sf::RenderWindow & window) override;
+
+	/// \brief
+	/// Draws the playercharacter on the virtualscreen
+	void draw(VirtualScreen & virtualWindow) override;
 
 	/// \brief
 	/// Increases experience by given amount

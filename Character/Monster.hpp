@@ -16,6 +16,13 @@ public:
 	Monster(const std::string & characterName, const std::string & textureName);
 	Monster(const std::string & characterName, const std::string & textureName, const int & frameAmount);
 
+	/// \brief
+	/// Draws the monster on the renderwindow
+	void draw(sf::RenderWindow & window) override;
+
+	/// \brief
+	/// Draws the monster on the virtualscreen
+	void draw(VirtualScreen & virtualWindow) override;
 
 	/// \brief
 	/// Returns rewardExperience 

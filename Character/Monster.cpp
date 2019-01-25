@@ -16,6 +16,14 @@ Monster::Monster(const std::string & characterName, const std::string & textureN
 	printRewards();
 }
 
+void Monster::draw(sf::RenderWindow & window) {
+	window.draw(*sprite);
+}
+
+void Monster::draw(VirtualScreen & virtualWindow) {
+	virtualWindow.drawSurfaceDraw(*sprite);
+}
+
 const int Monster::getRewardExperience() {
 	return rewardExperience;
 }
