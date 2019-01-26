@@ -14,6 +14,8 @@ private:
 
 	float totalTime = 0.0;
 	float switchTime;
+
+	bool animate = true;
 public:
 	Animation(std::shared_ptr<sf::Sprite> playerSprite, std::shared_ptr<sf::Texture> texture, float animationDuration);
 	Animation(std::shared_ptr<sf::Sprite> playerSprite, std::shared_ptr<sf::Texture> texture, float animationDuration, int frameAmount);
@@ -21,4 +23,7 @@ public:
 	Animation();
 	~Animation();
 	void update();
+
+	void start();
+	void stop();
 };
