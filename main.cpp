@@ -17,6 +17,8 @@
 #include "Inventory/InventoryDisplay.hpp"
 #include "Character/Mob.hpp"
 
+#include "Core/dialogTree.hpp"
+
 
 
 //=======================================================
@@ -314,12 +316,22 @@ int main( int argc, char *argv[] ){
 	// NPC DIEalogue
 	//=======================================================
 
-	DialogBox npcEncounter(window, 100, 10, "Assets/arial.ttf", sf::Vector2i{ 500, 500 }, sf::Vector2f{20, 20}, sf::Color::Black);
-	
+	DialogBox npcEncounter(window, 100, 10, "Assets/arial.ttf", sf::Vector2i{ 900, 400 }, sf::Vector2f{510, 680}, sf::Color::Black);
+	npcEncounter.setSound("Assets/key.wav");
+	DialogTree randomEncounter;
+	std::shared_ptr<DialogNode> node0(new DialogNode("Good day Sir..."));
+	std::shared_ptr<DialogNode> node1(new DialogNode("I can't believe you've done this!"));
+
+	node0->addDialogOption(std::make_shared<DialogOption>("Good day", std::shared_ptr<DialogNode>(nullptr), [&]() {heroParty.addCurrency(4); }));
+	node0->addDialogOption(std::make_shared<DialogOption>("Fuck off", node1));
+
+	randomEncounter.addNode(node0);
+	randomEncounter.addNode(node1);
 
 	//=======================================================
 	// While Loop
 	//=======================================================
+	
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -345,14 +357,8 @@ int main( int argc, char *argv[] ){
 				std::cout << encounterChange << '\n';
 				testCombat.update();
 				
-			}else if (encounterChange >= 95) {
-				std::string npcLine1 = "Good day Sir...";
-				npcEncounter.print(npcLine1);
-				std::vector<std::pair<std::string, std::function<void()>>> k = {
-					{ "Good day", [&]() {heroParty.addCurrency(4); } },
-					{ "Fuck off", [&]() {std::string npcline = "I can't believe you've done this."; npcEncounter.print(npcline); }}
-				};
-				npcEncounter.printChoices(k);
+			}else if (encounterChange < 90) {
+				randomEncounter.performDialogue(npcEncounter);
 			}
 
 			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);

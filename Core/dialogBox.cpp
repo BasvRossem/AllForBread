@@ -115,9 +115,8 @@ void DialogBox::printPerm(std::vector<std::string>& textVector) {
 	}
 }
 
-void DialogBox::print(std::string& str, bool sound, int speed) {
+void DialogBox::print(std::string str, bool sound, int speed) {
 	std::vector<std::string> strVect = wordwrap(str);
-	std::cout << strVect[0] << '\n';
 	uint_fast16_t page = 0;
 
 	uint_fast16_t oldpage = 1;
@@ -144,10 +143,10 @@ void DialogBox::print(std::string& str, bool sound, int speed) {
 				tempStr.append(strVect[curline]);
 			}
 			
-			std::cout << "string size" << tempStr.size() << '\n' ;
+
 			for (size_t i = 0; i < tempStr.size(); i++) {
-				std::cout << i << '\n';
-				w.clear();
+
+				diaBox.drawSurfaceClear();
 				text.setString(tempStr.substr(0, i));
 				if (sound && tempStr[i] != ' ' && feedbackSound.getBuffer() != NULL){
 					float pitch = 1.0f;
@@ -187,8 +186,8 @@ void DialogBox::clear() {
 
 
 
-void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices) {
-	
+int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices) {
+	int selectedValue = -1;
 	uint_fast16_t page = 0;
 	uint_fast16_t oldPage = 0;
 	bool change = true;
@@ -283,8 +282,10 @@ void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<vo
 						}
 						if (event.type == sf::Event::Closed)
 							w.close();
-						if (event.key.code >= sf::Keyboard::Num1 + begin && event.key.code <= sf::Keyboard::Num0 + max + begin){
+						if (event.key.code >= static_cast<int>(sf::Keyboard::Num1 + begin) && event.key.code <= static_cast<int>(sf::Keyboard::Num0 + max + begin)){
 							selected = true;
+							int index = overAllMax - max;
+							selectedValue = (event.key.code - 26) + index + begin - 1;
 						}
 					}
 				}
@@ -293,10 +294,10 @@ void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<vo
 
 			}
 			if (selected) {
-				break;
+				return selectedValue;
 			}
 
 		}
 	}
-	
+	return -1;
 }
