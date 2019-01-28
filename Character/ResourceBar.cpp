@@ -140,3 +140,7 @@ void ResourceBar::draw(VirtualScreen & virtualWindow) {
 	virtualWindow.drawSurfaceDraw(barBackground);
 	virtualWindow.drawSurfaceDraw(barInnerMeter);
 }
+
+sf::Vector2f ResourceBar::getSize() {
+	return size;
+}

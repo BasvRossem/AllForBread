@@ -96,3 +96,21 @@ void PlayerCharacter::setWeapon(const WeaponSlots & slot, const Weapon & newWeap
 	}
 	weapons[slot] = newWeapon;
 }
+
+const int PlayerCharacter::getCurrentExperience() {
+	return experience;
+}
+
+const int PlayerCharacter::getMaxExperience() {
+	return experienceGauge;
+}
+
+void PlayerCharacter::setPortraitFilename(const std::string & filename) {
+	if (filename.size() > 0) {
+		portraitFileName = filename;
+	}
+}
+
+const std::string PlayerCharacter::getFilename() {
+	return portraitFileName;
+}

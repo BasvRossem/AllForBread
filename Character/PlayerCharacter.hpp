@@ -16,6 +16,10 @@ private:
 	int experienceGauge = 100;
 	int abilityPoints = 0;
 
+	// Filename for the portrait
+	std::string portraitFileName;
+
+
 	std::unordered_map<WeaponSlots, Weapon> weapons;
 	std::unordered_map<ArmorSlots, Armor> armor;
 
@@ -57,4 +61,21 @@ public:
 	/// \brief
 	/// Sets given weapon to given weaponslot
 	void setWeapon(const WeaponSlots & slot, const Weapon & newWeapon);
+
+	/// \brief
+	/// Returns the current experience this player has
+	const int getCurrentExperience();
+
+	/// \brief
+	/// Returns the maximum experience required to levelup
+	const int getMaxExperience();
+
+	/// \brief
+	/// Sets the filename of the portrait
+	void setPortraitFilename(const std::string & filename);
+
+	/// \brief
+	/// Returns current portrait filename
+	/// Remember that the portrait gets loaded at the open function of partyOverview
+	const std::string getFilename();
 };

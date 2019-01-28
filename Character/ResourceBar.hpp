@@ -94,7 +94,11 @@ public:
 	/// Draws the bar on the screen
 	void draw(sf::RenderWindow & window);
 
-	/// brief
+	/// \brief
 	/// Draws the bar on the virtual screen
 	void draw(VirtualScreen & virtualWindow);
+
+	/// \brief
+	/// Returns size
+	sf::Vector2f getSize();
 };
