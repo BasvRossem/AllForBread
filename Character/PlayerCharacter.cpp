@@ -284,3 +284,11 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 	isLevelUp = false;
 }
 
+void PlayerCharacter::removeArmor(const ArmorSlots & slot) {
+	armor.erase(slot);
+}
+
+
+void PlayerCharacter::removeWeapon(const WeaponSlots & slot) {
+	weapons.erase(slot);
+}

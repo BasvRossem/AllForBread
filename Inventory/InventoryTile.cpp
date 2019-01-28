@@ -58,6 +58,15 @@ sf::Vector2f InventoryTile::getSelectboxPosition() {
 	return sf::Vector2f{ rect.getPosition().x + (rect.getSize().x - 110) + 970, rect.getPosition().y + 23  };
 }
 
+sf::Vector2f InventoryTile::getSelectboxPositionMini() {
+	return sf::Vector2f{ rect.getPosition().x + rect.getSize().x - 20 , rect.getPosition().y +23};
+}
+
+
 std::shared_ptr<Item> InventoryTile::getItem() {
 	return item;
+}
+
+void InventoryTile::setColor(sf::Color color) {
+	rect.setFillColor(color);
 }

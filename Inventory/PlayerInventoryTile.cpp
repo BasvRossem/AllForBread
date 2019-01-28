@@ -112,3 +112,18 @@ std::unordered_map<ArmorSlots, Armor> PlayerInventoryTile::getArmor() {
 	return armor;
 }
 
+std::shared_ptr<Item> PlayerInventoryTile::getItem(const int &collom, const int &row) {
+	if (collom == 0) {
+		return tileWaponNames[row]->getItem();
+	}
+	else if (collom == 1) {
+		return tileArmorNames[row]->getItem();
+	}
+}
+
+std::vector<std::shared_ptr<InventoryTile>> PlayerInventoryTile::getWeaponTiles() {
+	return tileWaponNames;
+}
+std::vector<std::shared_ptr<InventoryTile>> PlayerInventoryTile::getArmorTiles() {
+	return tileArmorNames;
+}

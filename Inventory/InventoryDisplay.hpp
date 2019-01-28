@@ -30,9 +30,9 @@ private:
 	sf::Color halfTransparent = sf::Color(0, 0, 0, 125);
 	sf::RectangleShape selectBox;
 	std::pair<std::vector<std::shared_ptr<PlayerInventoryTile>>, std::vector<std::shared_ptr<InventoryTile>>> pTile;
-	bool firstCollum = true;
-	int i = 0;
-	int selected = 4;
+
+	std::pair<int, int> selected;
+	std::pair<int, int> lastSelected;
 
 	KeyboardHandler keyHandler;
 public:
@@ -42,13 +42,20 @@ public:
 	void draw();
 	void drawLeftScreen();
 	void drawRightScreen();
-	void del();
-	void deletePlayerItem();
-	void deleteItem();
-	void select();
-	void selectPlayer();
-	void selectItem();
+	void deleteItem(const int & i);
 
-	void switchCollumSelectbox();
-	void switchRowSelectbox(unsigned int index);
+	void changeSelected(const int x, const int y, const int &character = 4);
+	void setZeroSelected(const int & collum, const int &character  =4);
+
+
+
+	void select(const int & collom, const int & row);
+	void deselect(const int & collom, const int & row);
+
+	void addItemToCharacter(const int & character , const int & item);
+	void removeItemFromCharacer(const int & character, int & collom, const int & row);
+
+
+	void reloadTiles();
+	//void selectBoxPostion(const std::pair<int, int> & postion, const int &character = 4);
 };

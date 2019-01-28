@@ -18,9 +18,11 @@ public:
 	void draw(VirtualScreen & vScreen);
 	int getWeight();
 	int getBaseValue();
+	void setColor(sf::Color color);
 	std::string getName();
 	std::string getDescription();
 	sf::Vector2f getSelectboxPosition();
+	sf::Vector2f getSelectboxPositionMini();
 	std::shared_ptr<Item> getItem();
 };
 

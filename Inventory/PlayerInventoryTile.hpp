@@ -27,4 +27,8 @@ public:
 	std::shared_ptr<PlayerCharacter> getCharacter();
 	std::unordered_map<WeaponSlots, Weapon> getWeapons();
 	std::unordered_map<ArmorSlots, Armor> getArmor();
+	std::shared_ptr<Item>  getItem(const int &collom, const int &row);
+	std::vector<std::shared_ptr<InventoryTile>> getWeaponTiles();
+	std::vector<std::shared_ptr<InventoryTile>> getArmorTiles();
+
 };
