@@ -27,7 +27,7 @@ protected:
 	sf::Vector2f position;
 	sf::Clock clock;
 
-	int maxHealth = 10;
+	int maxHealth = 1;
 	int currentHealth = maxHealth;
 
 	int maxMana = 100;

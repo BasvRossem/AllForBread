@@ -5,16 +5,23 @@
 #include "Character.hpp"
 #include "../Items/Weapon.hpp"
 #include "../Items/Armor.hpp"
-
+#include "ResourceBar.hpp"
+#include "../Core/KeyboardHandler.hpp"
+#include "../Core/background.hpp"
+#include "../Core/dialogBox.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <sstream>
 /// @file
 
 /// \brief
 /// A class that represents a playable character
 class PlayerCharacter : public Character {
 private:
+	bool isLevelUp = false;
 	int experience = 0;
 	int experienceGauge = 100;
-	int abilityPoints = 0;
+	int abilityPoints = 2;
 
 	// Filename for the portrait
 	std::string portraitFileName;
@@ -24,8 +31,9 @@ private:
 	std::unordered_map<ArmorSlots, Armor> armor;
 
 public:
-	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 0);
-	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp = 0);
+	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 99);
+	//- Fix constructor initialization sequence to a logical order
+	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp = 99);
 
 	/// \brief
 	/// Increases experience by given amount
@@ -35,7 +43,12 @@ public:
 	/// Returns total experience this character has gained
 	int calculateTotalExperience();
 
+	/// \brief
+	/// Returns boolean if the playercharacter levelled up 
+	bool getLevelUp();
 
+	/// \brief
+	/// \Returns the required experience for level up
 	int requiredExperience();
 
 	/// \brief
@@ -78,4 +91,12 @@ public:
 	/// Returns current portrait filename
 	/// Remember that the portrait gets loaded at the open function of partyOverview
 	const std::string getFilename();
+
+	std::unordered_map<WeaponSlots, Weapon> getWeaponMap();
+
+	std::unordered_map<ArmorSlots, Armor> getArmorMap();
+
+	/// \brief
+	/// Creates a window the player can interact with to level up
+	void levelUp(sf::RenderWindow & window);
 };

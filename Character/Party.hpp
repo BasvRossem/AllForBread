@@ -3,6 +3,7 @@
 #include "CharacterContainer.hpp"
 #include <memory>
 #include <vector>
+#include "../Items/Item.hpp"
 /// @file
 
 /// \brief
@@ -12,6 +13,7 @@ class Party : public CharacterContainer< std::shared_ptr<PlayerCharacter>, 4> {
 private:
 	int currency = 0;
 	int overworldPosition = 0;
+	std::vector<std::shared_ptr<Item> > inventory;
 public:
 	Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players);
 
@@ -39,4 +41,10 @@ public:
 	/// \brief
 	/// Returns current Overworld Position
 	int getOverworldPosition();
+
+	std::vector<std::shared_ptr<Item> > getInventory();
+
+	void addToInventory(const std::shared_ptr<Item> & item);
+	
+	void eraseItem(std::shared_ptr<Item> i);
 };

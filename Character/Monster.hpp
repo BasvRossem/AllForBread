@@ -14,15 +14,16 @@ private:
 
 public:
 	Monster(const std::string & characterName, const std::string & textureName);
+	Monster(const std::string & characterName, const std::string & textureName, const int & frameAmount);
 
 
 	/// \brief
 	/// Returns rewardExperience 
-	int getRewardExperience();
+	const int getRewardExperience();
 
 	/// \brief
 	/// Returns rewardCurrency
-	int getRewardCurrency();
+	const int getRewardCurrency();
 
 	/// \brief
 	/// Function call for when monster dies

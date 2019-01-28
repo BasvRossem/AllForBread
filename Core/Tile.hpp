@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+<<<<<<< HEAD
 #include "../virtualScreen/virtualScreen.hpp"
+=======
+>>>>>>> 26e74fc4f29028a33835e8492b38ef346ba68011
 #include <functional>
 #include <string>
 
@@ -16,5 +19,6 @@ public:
 	void activate();
 	void draw(sf::RenderWindow & window);
 	void draw(VirtualScreen & vScreen);
+	
 	sf::FloatRect getGlobalBound();
 };

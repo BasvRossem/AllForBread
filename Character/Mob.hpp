@@ -13,7 +13,7 @@ private:
 	// Currently Empty
 
 public:
-	Mob(const std::vector<std::shared_ptr<Monster>> &);
+	Mob(const std::vector<std::shared_ptr<Monster>> & monsters);
 
 	/// \brief
 	///	Returns Mob total reward experience
