@@ -81,7 +81,7 @@ std::string armorTypeText(const AbilityScores & slot) {
 int main( int argc, char *argv[] ){
 
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(0);
 
 	//=======================================================
 	// Weapon testing
@@ -100,15 +100,21 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Character
 	//=======================================================
+	std::pair< std::string, std::string> anubisPair;
+	anubisPair.first = "Assets/AnubisIdle.png";
+	anubisPair.second = "Assets/AnubisIdleFrame.png";
 
-	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis", "Assets/AnubisIdle.png");
-	std::shared_ptr<PlayerCharacter> testCharacter2 = std::make_shared<PlayerCharacter>("Bnubis", "Assets/AnubisIdle.png");
-	std::shared_ptr<PlayerCharacter> testCharacter3 = std::make_shared<PlayerCharacter>("Cnubis", "Assets/AnubisIdle.png");
-	std::shared_ptr<PlayerCharacter> testCharacter4 = std::make_shared<PlayerCharacter>("Dnubis", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter1 = std::make_shared<PlayerCharacter>("Anubis", anubisPair);
+	std::shared_ptr<PlayerCharacter> testCharacter2 = std::make_shared<PlayerCharacter>("Bnubis", anubisPair);
+	std::shared_ptr<PlayerCharacter> testCharacter3 = std::make_shared<PlayerCharacter>("Cnubis", anubisPair);
+	std::shared_ptr<PlayerCharacter> testCharacter4 = std::make_shared<PlayerCharacter>("Dnubis", anubisPair);
 
-	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
-	testMonster->makeMonster();
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter, testCharacter2, testCharacter3, testCharacter4 };
+	std::pair< std::string, std::string> robotPair;
+	robotPair.first = "Assets/RobotIdle.png";
+	robotPair.second = "Assets/RobotIdleFrame.png";
+	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", robotPair);
+	
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter1, testCharacter2, testCharacter3, testCharacter4 };
 
 	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 	Mob monsters = (monsterVector);
@@ -328,7 +334,7 @@ int main( int argc, char *argv[] ){
 			// calc random encounter
 			int encounterChange = rand() % 100 + 1;
 			if (encounterChange > 90){
-				testMonster = std::make_shared<Monster>("U snap it is u", "Assets/AnubisIdle.png");
+				testMonster = std::make_shared<Monster>("U snap it is u", anubisPair);
 				testMonster->makeMonster();
 				std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 				Mob monsterParty(monsterVector);

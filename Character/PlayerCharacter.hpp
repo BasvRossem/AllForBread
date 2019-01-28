@@ -27,9 +27,8 @@ private:
 	std::unordered_map<ArmorSlots, Armor> armor;
 
 public:
-	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 99);
+	PlayerCharacter(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture, const int & exp = 99);
 	//- Fix constructor initialization sequence to a logical order
-	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp = 99);
 
 	/// \brief
 	/// Increases experience by given amount

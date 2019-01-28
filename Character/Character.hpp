@@ -63,8 +63,7 @@ protected:
 	};
 
 public:
-	Character(const std::string &, const std::string &);
-	Character(const std::string &, const std::string &, const int &);
+	Character(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture);
 	~Character();
 
 	/// \brief
@@ -173,4 +172,8 @@ public:
 
 	void positionHealthbar(const sf::Vector2f & position);
 
+
+	void stopAnimation();
+
+	void startAnimation();
 };

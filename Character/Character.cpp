@@ -2,41 +2,22 @@
 #include <filesystem>
 #include <iostream>
 
-Character::Character(const std::string & characterName, const std::string & textureName):
+Character::Character(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture ):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
 	deathTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
 {
-	idleTexture->loadFromFile(textureName);
-	idleTexture->setSmooth(true);
-	sprite->setPosition(sf::Vector2f(150, 350));
-	//Zorg dat setscale netjes wordt gedaan Dank u
-	sprite->setScale(0.4f, 0.4f);
-	currentAnimation = Animation(sprite, idleTexture, float(1.0));
-	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
-		std::cout << "Error loading Rip.png, constructor 1" << std::endl;
-	}
-	currentAnimation = Animation(sprite, idleTexture, float(1.0));
-	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
-
-	srand(clock.getElapsedTime().asMilliseconds());
-}
-
-
-Character::Character(const std::string & characterName, const std::string & textureName, const int & frameAmount):
-	name(characterName),
-	idleTexture(new(sf::Texture)),
-	deathTexture(new(sf::Texture)),
-	sprite(new sf::Sprite)
-{
-	idleTexture->loadFromFile(textureName);
-
+	idleTexture->loadFromFile(texture.first);
 	idleTexture->setSmooth(true);
 
 	sprite->setPosition(sf::Vector2f(50, 400));
 	//Zorg dat setscale netjes wordt gedaan Dank u
 	sprite->setScale(0.5, 0.5);
+	
+	sf::Image tmpImage;
+	tmpImage.loadFromFile(texture.second);
+	unsigned int frameAmount = idleTexture->getSize().x / tmpImage.getSize().x;
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 
 	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
@@ -46,10 +27,14 @@ Character::Character(const std::string & characterName, const std::string & text
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 
+	update();
+	sprite->setOrigin(getSpriteMidpoint());
+
 	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 void Character::makeMonster() {
+	
 	sprite->scale(-1.0f, 1.0f);
 	//BESTE BAS VAN MORGEN FIX DAT DIT NETJHES MET EEN TESTFRAME EN EEN OFFSET WORDT GEDAAN SetOrigin
 	sprite->setPosition(sf::Vector2f(1770, 400));
@@ -261,4 +246,12 @@ void Character::centreHealthBar() {
 
 void Character::positionHealthbar(const sf::Vector2f & position) {
 	healthBar.setPosition(position);
+}
+
+void Character::stopAnimation() {
+	currentAnimation.stop();
+}
+
+void Character::startAnimation() {
+	currentAnimation.start();
 }

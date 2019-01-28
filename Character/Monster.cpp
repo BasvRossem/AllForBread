@@ -1,19 +1,12 @@
 #include "Monster.hpp"
 
-Monster::Monster(const std::string & characterName, const std::string & textureName) :
-	Character(characterName, textureName),
+Monster::Monster(const std::string & characterName, const std::pair< std::string, std::string> & texture) :
+	Character(characterName, texture),
 	rewardExperience((rand() % 6 + 5) * level),
 	rewardCurrency((rand() % 5 + 1) * level)
 {
 	printRewards();
-}
-
-Monster::Monster(const std::string & characterName, const std::string & textureName, const int & frameAmount) :
-	Character(characterName, textureName, frameAmount),
-	rewardExperience((rand() % 6 + 5) * level),
-	rewardCurrency((rand() % 5 + 1) * level)
-{
-	printRewards();
+	makeMonster();
 }
 
 const int Monster::getRewardExperience() {
@@ -33,3 +26,4 @@ void Monster::doDeath() {
 void Monster::printRewards() {
 	std::cout << "Reward experience: " << rewardExperience << "\nReward currency: " << rewardCurrency << "\n";
 }
+
