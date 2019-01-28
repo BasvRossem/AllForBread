@@ -11,7 +11,8 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	backgrnd(backgrnd),
 	surrounding(surrounding),
 	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black),
-	afterCombatBox(window, 1000, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black)
+	afterCombatBox(window, 1000, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black),
+	sound(MusicType::battle, 5.0f)
 {
 	//dialogue config
 	diaBox.setTextPosition(sf::Vector2f{ 20.0f, 20.0f });
@@ -71,6 +72,16 @@ State* Combat::update() {
 		party[i]->centreHealthBar();
 	}
 
+	//Play music
+	if (!CombatFinished) {
+		sound.playSoundEffect(SoundEffect::battleStart);
+		sf::sleep(sf::milliseconds(50));
+		sound.setMusicLoop(true);
+		sound.playMusic();
+	} else {
+		sound.playSoundEffect(SoundEffect::error);
+	}
+
 	//Position monsters
 	for (unsigned int i = 0; i < monsters.size(); i++) {
 		monsters[i]->setSpriteBottomPosition(sf::Vector2f(1820 - (i * 200), 660));
@@ -86,6 +97,9 @@ State* Combat::update() {
 	while(!CombatFinished){
 		checkEvents();
 		combatChoices.clear();
+
+		if (sound.getMusicVolume() < 90.0f) sound.setMusicVolume(sound.getMusicVolume() + 0.3f);
+
 		if (!attackFeedbackFinished && !CombatFinished) {
 			updateAttackFeedback();
 		}
@@ -263,12 +277,6 @@ void Combat::checkPlayerDeath() {
 void Combat::partyVictory() {
 	CombatFinished = true;
 	//=======================================================================================
-	//Last frames before end of battle
-	//=======================================================================================
-	draw();
-	sf::sleep(sf::seconds(1.50));
-
-	//=======================================================================================
 	//-Calculate total rewards
 	//=======================================================================================
 	int totalExperienceReward = 0;
@@ -279,6 +287,16 @@ void Combat::partyVictory() {
 		totalCurrencyReward += monsters[i]->getRewardCurrency();
 
 	}
+
+	//=======================================================================================
+	// Final frames and cut out music
+	//=======================================================================================
+	while (sound.getMusicVolume() > 10.0f) {
+		sound.setMusicVolume(sound.getMusicVolume() - 0.2f);
+		draw();
+		sf::sleep(sf::milliseconds(1));
+	}
+	sound.stopMusic();
 
 	//=======================================================================================
 	// Construct and show rewards screen

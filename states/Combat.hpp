@@ -13,6 +13,7 @@
 #include "../Character/Attack.hpp"
 #include "../Character/ResourceBar.hpp"
 #include "../Character/Mob.hpp"
+#include "../Core/Sounds.hpp"
 
 class Combat : public State {
 private:
@@ -43,6 +44,9 @@ private:
 	DialogBox diaBox;
 	std::vector<std::string> combatChoices;
 	DialogBox afterCombatBox;
+
+	//Sound and Music
+	Sounds sound;
 
 	//Attack feedback
 	bool attackFeedbackFinished = true;
