@@ -13,19 +13,20 @@ private:
 	std::shared_ptr<PlayerCharacter> selected;
 	std::vector<std::shared_ptr<Tile>> playerPortraitTiles;
 
+	sf::Font font;
+
 	void drawAllPlayerCharacters(sf::RenderWindow & window);
-	void drawSelectedPlayerStats();
+	void drawSelectedPlayerStats(sf::RenderWindow & window);
 
 	sf::Vector2u leftScreenSize = sf::Vector2u(500, 1040);
+	sf::Vector2f characterScreenSize = sf::Vector2f(static_cast<float>(leftScreenSize.x), static_cast<float>((leftScreenSize.y - 40) / 4));
 	VirtualScreen leftScreen;
 	std::vector<std::shared_ptr<VirtualScreen>> leftScreens;
-	sf::Vector2u characterWindowSize = sf::Vector2u(500, 220);
 
-	sf::Vector2u rightScreenSize = sf::Vector2u(500, 1040);
+	sf::Vector2u rightScreenSize = sf::Vector2u(1300, 1040);
 	VirtualScreen rightScreen;
 public:
 	PartyOverview(Party & party);
 
 	void open(sf::RenderWindow & window);
-	void close();
 };

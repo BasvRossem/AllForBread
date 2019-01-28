@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include "Items/Weapon.hpp"
@@ -27,12 +26,24 @@ int main(int argc, char *argv[]) {
 	sf::Color POI1Color = sf::Color::Black;
 	std::string POI1LocationType = "Battle";
 
-	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter1 = std::make_shared<PlayerCharacter>("Anubis, the distructor of hopes and dreams", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter2 = std::make_shared<PlayerCharacter>("Bnubis, the spoiler of fields", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter3 = std::make_shared<PlayerCharacter>("Cnubis, the poor sidekick", "Assets/AnubisIdle.png");
+	std::shared_ptr<PlayerCharacter> testCharacter4 = std::make_shared<PlayerCharacter>("Dnubis, the second poor sidekick", "Assets/AnubisIdle.png");
 
+	testCharacter1->increaseExperience(5);
+	testCharacter2->increaseExperience(15);
+	testCharacter3->increaseExperience(55);
+	testCharacter4->increaseExperience(95);
+
+	testCharacter1->setPortraitFilename("Anubis_head.png");
+	testCharacter2->setPortraitFilename("Barbarian_head.png");
+	testCharacter3->setPortraitFilename("Black_Wizard_head.png");
+	testCharacter4->setPortraitFilename("Blacksmith_head.png");
 
 	std::shared_ptr<Character> testMonster = std::make_shared<Character>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter };
+	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter1, testCharacter2, testCharacter3, testCharacter4 };
 
 	std::vector<std::shared_ptr<Character>> monsterVector = { testMonster };
 	CharacterContainer<std::shared_ptr<Character>> monsters = (monsterVector);
@@ -70,12 +81,14 @@ int main(int argc, char *argv[]) {
 	TransformableMovement POIMove(partey, newLocation, 0.0f);
 	POIMove.blend();
 
-	PartyOverview overview(heroParty);
 
 	KeyboardHandler keyHandl;
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&poiCont]() {poiCont.activate(); });
-	keyHandl.addListener(sf::Keyboard::C, [&overview, &window]() {overview.open(window); });
+	keyHandl.addListener(sf::Keyboard::C, [&heroParty, &window]() {
+		PartyOverview overview(heroParty);
+		overview.open(window); 
+	});
 
 	std::vector<sf::Vector2f> moveList;
 	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
