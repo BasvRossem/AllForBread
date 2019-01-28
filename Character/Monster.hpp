@@ -3,6 +3,7 @@
 #include "Character.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
+#include <utility>
 /// @file
 
 /// \brief
@@ -13,8 +14,7 @@ private:
 	const int rewardCurrency;
 
 public:
-	Monster(const std::string & characterName, const std::string & textureName);
-	Monster(const std::string & characterName, const std::string & textureName, const int & frameAmount);
+	Monster(const std::string & characterName, const std::pair< std::string,  std::string> & texture);
 
 	/// \brief
 	/// Draws the monster on the renderwindow
@@ -40,4 +40,5 @@ public:
 	/// DEBUG!
 	/// Prints all reward variables in console
 	void printRewards();
+
 };

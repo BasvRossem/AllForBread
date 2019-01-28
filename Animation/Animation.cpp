@@ -27,8 +27,7 @@ Animation::Animation(std::shared_ptr<sf::Sprite> playerSprite, std::shared_ptr<s
 	playerSprite->setTexture(*texture);
 }
 
-Animation::Animation()
-{
+Animation::Animation(){
 	totalTime = 0.0f;
 	currentImage = 0;
 }
@@ -37,18 +36,30 @@ Animation::~Animation(){
 }
 
 void Animation::update(){
-	totalTime += clock.restart().asSeconds();
-	
-	if (totalTime >= switchTime) {
-		totalTime -= switchTime;
-		currentImage++;
-		
-		if (currentImage >= imageCount) {
-			currentImage = 0;
+	if (animate) {
+		totalTime += clock.restart().asSeconds();
+		if (totalTime >= switchTime * imageCount) {
+			totalTime = 0;
 		}
-	}
+		if (totalTime >= switchTime) {
+			totalTime -= switchTime;
+			currentImage++;
 
-	textureRect.left = currentImage * (texture->getSize().x / imageCount);
-	playerSprite->setTexture(*texture);
-	playerSprite->setTextureRect(textureRect);
+			if (currentImage >= imageCount) {
+				currentImage = 0;
+			}
+		}
+
+		textureRect.left = currentImage * (texture->getSize().x / imageCount);
+		playerSprite->setTexture(*texture);
+		playerSprite->setTextureRect(textureRect);
+	}
+}
+
+void Animation::start() {
+	animate = true;
+}
+
+void Animation::stop() {
+	animate = false;
 }

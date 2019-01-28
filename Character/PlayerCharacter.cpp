@@ -1,12 +1,7 @@
 #include "PlayerCharacter.hpp"
 
-PlayerCharacter::PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp) :
-	Character(characterName, textureName),
-	experience(exp) {
-};
-
-PlayerCharacter::PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp) :
-	Character(characterName, textureName, frameAmount),
+PlayerCharacter::PlayerCharacter(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture, const int & exp) :
+	Character(characterName, texture),
 	experience(exp) {
 };
 
