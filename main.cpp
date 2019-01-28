@@ -309,6 +309,14 @@ int main( int argc, char *argv[] ){
 		<< '\n';
 
 	}
+
+	//=======================================================
+	// NPC DIEalogue
+	//=======================================================
+
+	DialogBox npcEncounter(window, 100, 10, "Assets/arial.ttf", sf::Vector2i{ 500, 500 }, sf::Vector2f{20, 20}, sf::Color::Black);
+	
+
 	//=======================================================
 	// While Loop
 	//=======================================================
@@ -327,7 +335,7 @@ int main( int argc, char *argv[] ){
 		if (moveList.size() > 0 && POIMove.isFinished()) {
 			// calc random encounter
 			int encounterChange = rand() % 100 + 1;
-			if (encounterChange > 90){
+			if (encounterChange > 90 && encounterChange < 95){
 				testMonster = std::make_shared<Monster>("U snap it is u", "Assets/AnubisIdle.png");
 				testMonster->makeMonster();
 				std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
@@ -337,7 +345,16 @@ int main( int argc, char *argv[] ){
 				std::cout << encounterChange << '\n';
 				testCombat.update();
 				
+			}else if (encounterChange >= 95) {
+				std::string npcLine1 = "Good day Sir...";
+				npcEncounter.print(npcLine1);
+				std::vector<std::pair<std::string, std::function<void()>>> k = {
+					{ "Good day", [&]() {heroParty.addCurrency(4); } },
+					{ "Fuck off", [&]() {std::string npcline = "I can't believe you've done this."; npcEncounter.print(npcline); }}
+				};
+				npcEncounter.printChoices(k);
 			}
+
 			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
 			moveList.pop_back();
 			POIMove.blend();
