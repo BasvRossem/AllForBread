@@ -184,4 +184,6 @@ public:
 	void stopAnimation();
 
 	void startAnimation();
+
+	void setSpriteBottomPosition(const sf::Vector2f & position);
 };

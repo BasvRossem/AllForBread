@@ -60,11 +60,22 @@ State* Combat::update() {
 	//Load background
 	backgrnd.setBackGround(surrounding, sf::Vector2f{ 0,0 }, sf::Vector2f(animationScreenSize));
 
+	//Position players
+	for (unsigned int i = 0; i < party.size(); i++) {
+		party[i]->setSpriteBottomPosition(sf::Vector2f(100 + (i * 200), 660));
+	}
+
 	//Place health bars
 	for (unsigned int i = 0; i < party.size(); i++) {
 		party[i]->update();
 		party[i]->centreHealthBar();
 	}
+
+	//Position monsters
+	for (unsigned int i = 0; i < monsters.size(); i++) {
+		monsters[i]->setSpriteBottomPosition(sf::Vector2f(1820 - (i * 200), 660));
+	}
+
 	
 	//State machine setup
 	enum class combatMenu { main, attack, inventory, flee };

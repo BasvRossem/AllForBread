@@ -11,12 +11,9 @@ Character::Character(const std::string & characterName, const std::pair<const st
 	idleTexture->loadFromFile(texture.first);
 	idleTexture->setSmooth(true);
 
-	sprite->setPosition(sf::Vector2f(50, 400));
-	//Zorg dat setscale netjes wordt gedaan Dank u
-	sprite->setScale(0.5, 0.5);
-	
 	sf::Image tmpImage;
 	tmpImage.loadFromFile(texture.second);
+
 	unsigned int frameAmount = idleTexture->getSize().x / tmpImage.getSize().x;
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 
@@ -28,16 +25,15 @@ Character::Character(const std::string & characterName, const std::pair<const st
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 
 	update();
+	auto spriteSize = sf::Vector2f(250, 300);
 	sprite->setOrigin(getSpriteMidpoint());
-
+	sprite->setScale(spriteSize.x / sprite->getGlobalBounds().width, spriteSize.y / sprite->getGlobalBounds().height);
+	
 	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 void Character::makeMonster() {
-	
 	sprite->scale(-1.0f, 1.0f);
-	//BESTE BAS VAN MORGEN FIX DAT DIT NETJHES MET EEN TESTFRAME EN EEN OFFSET WORDT GEDAAN SetOrigin
-	sprite->setPosition(sf::Vector2f(1770, 400));
 }
 
 void Character::update() {
@@ -225,9 +221,6 @@ sf::Vector2f Character::getSpriteMidpoint() {
 		sprite->getGlobalBounds().left + (sprite->getGlobalBounds().width / 2),
 		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
 	);
-	//std::cout << midpoint.x << ", " << midpoint.y << std::endl;
-	std::cout << sprite->getGlobalBounds().width << ", " << sprite->getGlobalBounds().height << std::endl;
-	//std::cout << sprite->getGlobalBounds().left << ", " << sprite->getGlobalBounds().top << std::endl;
 	return midpoint;
 }
 
@@ -254,6 +247,7 @@ bool Character::checkLuckStat() {
 		return true;
 	}
 	return false;
+}
 
 void Character::stopAnimation() {
 	currentAnimation.stop();
@@ -261,4 +255,13 @@ void Character::stopAnimation() {
 
 void Character::startAnimation() {
 	currentAnimation.start();
+}
+
+void Character::setSpriteBottomPosition(const sf::Vector2f & position) {
+	sf::Vector2f newPosition;
+
+	newPosition.x += position.x;
+	newPosition.y += position.y;
+	newPosition.y -= sprite->getGlobalBounds().height /2;
+	sprite->setPosition(newPosition);
 }
