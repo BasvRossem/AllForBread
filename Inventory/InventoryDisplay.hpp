@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <functional>
 #include "../Character/Party.hpp"
 #include "../Items/Consumable.hpp"
 #include "../Items/Item.hpp"

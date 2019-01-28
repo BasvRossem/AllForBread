@@ -268,26 +268,35 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 	std::shared_ptr<Weapon> a = std::dynamic_pointer_cast<Weapon>(pTile.second[item]->getItem());
 	std::shared_ptr<Armor> b = std::dynamic_pointer_cast<Armor>(pTile.second[item]->getItem());
 	if (a != nullptr) {
-		party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
-		deleteItem(item);
+
+		auto map = pTile.first[character]->getCharacter()->getWeaponMap();
+		std::vector<WeaponSlots> slots;
+		for (auto m: map) {
+			slots.push_back(m.first);
+		}
+
+		auto alreadyUquipt = std::find(slots.begin(), slots.end(), a->getWeaponSlot());
+		if (alreadyUquipt == slots.end()){
+			party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
+			deleteItem(item);
+		}
 	}
 	else if (b != nullptr) {
-		party.addArmortoPartyMember(pTile.first[character]->getCharacter(), b);
-		deleteItem(item);
+		auto map = pTile.first[character]->getCharacter()->getArmorMap();
+		std::vector<ArmorSlots> slots;
+		for (auto m : map) {
+			slots.push_back(m.first);
+		}
+
+		auto alreadyUquipt = std::find(slots.begin(), slots.end(), b->getArmorSlot());
+		if (alreadyUquipt == slots.end()) {
+			party.addArmortoPartyMember(pTile.first[character]->getCharacter(), b);
+			deleteItem(item);
+		}
+		
+		
 	}
-	else {
-		pTile.second[item]->setColor(sf::Color::Black);
-	}
-	pTile.first.clear();
-	for (unsigned int i = 0; i < party.size(); i++) {
-		pTile.first.push_back(
-			std::make_shared<PlayerInventoryTile>(
-				party[i],
-				sf::Vector2f(0.0f, static_cast<float>(i * leftScreenSize.y / 4)),
-				sf::Vector2f(static_cast<float>(leftScreenSize.x), static_cast<float>(leftScreenSize.y / 4))
-				)
-		);
-	}
+	reloadTiles();
 }
 
 
