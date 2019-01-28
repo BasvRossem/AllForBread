@@ -9,7 +9,7 @@ private:
 	std::string description;
 public:
 	Item();
-
+	virtual ~Item();
 	const int getWeight() const;
 	const int getBaseValue() const;
 	const std::string getName() const;

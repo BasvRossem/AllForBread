@@ -12,6 +12,9 @@ Armor::Armor(const ArmorSlots & slot) :
 	armorSlot(slot)
 {}
 
+Armor::~Armor() {
+}
+
 const ArmorSlots Armor::getArmorSlot() const {
 	return armorSlot;
 }
