@@ -109,6 +109,11 @@ std::unordered_map<ArmorSlots, Armor> PlayerCharacter::getArmorMap(){
 	return armor;
 }
 
+void PlayerCharacter::clearEquipment() {
+	weapons.clear();
+	armor.clear();
+}
+
 void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 	//-Screen & Drawable variables
 	//================================================================================================================================

@@ -16,6 +16,7 @@
 #include "Core/Menu.hpp"
 #include "Inventory/InventoryDisplay.hpp"
 #include "Character/Mob.hpp"
+#include "dataManager/DataManager.hpp"
 
 
 
@@ -83,55 +84,53 @@ int main( int argc, char *argv[] ){
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
 
+	DataManager DM("dataManager/data.db");
+
 	//=======================================================
 	// Weapon testing
 	//=======================================================
 	
-	Weapon zweihander(WeaponSlots::twohanded, std::pair<DamageTypes, int>(DamageTypes::slashing, 6));
-	zweihander.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::force, 3));
-	zweihander.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::fire, 3));
-	zweihander.setName("Zweihander");
-	
-	Weapon dagger(WeaponSlots::twohanded, std::pair<DamageTypes, int>(DamageTypes::piercing, 2));
-	dagger.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::force, 4));
-	dagger.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::poison, 3));
-	dagger.setName("Dagger");
+	std::map<std::string, Weapon> weapons;
+
+	DM.load(weapons);
+
+	Weapon zweihander = weapons["zweihander"];
+	Weapon dagger = weapons["dagger"];
 
 	//=======================================================
 	// Creating Character
 	//=======================================================
 
-	std::shared_ptr<PlayerCharacter> testCharacter = std::make_shared<PlayerCharacter>("Anubis", "Assets/AnubisIdle.png");
-	std::shared_ptr<PlayerCharacter> testCharacter2 = std::make_shared<PlayerCharacter>("Bnubis", "Assets/AnubisIdle.png");
-	std::shared_ptr<PlayerCharacter> testCharacter3 = std::make_shared<PlayerCharacter>("Cnubis", "Assets/AnubisIdle.png");
-	std::shared_ptr<PlayerCharacter> testCharacter4 = std::make_shared<PlayerCharacter>("Dnubis", "Assets/AnubisIdle.png");
+	Party *hParty;
 
 	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
-	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter, testCharacter2, testCharacter3, testCharacter4 };
-
 	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 	Mob monsters = (monsterVector);
-	Party heroParty(heroVector);
+
+	DM.load(hParty);
+	Party heroParty = *hParty;
+	delete hParty;
+
+	heroParty.clearInventory();
+
+	DM.load(heroParty);
 
 
 	//=======================================================
 	// Creating items
 	//=======================================================
 
-	Item stick;
-	stick.setName("Stick of Truth");
+	std::map<std::string, Item> items;
+	std::map<std::string, Armor> armor;
+
+	DM.load(items, armor);
+
+	Item stick = items["Stick of Truth"];
 	
-	Weapon pointyStick;
-	pointyStick.setName("Slightly pointy stick");
+	Weapon pointyStick = weapons["Slightly pointy stick"];
 
-	Armor boots;
-	boots.setName("Normal boots");
-
-	heroParty.addToInventory(std::make_shared<Item>(stick));
-	heroParty.addToInventory(std::make_shared<Weapon>(pointyStick));
-	heroParty.addToInventory(std::make_shared<Armor>(boots));
-
+	Armor boots = armor["Normal boots"];
 
 	//=======================================================
 	// Creating BackGround
@@ -181,20 +180,15 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Point Of Interest
 	//=======================================================
-
-	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
-	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
-	std::vector<sf::Vector2f> notPath = {};
-	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
-	float POI1Size = 15;
-	sf::Color POI1Color = sf::Color::Black;
-	std::string POI1LocationType = "Battle";
-
-	std::function<void()> cout1 = [&testCombat]() {testCombat.update(); };
+	std::map<std::string, std::function<void()>> functions;
+	functions["function1"] = [&testCombat]() {testCombat.update(); };
 
 	PointOfInterestContainer poiCont;
-	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cout1, path);
-	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, cout1, notPath);
+
+	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
+
+	DM.load(poibox);
+
 
 	background.setBackGround(takatikimap, window);
 
@@ -265,19 +259,9 @@ int main( int argc, char *argv[] ){
 			<< '\n';
 	}
 	
-	Armor chainmail(ArmorSlots::chestplate);
-	chainmail.setName("Chainmail");
-	chainmail.addPropertyModifier({ AbilityScores::charisma,	2 });
-	chainmail.addPropertyModifier({ AbilityScores::strength,	4 });
-	chainmail.addPropertyModifier({ AbilityScores::dexterity,	-2 });
-	chainmail.addPropertyModifier({ AbilityScores::luck,		1 });
-	chainmail.addPropertyModifier({ AbilityScores::vitality,	3 });
-	Armor leather(ArmorSlots::chestplate);
-	leather.setName("Leather chest armor +2");
-	leather.addPropertyModifier({ AbilityScores::charisma,		1 });
-	leather.addPropertyModifier({ AbilityScores::strength,		1 });
-	leather.addPropertyModifier({ AbilityScores::dexterity,		5 });
-	leather.addPropertyModifier({ AbilityScores::arcanism,		-1 });
+	Armor chainmail = armor["Chainmail"];
+
+	Armor leather = armor["Leather chest armor +2"];
 
 	auto armorDifferences = chainmail.compareTo(leather);
 	std::cout << "De volgende modifiers veranderen door het equippen van " << leather.getName() << '\n';

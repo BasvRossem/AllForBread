@@ -9,6 +9,10 @@
 #include "../PointsOfInterest/pointOfInterestContainer.hpp"
 #include <map>
 #include "../Core/background.hpp"
+#include "../Items/Item.hpp"
+#include "../Items/Consumable.hpp"
+#include "../Items/Armor.hpp"
+#include "../Items/Weapon.hpp"
 class DataManager
 {
 private:
@@ -71,21 +75,14 @@ private:
 		db.cmd("SELECT id ,name, texturePath FROM Player", [](void * p, int argc, char **argv, char **azColName)->int {
 			auto pass = (std::pair<Database&, std::vector<std::shared_ptr<PlayerCharacter>>&>*)p;
 			auto character = std::make_shared<PlayerCharacter>(argv[1], argv[2]);
-			//second query
-			std::string q("SELECT Attack.name, Attack.damage FROM Player INNER JOIN (Attack INNER JOIN PlayerAttack ON Attack.id = PlayerAttack.attackId) ON Player.id = PlayerAttack.playerId where Player.id = ");
-			q += argv[0];
-			pass->first.cmd(q.c_str(), [](void * c, int argc, char **argv, char **azColName)->int {
-				auto cc = (std::shared_ptr<PlayerCharacter>*)c;
-				(*cc)->addCombatAction(std::make_shared<Attack>(argv[0], std::stoi(argv[1]) ) );
-				return 0;
-			}, &character);
 			pass->second.push_back(character);
 			return 0;
 		}, &passThrough);
 		p = new Party(heroVector);
+		loading(*p);
 	}
 
-	//background loading
+	//background loading !needs to become std::map!
 	template<>
 	void loading<BackGround>(BackGround & background) {
 		db.cmd("SELECT name, texturePath FROM Background", [](void * b, int argc, char **argv, char **azColName)->int {
@@ -94,6 +91,176 @@ private:
 			return 0;
 		}, &background);
 	}
+
+	//weapons loading
+	template<>
+	void loading< std::map<std::string, Weapon>>(std::map<std::string, Weapon>& weaponMap) {
+		std::tuple<std::map<std::string, Weapon>&, std::map<std::string, WeaponSlots>&, std::map<std::string, DamageTypes>&, Database&> combinedMap(weaponMap, weaponSlots, damageTypes, db);
+
+		db.cmd("SELECT Item.name, Item.description, Item.weight, Item.baseValue, WeaponSlot.name, DamageType.name, Weapon.primDamage, Weapon.id FROM Item INNER JOIN(DamageType INNER JOIN(WeaponSlot INNER JOIN Weapon ON WeaponSlot.[id] = Weapon.[weaponSlotId]) ON DamageType.[id] = Weapon.[primDamageTypeId]) ON Item.[id] = Weapon.[itemId];", [](void * map, int argc, char **argv, char **azColName)->int {
+			auto m = (std::tuple<std::map<std::string, Weapon>&, std::map<std::string, WeaponSlots>&, std::map<std::string, DamageTypes>&, Database&>*)map;
+			Weapon weapon(std::get<1>(*m)[argv[4]], std::pair<DamageTypes, int>(std::get<2>(*m)[argv[5]], std::stoi(argv[6])));
+			weapon.setName(argv[0]);
+			weapon.setDescription(argv[1]);
+			weapon.setWeight(std::stoi(argv[2]));
+			weapon.setBaseValue(std::stoi(argv[3]));
+			std::pair<Weapon&, std::map<std::string, DamageTypes>&> wAm(weapon, std::get<2>(*m));
+			std::string q = "SELECT DamageType.name, WeaponSecDamageType.damage FROM DamageType INNER JOIN WeaponSecDamageType ON DamageType.[id] = WeaponSecDamageType.[damageTypeId] WHERE WeaponSecDamageType.weaponId = ";
+			q += argv[7];
+			std::get<3>(*m).cmd(q.c_str(), [](void * w, int argc, char **argv, char **azColName)->int {
+				auto ww = (std::pair<Weapon&, std::map<std::string, DamageTypes>&>*)w;
+				ww->first.addSecondaryDamageEffect(std::pair<DamageTypes, int>(ww->second[argv[0]], std::stoi(argv[1])));
+				return 0;
+			}, &wAm);
+			std::get<0>(*m)[argv[0]] = weapon;
+			return 0;
+		},&combinedMap);
+	}
+
+	//item loading
+	template<>
+	void loading < std::map<std::string, Item>>(std::map<std::string, Item>& itemMap) {
+		db.cmd("SELECT name, description, weight, baseValue FROM Item", [](void * someP, int argc, char **argv, char **azColName)->int {
+			auto p = (std::map<std::string, Item>*)someP;
+			
+			Item item;
+			item.setName(argv[0]);
+			item.setDescription(argv[1]);
+			item.setWeight(std::stoi(argv[2]));
+			item.setBaseValue(std::stoi(argv[3]));
+		
+			(*p)[argv[0]] = item;
+			return 0;
+		}, &itemMap);
+	}
+
+	//armor loading
+	template<>
+	void loading<std::map<std::string, Armor>>(std::map<std::string, Armor>& armorMap) {
+		std::tuple< std::map<std::string, Armor>&, std::map<std::string, ArmorSlots>&, std::map<std::string, AbilityScores>&, Database&> combo(armorMap, armorSlots, abilityScores, db);
+		db.cmd("SELECT [Item].[name], [Item].[description], [Item].[weight], [Item].[baseValue], [ArmorSlot].[name], [Armor].[physicalProtection], [Armor].[magicalProtecton], [Armor].[id] FROM (ArmorSlot INNER JOIN Armor ON [ArmorSlot].[id] =[Armor].[armorSlotId]) INNER JOIN Item ON [Armor].[itemId] = [Item].[id];", [](void * someP, int argc, char **argv, char **azColName)->int {
+			auto p = (std::tuple< std::map<std::string, Armor>&, std::map<std::string, ArmorSlots>&, std::map<std::string, AbilityScores>&, Database&>*)someP;
+			Armor armor;
+			armor.setName(argv[0]);
+			armor.setDescription(argv[1]);
+			armor.setWeight(std::stoi(argv[2]));
+			armor.setBaseValue(std::stoi(argv[3]));
+			armor.setArmorSlot(std::get<1>(*p)[argv[4]]);
+			armor.setPhysicalProtection(std::stoi(argv[5]));
+			armor.setMagicalProtection(std::stoi(argv[6]));
+
+			std::pair< Armor&, std::map<std::string, AbilityScores>&> AaM(armor, std::get<2>(*p));
+			std::string q("SELECT AbilityScore.name, ArmorPropMod.[mod] FROM AbilityScore INNER JOIN ArmorPropMod ON AbilityScore.[id] = ArmorPropMod.[abilityScoreId] WHERE ArmorPropMod.armorId = ");
+			q += argv[7];
+			std::get<3>(*p).cmd(q.c_str(), [](void * somePP, int argc, char **argv, char **azColName)->int {
+				auto pp = (std::pair< Armor&, std::map<std::string, AbilityScores>&>*) somePP;
+				pp->first.addPropertyModifier(std::pair<AbilityScores, int>(pp->second[argv[0]],std::stoi(argv[1])));
+				return 0;
+			}, &AaM);
+
+			std::get<0>(*p)[argv[0]] = armor;
+			return 0;
+		}, &combo);
+	}
+
+	//consumable loading
+	template<>
+	void loading<std::pair<std::map<std::string, Consumable>, std::map<std::string, std::function<void()>>>>(std::pair<std::map<std::string, Consumable>, std::map<std::string, std::function<void()>>>& consMap) {
+		db.cmd("SELECT [Item].[name], [Item].[description], [Item].[weight], [Item].[baseValue], [Consumable].[functionName], [Consumable].[quantityUses] FROM Consumable INNER JOIN Item ON [Consumable].[itemId] = [Item].[id];", [](void * someP, int argc, char **argv, char **azColName)->int {
+			auto p = (std::pair<std::map<std::string, Consumable>, std::map<std::string, std::function<void()>>>*)someP;
+			Consumable consumable(p->second[argv[4]]);
+			consumable.setName(argv[0]);
+			consumable.setDescription(argv[1]);
+			consumable.setWeight(std::stoi(argv[2]));
+			consumable.setBaseValue(std::stoi(argv[3]));
+			consumable.setQuantityUses(std::stoi(argv[5]));
+			p->first[argv[0]] = consumable;
+		}, &consMap);
+	}
+
+	//loading save data
+	template<>
+	void loading<Party>(Party& party) {
+		//set party info
+		db.cmd("SELECT currency, overworldPosition FROM PartyInfo WHERE id = 1", [](void * someP, int argc, char **argv, char **azColName)->int {
+			auto p = (Party*)someP;
+			p->setCurrency(std::stoi(argv[0]));
+			p->setOverworldPosition(std::stoi(argv[1]));
+			return 0;
+		}, &party);
+
+		//load party inventory
+		party.clearInventory();
+		db.cmd("SELECT Item.name, Item.description, Item.weight, Item.baseValue FROM Item INNER JOIN (Inventory INNER JOIN InventoryItem ON Inventory.id = InventoryItem.inventoryId) ON Item.id = InventoryItem.itemId WHERE Inventory.playerId = 0;", [](void * someP, int argc, char **argv, char **azColName)->int {
+			auto p = (Party*)someP;
+			Item item;
+			item.setName(argv[0]);
+			item.setDescription(argv[1]);
+			item.setWeight(std::stoi(argv[2]));
+			item.setBaseValue(std::stoi(argv[3]));
+			
+			p->addToInventory(std::make_shared<Item>(item));
+			return 0;
+		}, &party);
+		//load inventory each player
+		for (unsigned int i = 0; i < party.size(); i++) {
+			party[i]->clearEquipment();
+			
+			//armor loading
+			std::tuple<std::shared_ptr<PlayerCharacter>&, std::map<std::string, ArmorSlots>&, std::map<std::string, AbilityScores>&, Database&> comboArmor(party[i], armorSlots, abilityScores, db);
+			std::string qA("SELECT Item.name, Item.description, Item.weight, Item.baseValue, ArmorSlot.name, Armor.physicalProtection, Armor.magicalProtecton, Armor.id FROM ((ArmorSlot INNER JOIN Armor ON ArmorSlot.[id] = Armor.[armorSlotId]) INNER JOIN Item ON Armor.[itemId] = Item.[id]) INNER JOIN ((Player INNER JOIN Inventory ON Player.id = Inventory.playerId) INNER JOIN InventoryItem ON Inventory.id = InventoryItem.inventoryId) ON Item.id = InventoryItem.itemId WHERE Player.id = ");
+			qA += std::to_string(i + 1);
+			db.cmd(qA.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+				//primaire attributes
+				auto p = (std::tuple<std::shared_ptr<PlayerCharacter>&, std::map<std::string, ArmorSlots>&, std::map<std::string, AbilityScores>&, Database&>*)someP;
+				Armor armor;
+				armor.setName(argv[0]);
+				armor.setDescription(argv[1]);
+				armor.setWeight(std::stoi(argv[2]));
+				armor.setBaseValue(std::stoi(argv[3]));
+				armor.setArmorSlot(std::get<1>(*p)[argv[4]]);
+				armor.setPhysicalProtection(std::stoi(argv[5]));
+				armor.setMagicalProtection(std::stoi(argv[6]));
+				//second
+				std::pair< Armor&, std::map<std::string, AbilityScores>&> AaM(armor, std::get<2>(*p));
+				std::string q("SELECT AbilityScore.name, ArmorPropMod.[mod] FROM AbilityScore INNER JOIN ArmorPropMod ON AbilityScore.[id] = ArmorPropMod.[abilityScoreId] WHERE ArmorPropMod.armorId = ");
+				q += argv[7];
+				std::get<3>(*p).cmd(q.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+					auto p = (std::pair< Armor&, std::map<std::string, AbilityScores>&>*)someP;
+					p->first.addPropertyModifier(std::pair<AbilityScores, int>(p->second[argv[0]], std::stoi(argv[1])));
+					return 0;
+				}, &AaM);
+
+				std::get<0>(*p)->setArmor(armor.getArmorSlot(), armor);
+				return 0;
+			}, &comboArmor);
+
+			//weapon loading
+			std::tuple<std::shared_ptr<PlayerCharacter>&, std::map<std::string, WeaponSlots>&, std::map<std::string, DamageTypes>&, Database&> comboWeapon(party[i], weaponSlots, damageTypes, db);
+			std::string qW("SELECT Item.name, Item.description, Item.weight, Item.baseValue, WeaponSlot.name, DamageType.name, Weapon.primDamage, Weapon.id FROM Player INNER JOIN (Inventory INNER JOIN ((Item INNER JOIN (DamageType INNER JOIN (WeaponSlot INNER JOIN Weapon ON WeaponSlot.[id] = Weapon.[weaponSlotId]) ON DamageType.[id] = Weapon.[primDamageTypeId]) ON Item.[id] = Weapon.[id]) INNER JOIN InventoryItem ON Item.id = InventoryItem.itemId) ON Inventory.id = InventoryItem.inventoryId) ON Player.id = Inventory.playerId WHERE Player.id = ");
+			qW += std::to_string(i + 1);
+			db.cmd(qW.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+				auto p = (std::tuple<std::shared_ptr<PlayerCharacter>&, std::map<std::string, WeaponSlots>&, std::map<std::string, DamageTypes>&, Database&>*)someP;
+				Weapon weapon(std::get<1>(*p)[argv[4]], std::pair<DamageTypes, int>(std::get<2>(*p)[argv[5]], std::stoi(argv[6])));
+				weapon.setName(argv[0]);
+				weapon.setDescription(argv[1]);
+				weapon.setWeight(std::stoi(argv[2]));
+				weapon.setBaseValue(std::stoi(argv[3]));
+				std::pair<Weapon&, std::map<std::string, DamageTypes>&> wAm(weapon, std::get<2>(*p));
+				std::string q = "SELECT DamageType.name, WeaponSecDamageType.damage FROM DamageType INNER JOIN WeaponSecDamageType ON DamageType.[id] = WeaponSecDamageType.[damageTypeId] WHERE WeaponSecDamageType.weaponId = ";
+				q += argv[7];
+				std::get<3>(*p).cmd(q.c_str(), [](void * w, int argc, char **argv, char **azColName)->int {
+					auto ww = (std::pair<Weapon&, std::map<std::string, DamageTypes>&>*)w;
+					ww->first.addSecondaryDamageEffect(std::pair<DamageTypes, int>(ww->second[argv[0]], std::stoi(argv[1])));
+					return 0;
+				}, &wAm);
+				std::get<0>(*p)->setWeapon(weapon.getWeaponSlot(), weapon);
+				return 0;
+			}, &comboWeapon);
+		}
+	}
+
+
 
 	//specialised template of loading for the multiple textures
 	template<>

@@ -33,6 +33,7 @@ public:
 	/// Returns current currency
 	int getCurrency();
 
+	void setCurrency(const int & money);
 
 	/// \brief
 	/// sets Overworld Position to given value
@@ -44,7 +45,11 @@ public:
 
 	std::vector<std::shared_ptr<Item> > getInventory();
 
+	void setInventory(std::vector<std::shared_ptr<Item>>& inv);
+
 	void addToInventory(const std::shared_ptr<Item> & item);
+
+	void clearInventory();
 	
 	void eraseItem(std::shared_ptr<Item> i);
 };

@@ -76,6 +76,8 @@ public:
 
 	std::unordered_map<ArmorSlots, Armor> getArmorMap();
 
+	void clearEquipment();
+
 	/// \brief
 	/// Creates a window the player can interact with to level up
 	void levelUp(sf::RenderWindow & window);

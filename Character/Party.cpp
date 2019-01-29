@@ -35,6 +35,10 @@ int Party::getCurrency() {
 	return currency;
 }
 
+void Party::setCurrency(const int & money) {
+	currency = money;
+}
+
 void Party::setOverworldPosition(const int & position) {
 	overworldPosition = position;
 }
@@ -47,8 +51,17 @@ std::vector<std::shared_ptr<Item>> Party::getInventory(){
 	return inventory;
 }
 
+void Party::setInventory(std::vector<std::shared_ptr<Item>>& inv)
+{
+	inventory = inv;
+}
+
 void Party::addToInventory(const std::shared_ptr<Item>& item){
 	inventory.push_back(item);
+}
+
+void Party::clearInventory() {
+	inventory.clear();
 }
 
 void Party::eraseItem(std::shared_ptr<Item> i) {
