@@ -10,16 +10,17 @@ InventoryTile::InventoryTile(std::shared_ptr<Item> item, const sf::Vector2f & po
 
 	rect.setPosition(sf::Vector2f{ position.x + outLine + spaceBetweenTiles, position.y + outLine + spaceBetweenTiles });
 	rect.setSize(sf::Vector2f{ size.x - 2 * (outLine + spaceBetweenTiles), size.y - 2 * (outLine + spaceBetweenTiles) });
-	rect.setFillColor(sf::Color::Black);
+	rect.setFillColor(sf::Color(124, 79, 33));
 	rect.setOutlineThickness(outLine);
-	rect.setOutlineColor(sf::Color::White);
+	rect.setOutlineColor(sf::Color(102, 51, 0));
 
-	font.loadFromFile("Assets/PIXEARG_.ttf");
+	font.loadFromFile("Assets/arial.ttf");
 	text.setFont(font);
 	text.setPosition(sf::Vector2f{ position.x + 10, position.y + size.y / 4 });
 	text.setCharacterSize(int(size.y / 2));
-	text.setStyle(sf::Text::Bold);
 	text.setFillColor(sf::Color::White);
+	text.setOutlineThickness(1);
+	text.setOutlineColor(sf::Color::Black);
 	text.setString(item->getName());
 }
 
@@ -70,3 +71,9 @@ std::shared_ptr<Item> InventoryTile::getItem() {
 void InventoryTile::setColor(sf::Color color) {
 	rect.setFillColor(color);
 }
+
+void InventoryTile::setBorderColor(sf::Color color) {
+	rect.setOutlineColor(color);
+}
+
+

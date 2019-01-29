@@ -13,10 +13,12 @@ InventoryDisplay::InventoryDisplay(Party & party, sf::RenderWindow & window) :
 	leftScreen.setLocation(leftScreenTopLeft);
 	rightScreen.setLocation(rightScreenTopLeft);
 
+	////Set backGround
 	takatiki.loadFromFile("takatikimap.png");
 	background.setTexture(takatiki);
 	background.setTextureRect({ 0, 0, 1920, 1080 });
 
+	////Initiate tiles
 	for (unsigned int i = 0; i < party.size(); i++) {
 		pTile.first.push_back(
 			std::make_shared<PlayerInventoryTile>(
@@ -37,25 +39,29 @@ InventoryDisplay::InventoryDisplay(Party & party, sf::RenderWindow & window) :
 			)
 		);
 	}
-	/*book.loadFromFile("Assets/OpenBook.png");
-	bookSprite.setTexture(book);
-	bookSprite.setScale(static_cast<float>(1920 / book.getSize().x * 1.1), static_cast<float>(1080 / book.getSize().y * 1.1));
-	bookSprite.setPosition(30, 0);*/
 
-	////Recieve all items
-	//for (unsigned int i = 0; i < party.size(); i++) {
-	//	//playerItems[i] = party[i]->getInventory;
-	//}
-	////partyItems = party.getItems();
-
-	////Initiate tiles
+	////Initiate selectbox 
 	selectBox.setPosition(pTile.first[0]->getSelectboxPosition());
 	selectBox.setSize(sf::Vector2f{ 80,80 });
-	selectBox.setFillColor(sf::Color::Blue);
+	selectBox.setFillColor(sf::Color(12, 85, 135));
+	selectBox.setOutlineColor(sf::Color(5, 55, 89));
+
+	////varable needed for de selection
 	selected.first = 0;
 	selected.second = 0;
 	lastSelected.first = 0;
 	lastSelected.second = 0;
+
+	////text for navigation
+	font.loadFromFile("Assets/arial.ttf");
+	text.setFont(font);
+	text.setPosition(sf::Vector2f{ 10  ,1080 - 22 });
+	text.setCharacterSize(20);
+	text.setFillColor(sf::Color::White);
+	text.setString("");
+	text.setOutlineThickness(1);
+	text.setOutlineColor(sf::Color::Black);
+
 }
 
 
@@ -74,6 +80,7 @@ void InventoryDisplay::use() {
 	equip eState = equip::left;
 	keyHandler.setOverride(true);
 
+	reloadTiles();
 
 	isOpen = true;
 	while (isOpen && window.isOpen()) {
@@ -88,31 +95,37 @@ void InventoryDisplay::use() {
 
 		switch (state) {
 			case InventoryMenu::left:
+				text.setString("Navigation use W A S D			Unequip Item from player use Enter																										Exit inventory use ESC");
 				keyHandler.addListener(sf::Keyboard::A, []() {});
 				keyHandler.addListener(sf::Keyboard::D, [&]() {if (pTile.second.size() != 0) { state = InventoryMenu::right;  setZeroSelected(1); }});
 				keyHandler.addListener(sf::Keyboard::W, [&]() { changeSelected(0, -1); });
 				keyHandler.addListener(sf::Keyboard::S, [&]() { changeSelected(0, 1);  });
 
+				keyHandler.addListener(sf::Keyboard::U, []() {});
 				keyHandler.addListener(sf::Keyboard::Enter, [&]() {state = InventoryMenu::unequipItem; select(selected.first, selected.second); lastSelected.first = selected.first;  lastSelected.second = selected.second; setZeroSelected(0, lastSelected.second); });
 				keyHandler.addListener(sf::Keyboard::Delete, [&]() {});
 				keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false; });
 				break;
 			case InventoryMenu::right:
+				text.setString("Navigation use W A S D		Equip Item to player use Enter			Use a Consumeble use U			Delete Item from Party inventory									Exit inventory use ESC");
 				keyHandler.addListener(sf::Keyboard::A, [&]() {state = InventoryMenu::left;  setZeroSelected(0); });
 				keyHandler.addListener(sf::Keyboard::D, []() {});
 				keyHandler.addListener(sf::Keyboard::W, [&]() {changeSelected(1, -1); });
 				keyHandler.addListener(sf::Keyboard::S, [&]() {changeSelected(1, 1);  });
 
+				keyHandler.addListener(sf::Keyboard::U, [&]() {useItem(selected.second); if (itemToUse != nullptr) { isOpen = false; } });
 				keyHandler.addListener(sf::Keyboard::Delete, [&]() {if (pTile.second.size() != 0) { state = InventoryMenu::left; deleteItem(selected.second); changeSelected(0, 0);state = InventoryMenu::left; }});
 				keyHandler.addListener(sf::Keyboard::Enter, [&]() {state = InventoryMenu::equipItem; select(selected.first, selected.second); lastSelected.first = selected.first;  lastSelected.second = selected.second; setZeroSelected(0); });
 				keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false; });
 				break;
 			case InventoryMenu::equipItem:
+				text.setString("Navigation use W S			Equip Item to player use Enter																												Exit Equip a Item use ESC");
 				keyHandler.addListener(sf::Keyboard::A, []() {});
 				keyHandler.addListener(sf::Keyboard::D, []() {});
 				keyHandler.addListener(sf::Keyboard::W, [&]() { changeSelected(0, -1); });
 				keyHandler.addListener(sf::Keyboard::S, [&]() { changeSelected(0, 1);  });
 
+				keyHandler.addListener(sf::Keyboard::U, []() {});
 				keyHandler.addListener(sf::Keyboard::Delete, [&]() {});
 				keyHandler.addListener(sf::Keyboard::Escape, [&]() {state = InventoryMenu::right; reloadTiles();  setZeroSelected(0); });
 				keyHandler.addListener(sf::Keyboard::Enter, [&]() {state = InventoryMenu::left;  addItemToCharacter(selected.second, lastSelected.second);  setZeroSelected(0); });
@@ -121,21 +134,25 @@ void InventoryDisplay::use() {
 			case InventoryMenu::unequipItem:
 				switch (eState) {
 					case equip::left:
+						text.setString("Navigation use W A S D			Unequip Item from player use Enter																											Exit Unequip a Item use ESC");
 						keyHandler.addListener(sf::Keyboard::A, []() {});
 						keyHandler.addListener(sf::Keyboard::D, [&]() { eState = equip::right;  changeSelected(1, 0, lastSelected.second); });
 						keyHandler.addListener(sf::Keyboard::W, [&]() { changeSelected(0, -1, lastSelected.second); });
 						keyHandler.addListener(sf::Keyboard::S, [&]() { changeSelected(0, 1, lastSelected.second);  });
 
+						keyHandler.addListener(sf::Keyboard::U, []() {});
 						keyHandler.addListener(sf::Keyboard::Delete, []() {});
 						keyHandler.addListener(sf::Keyboard::Enter, [&]() {state = InventoryMenu::left; removeItemFromCharacer(lastSelected.second, selected.first, selected.second); setZeroSelected(0); reloadTiles(); });
 						keyHandler.addListener(sf::Keyboard::Escape, [&]() {state = InventoryMenu::left; eState = equip::left; reloadTiles();   setZeroSelected(0); });
 						break;
 					case equip::right:
+						text.setString("Navigation use W A S D			Unequip Item from player use Enter																											Exit Unequip a Item use ESC");
 						keyHandler.addListener(sf::Keyboard::A, [&]() { eState = equip::left; changeSelected(0, 0, lastSelected.second); });
 						keyHandler.addListener(sf::Keyboard::D, []() {});
 						keyHandler.addListener(sf::Keyboard::W, [&]() { changeSelected(1, -1, lastSelected.second); });
 						keyHandler.addListener(sf::Keyboard::S, [&]() { changeSelected(1, 1, lastSelected.second);  });
 
+						keyHandler.addListener(sf::Keyboard::U, []() {});
 						keyHandler.addListener(sf::Keyboard::Delete, []() {});
 						keyHandler.addListener(sf::Keyboard::Enter, [&]() {state = InventoryMenu::left; removeItemFromCharacer(lastSelected.second, selected.first, selected.second); setZeroSelected(0); });
 						keyHandler.addListener(sf::Keyboard::Escape, [&]() {state = InventoryMenu::left; reloadTiles();  setZeroSelected(0); });
@@ -199,10 +216,10 @@ void InventoryDisplay::setZeroSelected(const int & collum, const int &character)
 void InventoryDisplay::draw() {
 	window.clear();
 	window.draw(background);
-	//window.draw(bookSprite);
 	drawLeftScreen();
 	drawRightScreen();
 	window.draw(selectBox);
+	window.draw(text);
 	window.display();
 }
 
@@ -246,20 +263,12 @@ void InventoryDisplay::deleteItem(const int & i) {
 
 void InventoryDisplay::select(const int & collom, const int & row) {
 	if (collom == 0) {
-		pTile.first[row]->setColor(sf::Color::Green);
+		pTile.first[row]->setColor(sf::Color(123, 249, 84));
+		pTile.first[row]->setBorderColor(sf::Color(72, 114, 59));
 	}
 	else if (collom == 1) {
-		pTile.second[row]->setColor(sf::Color::Green);
-	}
-}
-
-
-void InventoryDisplay::deselect(const int & collom, const int & row) {
-	if (collom == 0) {
-		pTile.first[row]->setColor(sf::Color::Black);
-	}
-	else if (collom == 1) {
-		pTile.second[row]->setColor(sf::Color::Black);
+		pTile.second[row]->setColor(sf::Color(123, 249, 84));
+		pTile.second[row]->setBorderColor(sf::Color(72, 114, 59));
 	}
 }
 
@@ -268,13 +277,11 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 	std::shared_ptr<Weapon> a = std::dynamic_pointer_cast<Weapon>(pTile.second[item]->getItem());
 	std::shared_ptr<Armor> b = std::dynamic_pointer_cast<Armor>(pTile.second[item]->getItem());
 	if (a != nullptr) {
-
 		auto map = pTile.first[character]->getCharacter()->getWeaponMap();
 		std::vector<WeaponSlots> slots;
 		for (auto m: map) {
 			slots.push_back(m.first);
 		}
-
 		auto alreadyUquipt = std::find(slots.begin(), slots.end(), a->getWeaponSlot());
 		if (alreadyUquipt == slots.end()){
 			party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
@@ -287,14 +294,11 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 		for (auto m : map) {
 			slots.push_back(m.first);
 		}
-
 		auto alreadyUquipt = std::find(slots.begin(), slots.end(), b->getArmorSlot());
 		if (alreadyUquipt == slots.end()) {
 			party.addArmortoPartyMember(pTile.first[character]->getCharacter(), b);
 			deleteItem(item);
 		}
-		
-		
 	}
 	reloadTiles();
 }
@@ -343,4 +347,17 @@ void InventoryDisplay::reloadTiles(){
 				)
 		);
 	}
+}
+
+void InventoryDisplay::useItem(const unsigned int & row) {
+	itemToUse = std::dynamic_pointer_cast<Consumable>(pTile.second[row]->getItem());
+	if (itemToUse != nullptr) {
+		deleteItem(row);
+	}
+}
+
+std::shared_ptr<Consumable> InventoryDisplay::getUsedItem() {
+	std::shared_ptr<Consumable> temp = itemToUse;
+	itemToUse = nullptr;
+	return temp;
 }

@@ -9,66 +9,40 @@ PlayerInventoryTile::PlayerInventoryTile(std::shared_ptr<PlayerCharacter> charac
 	armor = character->getArmorMap();
 
 	float outLine = 2;
-	float spaceBetweenTiles = 5; 
+	float spaceBetweenTiles = 5;
 
-	rect.setPosition(sf::Vector2f{ position.x + outLine + spaceBetweenTiles, position.y + outLine + spaceBetweenTiles});
-	rect.setSize(sf::Vector2f{ size.x - 2* (outLine +spaceBetweenTiles), size.y - 2* (outLine +spaceBetweenTiles)});
-	rect.setFillColor(sf::Color::Black);
+	rect.setPosition(sf::Vector2f{ position.x + outLine + spaceBetweenTiles, position.y + outLine + spaceBetweenTiles });
+	rect.setSize(sf::Vector2f{ size.x - 2 * (outLine + spaceBetweenTiles), size.y - 2 * (outLine + spaceBetweenTiles) });
+	rect.setFillColor(sf::Color(124, 79, 33));
 	rect.setOutlineThickness(outLine);
-	rect.setOutlineColor(sf::Color::White);
+	rect.setOutlineColor(sf::Color(102, 51, 0));
 
-	font.loadFromFile("Assets/PIXEARG_.ttf");
+	font.loadFromFile("Assets/arial.ttf");
 	textPlayerName.setFont(font);
 	textPlayerName.setPosition(sf::Vector2f{ position.x + 10, position.y + size.y / 7 * 1 });
 	textPlayerName.setCharacterSize(int(size.y / 7));
-	textPlayerName.setStyle(sf::Text::Bold);
 	textPlayerName.setFillColor(sf::Color::White);
 	textPlayerName.setString(character->getName());
+	textPlayerName.setOutlineThickness(1);
+	textPlayerName.setOutlineColor(sf::Color::Black);
 
 	int i = 0;
 	for (auto & w : weapons) {
 		tileWaponNames.push_back(
 			std::make_shared<InventoryTile>(std::make_shared<Weapon>(w.second),
-				sf::Vector2f(sf::Vector2f{ position.x + 10, position.y + size.y / 3 * i + 100}),
-				sf::Vector2f(350.0f ,float(size.y / 4))));
+				sf::Vector2f(sf::Vector2f{ position.x + 10, position.y + size.y / 3 * i + 100 }),
+				sf::Vector2f(450.0f, float(size.y / 4))));
 		i++;
 	}
 	i = 0;
 	for (auto & a : armor) {
 		tileArmorNames.push_back(
 			std::make_shared<InventoryTile>(std::make_shared<Armor>(a.second),
-				sf::Vector2f(sf::Vector2f{ position.x + 400, position.y + size.y / 6 * i  }),
+				sf::Vector2f(sf::Vector2f{ position.x + 465, position.y + size.y / 6 * i }),
 				sf::Vector2f(350.0f, float(size.y / 6))));
 		i++;
 	}
-
-
-
-	/*int i = 0;
-	for (auto & w : weapons) {
-		textWaponNames.push_back(sf::Text());
-		textWaponNames[i].setFont(font);
-		textWaponNames[i].setPosition(sf::Vector2f{ position.x + 10, position.y + size.y / 7 * (i + 3 + i * 1) });
-		textWaponNames[i].setCharacterSize(int(size.y / 7));
-		textWaponNames[i].setStyle(sf::Text::Bold);
-		textWaponNames[i].setFillColor(sf::Color::White);
-		textWaponNames[i].setString(w.second.getName());
-		i++;
-	}
-
-	i = 0;
-	for (auto & a : armor) {
-		textArmorNames.push_back(sf::Text());
-		textArmorNames[i].setFont(font);
-		textArmorNames[i].setPosition(sf::Vector2f{ position.x + 400, position.y + size.y / 12 * (i + 1 + i * 1) });
-		textArmorNames[i].setCharacterSize(int(size.y / 12));
-		textArmorNames[i].setStyle(sf::Text::Bold);
-		textArmorNames[i].setFillColor(sf::Color::White);
-		textArmorNames[i].setString(a.second.getName());
-		i++;
-	}*/
 }
-
 
 void PlayerInventoryTile::draw(sf::RenderWindow & window) {
 	window.draw(rect);
@@ -99,6 +73,10 @@ sf::Vector2f PlayerInventoryTile::getSelectboxPosition() {
 
 void PlayerInventoryTile::setColor(sf::Color color) {
 	rect.setFillColor(color);
+}
+
+void PlayerInventoryTile::setBorderColor(sf::Color color) {
+	rect.setOutlineColor(color);
 }
 
 std::shared_ptr<PlayerCharacter> PlayerInventoryTile::getCharacter() {
