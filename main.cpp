@@ -117,6 +117,9 @@ int main( int argc, char *argv[] ){
 	DM.load(heroParty);
 
 
+	DM.save(heroParty);
+
+
 	//=======================================================
 	// Creating items
 	//=======================================================

@@ -284,6 +284,76 @@ private:
 
 	================================================*/
 
+	//base template for unpacking
+	template<typename T, typename ... Attributes>
+	void saving(T& t, Attributes& ... attributes) {
+		saving(t);
+		saving(attributes...);
+	}
+
+	//base template for saving please specialise
+	template<typename T>
+	void saving(T& t) {
+		std::cerr << "uknown type: " << typeid(t).name() << std::endl;
+	}
+
+	template<>
+	void saving<Party>(Party& party) {
+		db.cmd("BEGIN");
+
+		db.cmd("DELETE FROM InventoryItem");
+
+		std::string query("");
+		std::string id("");
+
+		for (auto & item : party.getInventory()) {
+			query = "SELECT id FROM Item Where name = ";
+			query += ("'"+item->getName()+"'");
+			db.cmd(query.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+				auto p = (std::string*)someP;
+				*p = argv[0];
+				return 0;
+			}, &id);
+
+			query = "INSERT INTO InventoryItem (inventoryId, itemId) VALUES ( 1, ";
+			query += (id + " )");
+			db.cmd(query.c_str());
+		}
+
+		for (unsigned int i = 0; i < party.size(); i++) {
+			//save weapons
+			for (auto & weapon : party[i]->getWeaponMap()) {
+				query = "SELECT id FROM Item Where name = ";
+				query += ("'" + weapon.second.getName() + "'");
+				db.cmd(query.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+					auto p = (std::string*)someP;
+					*p = argv[0];
+					return 0;
+				}, &id);
+
+				query = "INSERT INTO InventoryItem (inventoryId, itemId) VALUES ";
+				query += ("( " + std::to_string(i+2) + ", " + id + " )");
+				db.cmd(query.c_str());
+			}
+
+			//save armor
+			for (auto & armor : party[i]->getArmorMap()) {
+				query = "SELECT id FROM Item Where name = ";
+				query += ("'" + armor.second.getName() + "'");
+				db.cmd(query.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+					auto p = (std::string*)someP;
+					*p = argv[0];
+					return 0;
+				}, &id);
+
+				query = "INSERT INTO InventoryItem (inventoryId, itemId) VALUES ";
+				query += ("( " + std::to_string(i + 2) + ", " + id + " )");
+				db.cmd(query.c_str());
+			}
+		}
+
+		db.cmd("COMMIT");
+	}
 	
 public:
 
