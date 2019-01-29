@@ -8,7 +8,7 @@
 
 /// \brief
 /// Templates character base class for containing objects of class T.
-template<typename T, int N = 4>
+template<typename T, unsigned int N = 4>
 class CharacterContainer {
 protected:
 	std::vector<T> characters;
@@ -18,8 +18,8 @@ public:
 
 	/// \brief
 	/// Adds element T to internal container
-	void add(T character) {
-		if (characters.size < N) {
+	virtual void add(T character) {
+		if (characters.size() < N) {
 			characters.push_back(character);
 		}
 		else {

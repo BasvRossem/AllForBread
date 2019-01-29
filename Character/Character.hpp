@@ -27,7 +27,7 @@ protected:
 	sf::Vector2f position;
 	sf::Clock clock;
 
-	int maxHealth = 1;
+	int maxHealth = 10;
 	int currentHealth = maxHealth;
 
 	int maxMana = 100;
@@ -112,6 +112,18 @@ public:
 	float getModifier(const DamageTypes & modifier);
 
 	/// \brief
+	/// Returns characte level
+	const int getCharlevel();
+
+	/// \brief
+	/// Returns unordered map of ability scores
+	std::unordered_map<AbilityScores, int> getStats();
+
+	/// \brief
+	/// Returns unordered map of weaknesses
+	std::unordered_map<DamageTypes, float> getWeaknesses();
+
+	/// \brief
 	/// Lowers health by given amount
 	void decreaseHealth(const int & modifier);
 
@@ -173,4 +185,5 @@ public:
 
 	void positionHealthbar(const sf::Vector2f & position);
 
+	void setWeakness(const DamageTypes & type, const float & factor);
 };

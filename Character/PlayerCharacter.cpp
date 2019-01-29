@@ -300,3 +300,15 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 	sound.play();
 	isLevelUp = false;
 }
+
+std::unordered_map<AbilityScores, int> PlayerCharacter::getArmorModifierTotal() {
+	std::unordered_map<AbilityScores, int> totals;
+
+	for (auto armorPiece : armor) {
+		for (auto stat : armorPiece.second.getPropertyModifiers()) {
+			totals[stat.first] += stat.second;
+		}
+	}
+
+	return totals;
+}

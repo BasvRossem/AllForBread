@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 //-Character stats		(Issue 39)
 //================================
@@ -42,4 +43,11 @@ enum class WeaponSlots {
 	mainhand,
 	offhand,
 	twohanded
+};
+
+
+struct EnumMethods {
+public:
+	const std::string static getAbilityScoreName(const AbilityScores & score);
+	const std::string static getDamageTypeName(const DamageTypes & type);
 };

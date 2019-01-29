@@ -99,4 +99,8 @@ public:
 	/// \brief
 	/// Creates a window the player can interact with to level up
 	void levelUp(sf::RenderWindow & window);
+	
+	/// \brief
+	/// gets all modifiers combined from armor
+	std::unordered_map<AbilityScores, int> getArmorModifierTotal();
 };

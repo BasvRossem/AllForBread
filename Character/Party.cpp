@@ -2,7 +2,18 @@
 
 Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players) :
 	CharacterContainer<std::shared_ptr<PlayerCharacter>, 4>(players) {
-};
+	if (characters.size() > 0) {
+		partyLeader = &characters[0];
+	}
+}
+
+void Party::add(std::shared_ptr<PlayerCharacter> character) {
+	CharacterContainer< std::shared_ptr<PlayerCharacter>, 4>::add(character);
+	if (characters.size() == 1) {
+		partyLeader = &characters[0];
+	}
+	
+}
 
 void Party::addExperience(const int & exp) {
 	int splitExp = static_cast<int>(exp / characters.size());
@@ -53,4 +64,14 @@ void Party::addToInventory(const std::shared_ptr<Item>& item){
 
 void Party::eraseItem(std::shared_ptr<Item> i) {
 	inventory.erase(std::remove(inventory.begin(), inventory.end(), i), inventory.end());
+}
+
+std::shared_ptr<PlayerCharacter>* Party::getPartyLeader() {
+	return partyLeader;
+}
+
+void Party::setPartyLeader(std::shared_ptr<PlayerCharacter>* newLeader) {
+	if (newLeader != nullptr) {
+		partyLeader = newLeader;
+	}
 }

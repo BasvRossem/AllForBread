@@ -14,8 +14,11 @@ private:
 	int currency = 0;
 	int overworldPosition = 0;
 	std::vector<std::shared_ptr<Item> > inventory;
+	std::shared_ptr<PlayerCharacter> * partyLeader;
 public:
 	Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players);
+
+	virtual void add(std::shared_ptr<PlayerCharacter> character) override;
 
 	/// \brief
 	/// Awards experience distributed evenly between all members
@@ -47,4 +50,9 @@ public:
 	void addToInventory(const std::shared_ptr<Item> & item);
 	
 	void eraseItem(std::shared_ptr<Item> i);
+
+	std::shared_ptr<PlayerCharacter>* getPartyLeader();
+	
+	void setPartyLeader(std::shared_ptr<PlayerCharacter>* newLeader);
+
 };

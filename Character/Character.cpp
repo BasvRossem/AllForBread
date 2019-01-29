@@ -215,6 +215,18 @@ float Character::getModifier(const DamageTypes & modifier) {
 	return weaknessModifiers[modifier];
 }
 
+const int Character::getCharlevel() {
+	return level;
+}
+
+std::unordered_map<AbilityScores, int> Character::getStats() {
+	return characterStats;
+}
+
+std::unordered_map<DamageTypes, float> Character::getWeaknesses() {
+	return weaknessModifiers;
+}
+
 void Character::doDeath() {
 	showDeathTexture();
 }
@@ -262,3 +274,8 @@ void Character::centreHealthBar() {
 void Character::positionHealthbar(const sf::Vector2f & position) {
 	healthBar.setPosition(position);
 }
+
+void Character::setWeakness(const DamageTypes & type, const float & factor) {
+	weaknessModifiers[type] = factor;
+}
+
