@@ -12,6 +12,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <sstream>
+
 /// @file
 
 /// \brief
@@ -76,7 +77,10 @@ public:
 
 	std::unordered_map<ArmorSlots, Armor> getArmorMap();
 
-	/// \brief
-	/// Creates a window the player can interact with to level up
-	void levelUp(sf::RenderWindow & window);
+
+	int getAbilityPoints();
+	int getExperienceGauge();
+	int getExperience();
+	void setIsLevelUp(bool value);
+	void setAbilityPoints(const unsigned int & ap);
 };

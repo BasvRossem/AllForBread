@@ -16,7 +16,7 @@
 #include "Core/Menu.hpp"
 #include "Inventory/InventoryDisplay.hpp"
 #include "Character/Mob.hpp"
-
+#include "Character/AbilitySpeccing.hpp"
 
 
 //=======================================================
@@ -215,6 +215,8 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 
 	KeyboardHandler keyHandl;
+
+	keyHandl.addListener(sf::Keyboard::I, [&]() { AbilitySpeccing a(testCharacter, window); a.resetAbilits(); a.use(window); });
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
 	
