@@ -34,7 +34,7 @@ public:
 	const std::string getOptionTextByIndex(int i);
 	const std::function<void()> getOptionEventByIndex(int i);
 	const std::shared_ptr<DialogNode> getOptionNextNodeByIndex(int i);
-
+	void removeAllOptions();
 };
 
 class DialogTree{
@@ -43,7 +43,7 @@ private:
 public:
 	DialogTree();
 	void destroyTree();
-	void performDialogue(DialogBox& diaBox);
+	void performDialogue(DialogBox& diaBox, bool sound = true, int speed = 100);
 	void addNode(std::shared_ptr< DialogNode> node);
 
 };

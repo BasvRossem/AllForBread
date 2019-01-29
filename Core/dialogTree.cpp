@@ -46,6 +46,10 @@ const std::shared_ptr<DialogNode> DialogNode::getOptionNextNodeByIndex(int i) {
 	return dialogOptions[i]->getNextNode();
 }
 
+void DialogNode::removeAllOptions(){
+	dialogOptions.clear();
+}
+
 DialogTree::DialogTree()
 {}
 void DialogTree::addNode(std::shared_ptr< DialogNode> node) {
@@ -56,12 +60,12 @@ void DialogTree::destroyTree()
 {
 }
 
-void DialogTree::performDialogue(DialogBox& diaBox){
+void DialogTree::performDialogue(DialogBox& diaBox, bool sound, int speed){
 
 	if (!dialogNodes.empty()) {
 		std::shared_ptr<DialogNode> currentNode = dialogNodes[0];
 		while (currentNode) {
-			diaBox.print(currentNode->getText());
+			diaBox.print(currentNode->getText(),sound, speed);
 			std::cout << currentNode->getOptionsCount();
 			if (currentNode->getOptionsCount() > 0){
 				std::vector<std::pair<std::string, std::function<void()>>> choices;
