@@ -31,8 +31,10 @@ private:
 	sf::Sound feedbackSound;
 	sf::Color backgroundColor;
 
+	sf::RectangleShape backgroundSquare;
+
 public:
-	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, sf::Color backgroundColor);
+	DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, sf::Color backgroundColor = sf::Color::Black, sf::Color edgeColor = sf::Color(102, 51, 0));
 	///\brief
 	/// draws the screen part and the text
 	void draw();
