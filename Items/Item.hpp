@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "../Character/EnumClasses.hpp"
 
 class Item {
 private:
@@ -14,7 +15,6 @@ public:
 	const int getBaseValue() const;
 	const std::string getName() const;
 	const std::string getDescription() const;
-
 
 	void setWeight(const int & newWeight);
 	void setBaseValue(const int & newBaseValue);

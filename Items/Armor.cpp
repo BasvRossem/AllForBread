@@ -1,7 +1,5 @@
 #include "Armor.hpp"
 #include <algorithm>
-
-
 #include <iostream>
 
 Armor::Armor() {
@@ -13,6 +11,7 @@ Armor::Armor(const ArmorSlots & slot) :
 {}
 
 Armor::~Armor() {
+	
 }
 
 const ArmorSlots Armor::getArmorSlot() const {

@@ -1,4 +1,6 @@
 #include "Party.hpp"
+#include <typeinfo>
+
 
 Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players) :
 	CharacterContainer<std::shared_ptr<PlayerCharacter>, 4>(players) {
@@ -74,4 +76,13 @@ void Party::setPartyLeader(std::shared_ptr<PlayerCharacter>* newLeader) {
 	if (newLeader != nullptr) {
 		partyLeader = newLeader;
 	}
+}
+
+void Party::addWeapontoPartyMember(std::shared_ptr<PlayerCharacter> c, std::shared_ptr<Weapon> w) {
+	c->setWeapon(w->getWeaponSlot(), *w);
+}
+
+
+void Party::addArmortoPartyMember(std::shared_ptr<PlayerCharacter> c, std::shared_ptr<Armor> a) {
+	c->setArmor(a->getArmorSlot(), *a);
 }

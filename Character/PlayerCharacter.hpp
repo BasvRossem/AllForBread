@@ -92,6 +92,15 @@ public:
 	/// Remember that the portrait gets loaded at the open function of partyOverview
 	const std::string getFilename();
 
+	/// \brief
+	/// Sets given armor to given armorslot
+	void removeArmor(const ArmorSlots & slot);
+
+	/// \brief
+	/// Sets given weapon to given weaponslot
+	void removeWeapon(const WeaponSlots & slot);
+
+
 	std::unordered_map<WeaponSlots, Weapon> getWeaponMap();
 
 	std::unordered_map<ArmorSlots, Armor> getArmorMap();

@@ -51,8 +51,12 @@ public:
 	
 	void eraseItem(std::shared_ptr<Item> i);
 
+
 	std::shared_ptr<PlayerCharacter>* getPartyLeader();
 	
 	void setPartyLeader(std::shared_ptr<PlayerCharacter>* newLeader);
 
+	void addWeapontoPartyMember(std::shared_ptr<PlayerCharacter> ,std::shared_ptr<Weapon> i);
+
+	void addArmortoPartyMember(std::shared_ptr<PlayerCharacter>, std::shared_ptr<Armor> i);
 };

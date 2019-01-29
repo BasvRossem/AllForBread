@@ -312,3 +312,12 @@ std::unordered_map<AbilityScores, int> PlayerCharacter::getArmorModifierTotal() 
 
 	return totals;
 }
+
+void PlayerCharacter::removeArmor(const ArmorSlots & slot) {
+	armor.erase(slot);
+}
+
+
+void PlayerCharacter::removeWeapon(const WeaponSlots & slot) {
+	weapons.erase(slot);
+}

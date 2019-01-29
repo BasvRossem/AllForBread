@@ -62,6 +62,11 @@ int main(int argc, char *argv[]) {
 	testCharacter2->setPortraitFilename("Barbarian_head.png");
 	testCharacter3->setPortraitFilename("Black_Wizard_head.png");
 	testCharacter4->setPortraitFilename("Blacksmith_head.png");
+	
+	//=======================================================
+	// Creating BackGround
+	//=======================================================
+
 
 	std::vector<std::shared_ptr<PlayerCharacter>> heroVector = { testCharacter1, testCharacter2, testCharacter3, testCharacter4 };
 
@@ -73,7 +78,6 @@ int main(int argc, char *argv[]) {
 
 	background.add(takatikimap, backgroundImage);
 
-
 	background.setBackGround(takatikimap, window);
 
 	KeyboardHandler keyHandl;
@@ -83,7 +87,6 @@ int main(int argc, char *argv[]) {
 		overview.open(window); 
 	});
 	
-	heroParty[0]->decreaseHealth(1);
 
 	while (window.isOpen()) {
 		sf::Event event;
