@@ -38,6 +38,7 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	
 	//Load a font
 	attackFont.loadFromFile("Assets/PIXEARG_.ttf");
+	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 
@@ -92,7 +93,13 @@ State* Combat::update() {
 	enum class combatMenu { main, attack, inventory, flee };
 	combatMenu state = combatMenu::main;
 	keyhandle.setOverride(true);
-	std::array<std::pair<std::string, int>, 4> attackKeys;
+
+	std::vector<std::tuple<std::string, WeaponSlots, int>> availableAttacks;
+
+	//-Old Code
+	//==========================================================
+	//std::array<std::pair<std::string, int>, 4> attackKeys;
+	//==========================================================
 
 	while(!CombatFinished){
 		checkEvents();
@@ -118,19 +125,23 @@ State* Combat::update() {
 						keyhandle.addListener(sf::Keyboard::Num3, [&state]()->void {state = combatMenu::flee; });
 						break;
 					case combatMenu::attack:
-						attackKeys = currentCharacter->getAttacks();
-						for (unsigned int i = 0; i < 4; i++) {
+						//attackKeys = currentCharacter->getAttacks();
+						availableAttacks = currentCharacter->getAvailableAttacks();
+						for (unsigned int i = 0; i < availableAttacks.size(); i++) {
 							keyhandle.addListener(
 								sf::Keyboard::Key(sf::Keyboard::Key::Num1 + i), 
-								[&state, i, &curChar = currentCharacter, this]() {
-								currentCharacter->activateAttack(this->getMonster(0), i);
-									makeAttackFeedback(monsters[0], currentCharacter->getModifier(i));
+								[&state, i, &curChar = currentCharacter, this, &monsters = monsters, &availableAttacks = availableAttacks]() {
+
+								int totalDamageDealt = monsters[0]->processDamage(currentCharacter->generateAttack(availableAttacks[i]));
+
+									makeAttackFeedback(monsters[0], totalDamageDealt);
 									checkMonstersDeath();
 									state = combatMenu::main; 
 									newCurrentCharacter();
 								});
 							std::stringstream tempstring;
-							tempstring << i + 1 << ' ' << attackKeys[i].first;
+							//tempstring << i + 1 << ' ' << attackKeys[i].first;
+							tempstring << i + 1 << ' ' << std::get<0>(availableAttacks[i]);
 							combatChoices.push_back(tempstring.str());
 						}
 						combatChoices.push_back("5. Back");
@@ -149,7 +160,13 @@ State* Combat::update() {
 			//-Monster Actions
 			//===========================================================================================================================================
 			} else if(!isPlayer(initiative[currentInitiative])) {
-				std::cout << "monster made a move that good, you didn't even notice." << std::endl;
+				int randomTargetSelect = (rand() % party.size() + 0);
+				while (party[randomTargetSelect]->getHealth() <= 0) {
+					randomTargetSelect = (rand() % party.size() + 0);
+				}
+
+				int totalDamageDealt = party[randomTargetSelect]->processDamage(currentCharacter->generateAttack({ "Punch", WeaponSlots::mainhand, 1 }));
+				makeAttackFeedback(party[randomTargetSelect], totalDamageDealt);
 				checkPlayerDeath();
 				newCurrentCharacter();
 

@@ -196,6 +196,10 @@ float Character::getModifier(const DamageTypes & modifier) {
 	return weaknessModifiers[modifier];
 }
 
+AbilityScores Character::getScaling(const DamageTypes & type) {
+	return scalingsMap[type];
+}
+
 void Character::doDeath() {
 	showDeathTexture();
 }
@@ -204,17 +208,23 @@ void Character::showDeathTexture() {
 	currentAnimation = deathAnimation;
 }
 
+//-Here is where I would put my generateAttack() functions
+//=========================================================================================================
+// IF I HAD ONE!!!
+//=========================================================================================================
 
-void Character::activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i) {
-	c->decreaseHealth(attacks.activate(i).second);
+int Character::processDamage(const std::vector<std::pair<DamageTypes, int>> & attackInformation) {
+	int totalDamage = 0;
+
+	for (auto & damagePair : attackInformation) {
+		int tempCalcDamage = static_cast<int>(damagePair.second * getModifier(damagePair.first));
+		this->decreaseHealth(tempCalcDamage);
+
+		totalDamage += tempCalcDamage;
+	}
+
+	return totalDamage;
 }
-
-
-std::array<std::pair<std::string, int>, 4> Character::getAttacks() {
-	return attacks.getAttacks();
-}
-
-
 
 sf::Vector2f Character::getSpriteMidpoint() {
 	sf::Vector2f midpoint = sf::Vector2f(
@@ -222,11 +232,6 @@ sf::Vector2f Character::getSpriteMidpoint() {
 		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
 	);
 	return midpoint;
-}
-
-
-unsigned int Character::getModifier(const unsigned int & i) {
-	return attacks.getModifier(i);
 }
 
 std::shared_ptr<ResourceBar> Character::getHealthBar() {

@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <cstdlib>
 #include <iostream>
 #include <String>
 #include <sstream>
@@ -10,7 +11,7 @@
 #include "../Core/dialogBox.h"
 #include "../Core/background.hpp"
 #include "../Core/KeyboardHandler.hpp"
-#include "../Character/Attack.hpp"
+#include "../Character/Attacks.hpp"
 #include "../Character/ResourceBar.hpp"
 #include "../Character/Mob.hpp"
 #include "../Core/Sounds.hpp"
@@ -62,6 +63,9 @@ private:
 
 	//Keyboard
 	KeyboardHandler keyhandle;
+
+	//Clock
+	sf::Clock clock;
 
 	//Functions
 	void attackFeedbackInitialiser(const std::shared_ptr<Character> & target, const sf::String& info);

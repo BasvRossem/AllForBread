@@ -2,7 +2,7 @@
 
 PlayerCharacter::PlayerCharacter(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture, const int & exp) :
 	Character(characterName, texture),
-	experience(exp) {
+	experience(exp){
 };
 
 void PlayerCharacter::draw(sf::RenderWindow & window) {
@@ -114,6 +114,68 @@ std::unordered_map<ArmorSlots, Armor> PlayerCharacter::getArmorMap(){
 	return armor;
 }
 
+//====================================================================================================================================
+// Itereer over de map weapons, kijk welke handslots occupied zijn en return deze in een vector van tuples (attacks)
+std::vector<std::tuple<std::string, WeaponSlots, int>> PlayerCharacter::getAvailableAttacks() {
+
+	std::vector<std::tuple<std::string, WeaponSlots, int>> attackDefenitions = attacks.getAttacks();
+	std::vector<std::tuple<std::string, WeaponSlots, int>> availableAttacks;
+
+	// Types of attacks: { "Mainhand", WeaponSlots::mainhand, 7 }, { "Offhanded",  WeaponSlots::offhand, 5 }, { "Twohanded", WeaponSlots::twohanded, 10 }
+
+	for (auto & index : weapons) {
+		for (auto & defenition : attackDefenitions) {
+			if (index.first == std::get<1>(defenition)) {
+				availableAttacks.push_back(defenition);
+			}
+		}
+	}
+
+	// Safeguard for when a player does not have weapons
+	if (availableAttacks.size() == 0) {
+		availableAttacks.push_back({ "Punch", WeaponSlots::mainhand, 0 });
+	}
+
+	return availableAttacks;
+}
+
+// Parameter wordt tuple met attackDefenition, dan weet je zeker dat weaponslot occupied is
+std::vector<std::pair<DamageTypes, int>> PlayerCharacter::generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition) {
+
+	std::vector<std::pair<DamageTypes, int>> attackInformation = { {} };
+
+	// Safeguard from when a player does not have weapons
+	if (std::get<0>(attackDefenition) == "Punch") {
+		attackInformation[0].first = DamageTypes::bludgeoning;
+		//Punch Damage = 											  [Base Value]	  *			[Strength]
+		attackInformation[0].second = static_cast<int>(std::get<2>(attackDefenition) * (getStat(AbilityScores::strength)));
+
+		return attackInformation;
+
+	} else {
+		Weapon currentWeapon = this->getWeapon(std::get<1>(attackDefenition));
+
+		DamageTypes weaponDamageType = currentWeapon.getPrimaryDamageEffect().first;
+
+		attackInformation[0].first = weaponDamageType;
+		
+		int primaryTypeDamage = currentWeapon.getPrimaryDamageEffect().second;
+
+		//Attack Damage				[AbilityScore Value]				*	[Weapon Value]	 +	[Twohanded Base Damage]
+		int finalAttackDamage = ((getStat(getScaling(weaponDamageType)) * primaryTypeDamage) + std::get<2>(attackDefenition));
+
+		attackInformation[0].second = finalAttackDamage;
+
+		// Add Secondary DamageTypes and DamageValues
+		for (auto & index : currentWeapon.getSecondaryDamageEffects()) {
+			attackInformation.push_back(index);
+		}
+
+		return attackInformation;
+	}
+}
+//====================================================================================================================================
+
 void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 	//-Screen & Drawable variables
 	//================================================================================================================================
@@ -186,27 +248,26 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 
 	//-Sound variables
 	//================================================================================================================================
-	sf::SoundBuffer buffer;
-	buffer.loadFromFile("SoundEffects/ScrollOpen1.wav");
-	sf::Sound sound;
-	sound.setBuffer(buffer);
-	sound.play();
+	Sounds sound;
+	sound.playSoundEffect(SoundEffect::scrollOpen);
 
 	//-Keyhandler
 	//================================================================================================================================
-	keyhandle.addListener(sf::Keyboard::Up, [&vectorIndex, &levelUpVector, &pointerArrow]()->void {
+	keyhandle.addListener(sf::Keyboard::Up, [&vectorIndex, &levelUpVector, &pointerArrow, &sound]()->void {
 		vectorIndex--;
 		if (vectorIndex < 0) vectorIndex = levelUpVector.size() - 1;
 		pointerArrow.setPosition(levelUpVector[vectorIndex].second);
+		sound.playSoundEffect(SoundEffect::buttonHover);
 	});
 
-	keyhandle.addListener(sf::Keyboard::Down, [&vectorIndex, &levelUpVector, &pointerArrow]()->void {
+	keyhandle.addListener(sf::Keyboard::Down, [&vectorIndex, &levelUpVector, &pointerArrow, &sound]()->void {
 		vectorIndex++;
 		if (vectorIndex > static_cast<int>(levelUpVector.size() - 1)) vectorIndex = 0;
 		pointerArrow.setPosition(levelUpVector[vectorIndex].second);
+		sound.playSoundEffect(SoundEffect::buttonHover);
 	});
 
-	keyhandle.addListener(sf::Keyboard::Enter, [&window, &vectorIndex, &levelUpVector, &characterStats = characterStats, &abilityPoints = abilityPoints, &name = name, &textBox, &sound, &buffer]()->void {
+	keyhandle.addListener(sf::Keyboard::Enter, [&window, &vectorIndex, &levelUpVector, &characterStats = characterStats, &abilityPoints = abilityPoints, &name = name, &textBox, &sound]()->void {
 		if (characterStats[levelUpVector[vectorIndex].first] < 99 && abilityPoints > 0) {
 			characterStats[levelUpVector[vectorIndex].first]++;
 			abilityPoints--;
@@ -241,17 +302,12 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 			stringVector.push_back(ss.str());
 			ss.str(std::string());
 
-			buffer.loadFromFile("SoundEffects/LevelUp.wav");
-			sound.setBuffer(buffer);
-			sound.setVolume(30.0f);
-			sound.play();
+			sound.playSoundEffect(SoundEffect::levelUp);
 			sf::sleep(sf::seconds(0.7f));
 			textBox.printPerm(stringVector);
 		}
 		else {
-			buffer.loadFromFile("SoundEffects/LevelError.wav");
-			sound.setBuffer(buffer);
-			sound.play();
+			sound.playSoundEffect(SoundEffect::error);
 			sf::sleep(sf::seconds(0.7f));
 		}
 	});
@@ -280,11 +336,10 @@ void PlayerCharacter::levelUp(sf::RenderWindow & window) {
 		textBox.draw();
 		window.display();
 	}
-	sf::sleep(sf::seconds(0.5f));
 
-	buffer.loadFromFile("SoundEffects/ScrollClose1.wav");
-	sound.setBuffer(buffer);
-	sound.play();
+	sf::sleep(sf::seconds(0.5f));
+	sound.playSoundEffect(SoundEffect::scrollClose);
+	sf::sleep(sf::seconds(0.5f));
 	isLevelUp = false;
 }
 

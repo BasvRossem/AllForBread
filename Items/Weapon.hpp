@@ -10,6 +10,7 @@ private:
 	WeaponSlots weaponSlot = WeaponSlots::mainhand;
 	std::pair<DamageTypes, int> primaryDamageEffect;
 	std::vector<std::pair<DamageTypes, int>> secondaryDamageEffects;
+
 public:
 	Weapon();
 	Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int> & damage);

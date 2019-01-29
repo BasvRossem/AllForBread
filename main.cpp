@@ -125,6 +125,22 @@ int main( int argc, char *argv[] ){
 	// Creating items
 	//=======================================================
 
+	Weapon theHolyBread;
+	theHolyBread.setName("The Holy Bread");
+	theHolyBread.setWeaponSlot(WeaponSlots::mainhand);
+	theHolyBread.setPrimaryDamageEffect({DamageTypes::bludgeoning, 9});
+	theHolyBread.setSecondaryDamageEffects({ {DamageTypes::radiant, 1} });
+
+	heroParty[0]->setWeapon(theHolyBread.getWeaponSlot(), theHolyBread);
+
+	Weapon theHolyBreadNr2Babyyyy;
+	theHolyBreadNr2Babyyyy.setName("The Holy Bread Nr 2 Babyyyy");
+	theHolyBreadNr2Babyyyy.setWeaponSlot(WeaponSlots::offhand);
+	theHolyBreadNr2Babyyyy.setPrimaryDamageEffect({ DamageTypes::slashing, 2 });
+	theHolyBreadNr2Babyyyy.setSecondaryDamageEffects({ { DamageTypes::frost, 3 } });
+
+	heroParty[0]->setWeapon(theHolyBreadNr2Babyyyy.getWeaponSlot(), theHolyBreadNr2Babyyyy);
+
 	Item stick;
 	stick.setName("Stick of Truth");
 	
@@ -335,7 +351,6 @@ int main( int argc, char *argv[] ){
 			int encounterChange = rand() % 100 + 1;
 			if (encounterChange > 90){
 				testMonster = std::make_shared<Monster>("U snap it is u", anubisPair);
-				testMonster->makeMonster();
 				std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 				Mob monsterParty(monsterVector);
 				Combat testCombat(window, heroParty, monsterParty, combatBackground, background);
@@ -354,6 +369,7 @@ int main( int argc, char *argv[] ){
 		if (!POIMove.isFinished()) {
 			POIMove.update();
 		}
+
 
 		window.clear();
 		background.draw(window);

@@ -9,8 +9,10 @@
 #include "../Core/KeyboardHandler.hpp"
 #include "../Core/background.hpp"
 #include "../Core/dialogBox.h"
+#include "../Core/Sounds.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <tuple>
 #include <sstream>
 /// @file
 
@@ -78,6 +80,9 @@ public:
 	/// Sets given weapon to given weaponslot
 	void setWeapon(const WeaponSlots & slot, const Weapon & newWeapon);
 
+	std::vector<std::tuple<std::string, WeaponSlots, int>> getAvailableAttacks();
+
+	std::vector<std::pair<DamageTypes, int>> generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition) override;
 
 	std::unordered_map<WeaponSlots, Weapon> getWeaponMap();
 

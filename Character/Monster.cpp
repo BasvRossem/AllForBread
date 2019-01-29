@@ -35,3 +35,13 @@ void Monster::printRewards() {
 	std::cout << "Reward experience: " << rewardExperience << "\nReward currency: " << rewardCurrency << "\n";
 }
 
+std::vector<std::tuple<std::string, WeaponSlots, int>> Monster::getAvailableAttacks() {
+	std::vector < std::tuple < std::string, WeaponSlots, int >> availableAttack = { { "Punch", WeaponSlots::mainhand, 1 } };
+	return availableAttack;
+}
+
+std::vector<std::pair<DamageTypes, int>> Monster::generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition){
+	std::vector<std::pair<DamageTypes, int>> attackInformation = { {DamageTypes::slashing,  10 * level} };
+	return attackInformation;
+}
+
