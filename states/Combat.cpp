@@ -265,10 +265,10 @@ void Combat::partyVictory() {
 
 	// Show victory screen
 	std::string afterCombatInfo;
-	afterCombatInfo += "You recieved ";
+	afterCombatInfo += "You received ";
 	afterCombatInfo += std::to_string(totalCurrencyReward);
 	afterCombatInfo += " crumbs \n";
-	afterCombatInfo += "You recieved ";
+	afterCombatInfo += "You received ";
 	afterCombatInfo += std::to_string(totalExperienceReward);
 	afterCombatInfo += " experience points \n";
 
