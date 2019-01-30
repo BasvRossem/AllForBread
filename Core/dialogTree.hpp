@@ -16,6 +16,9 @@ private:
 	std::function<void()> event;
 
 public:
+	///\brief
+	/// make a dialogOption given text, nextnode (that points to the node that needs to be called with this option)
+	/// and a function that will be executed by the dialogOption.
 	DialogOption(std::string text, std::shared_ptr<DialogNode> nextNode, std::function<void()> event = [] {});
 	///\brief
 	/// Returns string of the text assigned to this dialogOption
@@ -33,6 +36,8 @@ private:
 	std::string text;
 	std::vector<std::shared_ptr<DialogOption>> dialogOptions;
 public:
+	///\brief
+	/// make adialogNode with a string of the text that needs to
 	DialogNode(std::string text);
 	///\brief
 	/// Adds a dialog option to the dialogoptions vector
@@ -61,7 +66,6 @@ class DialogTree{
 private:
 	std::vector< std::shared_ptr<DialogNode>> dialogNodes;
 public:
-	DialogTree();
 	///\brief
 	/// displays the dialogTree
 	void performDialogue(DialogBox& diaBox, bool sound = true, int speed = 100);
