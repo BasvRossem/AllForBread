@@ -21,7 +21,6 @@
 #include "Core/dialogTree.hpp"
 #include "Character/PartyOverview.hpp"
 
-int main(int argc, char *argv[]) {
 
 
 
@@ -99,17 +98,11 @@ int main( int argc, char *argv[] ){
 	Party heroParty = *hParty;
 	delete hParty;
 
-	heroParty.clearInventory();
-
-	DM.load(heroParty);
-
-
-	DM.save(heroParty);
 
 	heroParty[0]->setPortraitFilename("Anubis_head.png");
-	testCharacter2->setPortraitFilename("Barbarian_head.png");
-	testCharacter3->setPortraitFilename("Black_Wizard_head.png");
-	testCharacter4->setPortraitFilename("Blacksmith_head.png");
+	heroParty[1]->setPortraitFilename("Barbarian_head.png");
+	heroParty[2]->setPortraitFilename("Black_Wizard_head.png");
+	heroParty[3]->setPortraitFilename("Blacksmith_head.png");
 
 	//=======================================================
 	// Creating items
@@ -126,7 +119,7 @@ int main( int argc, char *argv[] ){
 
 	Armor boots = armor["Normal boots"];
 
-	Armor wingedBoots;
+	/*Armor wingedBoots;
 	wingedBoots.setName("Winged boots");
 	wingedBoots.setArmorSlot(ArmorSlots::boots);
 	wingedBoots.setMagicalProtection(5);
@@ -160,7 +153,7 @@ int main( int argc, char *argv[] ){
 	defender.setName("Dragon defender");
 	defender.setPrimaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::lightning, 5));
 	defender.setWeaponSlot(WeaponSlots::offhand);
-
+*/
 
 	Consumable apple;
 	apple.setName("Appel");
@@ -175,7 +168,7 @@ int main( int argc, char *argv[] ){
 		lowest->increaseHealth(2);
 	}));
 
-	heroParty.addToInventory(std::make_shared<Item>(stick));
+	/*heroParty.addToInventory(std::make_shared<Item>(stick));
 	heroParty.addToInventory(std::make_shared<Weapon>(pointyStick));
 	heroParty.addToInventory(std::make_shared<Weapon>(thunderfury));
 	heroParty.addToInventory(std::make_shared<Weapon>(sting));
@@ -183,7 +176,7 @@ int main( int argc, char *argv[] ){
 	heroParty.addToInventory(std::make_shared<Armor>(boots));
 	heroParty.addToInventory(std::make_shared<Armor>(wingedBoots));
 	heroParty.addToInventory(std::make_shared<Armor>(juggernaut));
-	heroParty.addToInventory(std::make_shared<Armor>(poorlyFittedClothing));
+	heroParty.addToInventory(std::make_shared<Armor>(poorlyFittedClothing));*/
 	heroParty.addToInventory(std::make_shared<Consumable>(apple));
 
 
@@ -221,7 +214,7 @@ int main( int argc, char *argv[] ){
 
 	std::function<void()> inventoryFunctie = [&heroParty, &window]() {InventoryDisplay InventoryD(heroParty, window); InventoryD.use(); };
 	std::function<void()> partyFunctie = []() {};
-	std::function<void()> saveFunctie = []() {};
+	std::function<void()> saveFunctie = [&heroParty, &DM]() {DM.save(heroParty); };
 	std::function<void()> loadFunctie = []() {};
 	std::function<void()> closeFunctie = [&window]() {window.close(); };
 

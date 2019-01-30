@@ -17,8 +17,13 @@ private:
 	std::shared_ptr<PlayerCharacter> * partyLeader;
 public:
 	Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players);
+	
+	Party(const Party& p);
+
 
 	virtual void add(std::shared_ptr<PlayerCharacter> character) override;
+
+
 
 	/// \brief
 	/// Awards experience distributed evenly between all members

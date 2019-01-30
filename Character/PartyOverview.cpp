@@ -4,10 +4,10 @@
 #include "../Core/KeyboardHandler.hpp"
 #include "Character.hpp"
 
-PartyOverview::PartyOverview(Party & party, BackGround & backGround, const std::string & surrounding) :
+PartyOverview::PartyOverview(Party & newParty, BackGround & backGround, const std::string & surrounding) :
 	backGround(backGround),
 	surrounding(surrounding),
-	party(party),
+	party(newParty),
 	leftScreen(500, 1040),
 	rightScreen(900, 1040),
 	partyLeaderTexture(std::make_shared<sf::Texture>()),
@@ -455,8 +455,6 @@ void PartyOverview::open(sf::RenderWindow & window) {
 	if (!partyLeaderTexture->loadFromFile("Assets/crown_gold.png")) {
 		throw std::out_of_range("File shield_grey.png niet gevonden");
 	}
-
-	std::cout << backGround.getPath("takatiki") << " <-pad\n";
 
 	backGround.setBackGround(surrounding, window);
 

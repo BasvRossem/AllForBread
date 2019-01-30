@@ -9,6 +9,10 @@ Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players) :
 	}
 }
 
+Party::Party(const Party & p):
+	Party(p.characters)
+{}
+
 void Party::add(std::shared_ptr<PlayerCharacter> character) {
 	CharacterContainer< std::shared_ptr<PlayerCharacter>, 4>::add(character);
 	if (characters.size() == 1) {

@@ -37,7 +37,7 @@ private:
 	VirtualScreen rightScreen;
 
 public:
-	PartyOverview(Party & party, BackGround & backGround, const std::string & surrounding );
+	PartyOverview(Party & newParty, BackGround & backGround, const std::string & surrounding );
 
 	void open(sf::RenderWindow & window);
 };

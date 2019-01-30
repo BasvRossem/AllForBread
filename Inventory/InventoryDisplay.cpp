@@ -102,7 +102,7 @@ void InventoryDisplay::use() {
 				keyHandler.addListener(sf::Keyboard::S, [&]() { changeSelected(0, 1);  });
 
 				keyHandler.addListener(sf::Keyboard::U, []() {});
-				keyHandler.addListener(sf::Keyboard::Enter, [&]() {state = InventoryMenu::unequipItem; select(selected.first, selected.second); lastSelected.first = selected.first;  lastSelected.second = selected.second; setZeroSelected(0, lastSelected.second); });
+				keyHandler.addListener(sf::Keyboard::Enter, [&]() {if (pTile.first[selected.second]->getWeaponTiles().size() != 0 || pTile.first[selected.second]->getArmorTiles().size() != 0) { state = InventoryMenu::unequipItem; select(selected.first, selected.second); lastSelected.first = selected.first;  lastSelected.second = selected.second; setZeroSelected(0, lastSelected.second); }});
 				keyHandler.addListener(sf::Keyboard::Delete, [&]() {});
 				keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false; });
 				break;
