@@ -12,7 +12,7 @@
 class Party : public CharacterContainer< std::shared_ptr<PlayerCharacter>, 4> {
 private:
 	int currency = 0;
-	int overworldPosition = 0;
+	unsigned int overworldPosition = 0;
 	std::vector<std::shared_ptr<Item> > inventory;
 	std::shared_ptr<PlayerCharacter> * partyLeader;
 public:
@@ -54,7 +54,7 @@ public:
 
 	/// \brief
 	/// Returns current Overworld Position
-	int getOverworldPosition();
+	unsigned int getOverworldPosition();
 
 	std::vector<std::shared_ptr<Item> > getInventory();
 

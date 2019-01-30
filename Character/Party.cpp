@@ -82,7 +82,7 @@ void Party::setOverworldPosition(const int & position) {
 	overworldPosition = position;
 }
 
-int Party::getOverworldPosition() {
+unsigned int Party::getOverworldPosition() {
 	return overworldPosition;
 }
 

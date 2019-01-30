@@ -27,7 +27,7 @@ public:
 	
 	///\brief
 	/// Sets a backgroud from window.
-	void setBackGround(const std::string & backGroundName, const sf::Vector2f & position, sf::RenderWindow & window);
+	void setBackGround(const std::string & backGroundName, sf::RenderWindow & window);
 
 	///\brief
 	/// Sets a backgroud from a size vector.
@@ -41,9 +41,5 @@ public:
 	///\brief
 	///Draws the backgroud to virtualscreen.
 	void draw(VirtualScreen & virtualScreen);
-
-	///\brief
-	///Rescales the background to fit the given window
-	void rescale(const sf::Vector2f & windowSize);
 };
 

@@ -2,12 +2,16 @@
 
 
 
+PointOfInterestContainer::PointOfInterestContainer(Party & party):
+	party(party)
+{}
+
 void PointOfInterestContainer::add(const sf::Vector2f &position, const float &size, const sf::Color & color, const std::string &locationType, const std::function<void()> & function, std::vector<sf::Vector2f> path) {
 	POIList.push_back(std::make_shared<PointOfInterest>(position, size, color, locationType, function, path));
 }
 
 void PointOfInterestContainer::activate() {
-	POIList[currentPoint]->activate();
+	POIList[party.getOverworldPosition()]->activate();
 }
 
 void PointOfInterestContainer::nextVisblepoint() {
@@ -15,20 +19,20 @@ void PointOfInterestContainer::nextVisblepoint() {
 }
 
 void PointOfInterestContainer::forward() {
-	std::cout << currentPoint << '\n';
-	if (currentPoint < POIList.size() - 1) {
-		currentPoint++;
+	std::cout << party.getOverworldPosition() << '\n';
+	if (party.getOverworldPosition() < POIList.size() - 1) {
+		party.setOverworldPosition(party.getOverworldPosition() + 1);
 	}
 }
 
 void PointOfInterestContainer::back() {
-	if (currentPoint > 0) {
-		currentPoint--;
+	if (party.getOverworldPosition() > 0) {
+		party.setOverworldPosition(party.getOverworldPosition() - 1);
 	}
 }
 
 sf::Vector2f PointOfInterestContainer::getCurrentPointLocation() {
-	return POIList[currentPoint]->getPosition();
+	return POIList[party.getOverworldPosition()]->getPosition();
 }
 
 void PointOfInterestContainer::draw(sf::RenderWindow & window) {
@@ -38,13 +42,13 @@ void PointOfInterestContainer::draw(sf::RenderWindow & window) {
 }
 
 std::vector<sf::Vector2f> PointOfInterestContainer::getForwardPath() {
-	return POIList[currentPoint]->getPath();
+	return POIList[party.getOverworldPosition()]->getPath();
 }
 
 std::vector<sf::Vector2f> PointOfInterestContainer::getBackPath() {
-	std::cout << currentPoint << '\n';
-	if(currentPoint > 0){
-		std::vector<sf::Vector2f> temp = POIList[currentPoint-1]->getPath();
+	std::cout << party.getOverworldPosition() << '\n';
+	if(party.getOverworldPosition() > 0){
+		std::vector<sf::Vector2f> temp = POIList[party.getOverworldPosition() -1]->getPath();
 		std::reverse(temp.begin(), temp.end());
 		return temp;
 	}

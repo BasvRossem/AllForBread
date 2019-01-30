@@ -79,7 +79,7 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 
 int main( int argc, char *argv[] ){
 
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
 	//=======================================================
 	// OverWorld dialog box
@@ -110,7 +110,6 @@ int main( int argc, char *argv[] ){
 	anubisPair.first = "Assets/AnubisIdle.png";
 	anubisPair.second = "Assets/AnubisIdleFrameNoBottomWhitespace.png";
 	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", anubisPair);
-	testMonster->makeMonster();
 	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 	Mob monsters = (monsterVector);
 
@@ -340,7 +339,7 @@ int main( int argc, char *argv[] ){
 	functions["function1"] = [&testCombat]() {testCombat.update(); };
 
 
-	PointOfInterestContainer poiCont;
+	PointOfInterestContainer poiCont(heroParty);
 
 	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
 
@@ -355,22 +354,34 @@ int main( int argc, char *argv[] ){
 	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1BankNode(new DialogNode("We are sorry the bank is under construction"));
 	std::shared_ptr<DialogNode> cityDialogPoint1SmithNode(new DialogNode("We are sorry the smith is under construction"));
+	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode0(new DialogNode("You enter the church, do you wish to respec your ability points"));
+	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode1(new DialogNode("Which character do you wish to respec?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1RandomHouseNode(new DialogNode("The houses look generic and boring, like they have been copied and pasted."));
 
 	cityDialogPoint1Node0->addDialogOption(std::make_shared<DialogOption>("Yes", cityDialogPoint1Node1));
 	cityDialogPoint1Node0->addDialogOption(std::make_shared<DialogOption>("No", std::shared_ptr<DialogNode>(nullptr)));
 
+	cityDialogPoint1ChurchNode0->addDialogOption(std::make_shared<DialogOption>("yes", cityDialogPoint1ChurchNode1));
+	cityDialogPoint1ChurchNode0->addDialogOption(std::make_shared<DialogOption>("no", cityDialogPoint1Node1));
+
+	for (size_t i = 0; i < heroParty.size(); i++){
+		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background]() {AbilitySpeccing a(heroParty[i], window); a.resetAbilits(); a.use(window); }));
+	}
+
+
+
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Bank", cityDialogPoint1BankNode));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Shop", shopDialogNode0));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Smith", cityDialogPoint1SmithNode));
+	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Church", cityDialogPoint1ChurchNode0));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Houses", cityDialogPoint1RandomHouseNode));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Leave VillageVille", std::shared_ptr<DialogNode>(nullptr)));
 
-	cityDialogPoint1BankNode->addDialogOption(std::make_shared<DialogOption>("back", cityDialogPoint1Node1));
+	cityDialogPoint1BankNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 
-	cityDialogPoint1SmithNode->addDialogOption(std::make_shared<DialogOption>("back", cityDialogPoint1Node1));
+	cityDialogPoint1SmithNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 
-	cityDialogPoint1RandomHouseNode->addDialogOption(std::make_shared<DialogOption>("back", cityDialogPoint1Node1));
+	cityDialogPoint1RandomHouseNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 
 	cityDialogPoint1.addNode(cityDialogPoint1Node0);
 	cityDialogPoint1.addNode(cityDialogPoint1Node1);
@@ -379,7 +390,7 @@ int main( int argc, char *argv[] ){
 	cityDialogPoint1.addNode(cityDialogPoint1RandomHouseNode);
 
 	// we need to fix dis
-	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("back", cityDialogPoint1Node1));
+	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 	//
 
 	//end city dialog
@@ -399,7 +410,7 @@ int main( int argc, char *argv[] ){
 	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);
 
 
-	background.setBackGround(takatikimap, sf::Vector2f(0.0f, 0.0f), window);
+	background.setBackGround(takatikimap, window);
 
 	std::shared_ptr<sf::RectangleShape> partey(new sf::RectangleShape);
 	sf::Vector2f abh(20, 20);
