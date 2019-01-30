@@ -24,7 +24,6 @@ private:
 	BackGround background;
 	DialogBox textBox;
 	std::vector<std::string> stringVector;
-	std::stringstream ss;
 	KeyboardHandler keyhandle;
 	ResourceBar experienceBar;
 	int vectorIndex = 0;

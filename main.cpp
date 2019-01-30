@@ -351,11 +351,11 @@ int main( int argc, char *argv[] ){
 	DM.load(poibox);
 
 	std::shared_ptr<DialogNode> cityDialogPoint1Node0(new DialogNode("Do you wish to enter Villageville?"));
-	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?"));
+	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?", "Assets/town.png"));
 	std::shared_ptr<DialogNode> cityDialogPoint1BankNode(new DialogNode("We are sorry the bank is under construction"));
 	std::shared_ptr<DialogNode> cityDialogPoint1SmithNode(new DialogNode("We are sorry the smith is under construction"));
-	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode0(new DialogNode("You enter the church, do you wish to respec your ability points"));
-	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode1(new DialogNode("Which character do you wish to respec?"));
+	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode0(new DialogNode("You enter the church, do you wish to respec your ability points", "Assets/church.png"));
+	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode1(new DialogNode("Which character do you wish to respec?", "Assets/church.png"));
 	std::shared_ptr<DialogNode> cityDialogPoint1RandomHouseNode(new DialogNode("The houses look generic and boring, like they have been copied and pasted."));
 
 	cityDialogPoint1Node0->addDialogOption(std::make_shared<DialogOption>("Yes", cityDialogPoint1Node1));
@@ -365,7 +365,7 @@ int main( int argc, char *argv[] ){
 	cityDialogPoint1ChurchNode0->addDialogOption(std::make_shared<DialogOption>("no", cityDialogPoint1Node1));
 
 	for (size_t i = 0; i < heroParty.size(); i++){
-		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background]() {AbilitySpeccing a(heroParty[i], window); a.resetAbilits(); a.use(window); }));
+		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background]() {AbilitySpeccing a(heroParty[i], window); a.resetAbilits(); a.use(window); window.clear(sf::Color::Transparent); }));
 	}
 
 
@@ -538,6 +538,7 @@ int main( int argc, char *argv[] ){
 	// While Loop
 	//=======================================================
 	
+	heroParty[0]->increaseAbilityScore(AbilityScores::arcanism, 20);
 
 	while (window.isOpen()) {
 

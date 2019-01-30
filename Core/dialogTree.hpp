@@ -35,11 +35,12 @@ class DialogNode{
 private:
 	std::string text;
 	std::vector<std::shared_ptr<DialogOption>> dialogOptions;
+	std::string background;
 public:
 
 	///\brief
 	/// make adialogNode with a string of the text that needs to
-	DialogNode(std::string text);
+	DialogNode(std::string text, std::string background = std::string("takatikimap.png"));
 	///\brief
 	/// Adds a dialog option to the dialogoptions vector
 	void addDialogOption(std::shared_ptr<DialogOption> option);
@@ -59,6 +60,10 @@ public:
 	/// return the next node of an option from the vector by index
 	const std::shared_ptr<DialogNode> getOptionNextNodeByIndex(int i);
 	///\brief
+	///return the background image url
+	const std::string getBackgroundUrl();
+
+	///\brief
 	/// Clears the vector
 	void removeAllOptions();
 };
@@ -70,7 +75,7 @@ public:
 	DialogTree();
 	///\brief
 	/// displays the dialogTree
-	void performDialogue(DialogBox& diaBox, bool sound = true, int speed = 0);
+	void performDialogue(DialogBox& diaBox, bool sound = true, int speed = 100);
 	///\brief
 	/// add a node to the dialogTree
 	void addNode(std::shared_ptr< DialogNode> node);

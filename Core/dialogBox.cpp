@@ -27,7 +27,6 @@ DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_
 }
 
 void DialogBox::draw() {
-	diaBox.drawSurfaceClear(backgroundColor);
 	diaBox.drawSurfaceDraw(backgroundSquare);
 	diaBox.drawSurfaceDraw(text);
 	diaBox.drawSurfaceDisplay();
@@ -121,7 +120,13 @@ void DialogBox::printPerm(std::vector<std::string>& textVector) {
 	}
 }
 
-void DialogBox::print(std::string str, bool sound, int speed) {
+void DialogBox::print(std::string str, std::string backgroundUrl, bool sound, int speed) {
+	std::string defaultBackground = "defaultBackground";
+	std::string defaultBackgroundImage = backgroundUrl;
+	BackGround background;
+
+	background.add(defaultBackground, defaultBackgroundImage);
+	background.setBackGround(defaultBackground, w);
 	std::vector<std::string> strVect = wordwrap(str);
 	uint_fast16_t page = 0;
 
@@ -129,9 +134,11 @@ void DialogBox::print(std::string str, bool sound, int speed) {
 	size_t max = 0;
 
 	clear();
-	draw();
+	/*draw();*/
 	while (true) {
-		diaBox.drawSurfaceClear();
+		
+		
+		clear();
 		unsigned int maxLTimesPage = (maxLines)* page;
 		if (maxLTimesPage > strVect.size()) {
 			break;
@@ -151,18 +158,19 @@ void DialogBox::print(std::string str, bool sound, int speed) {
 			
 
 			for (size_t i = 0; i < tempStr.size(); i++) {
-
-				diaBox.drawSurfaceClear();
+				clear();
 				text.setString(tempStr.substr(0, i));
 				if (sound && tempStr[i] != ' ' && feedbackSound.getBuffer() != NULL){
 					float pitch = 1.0f;
 					feedbackSound.setPitch(pitch);
 					feedbackSound.play();
 				}
+				background.draw(w);
 				draw();
 				sf::sleep(sf::milliseconds(speed));
 				w.display();
 			}
+			background.draw(w);
 			draw();
 			oldpage = page;
 			tempStr.clear();
@@ -180,19 +188,31 @@ void DialogBox::print(std::string str, bool sound, int speed) {
 			}
 
 		}
+		background.draw(w);
 		draw();
 		w.display();
 	}
 }
 
 void DialogBox::clear() {
+	w.clear(sf::Color::Transparent);
+	diaBox.drawSurfaceClear(backgroundColor);
+}
+
+void DialogBox::clearText() {
 	text.setString("");
 	draw();
 }
 
 
+int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices, std::string backgroundUrl) {
+	std::string defaultBackground = "defaultBackground";
+	std::string defaultBackgroundImage = backgroundUrl;
+	BackGround background;
 
-int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices) {
+	background.add(defaultBackground, defaultBackgroundImage);
+	background.setBackGround(defaultBackground, w);
+
 	int selectedValue = -1;
 	uint_fast16_t page = 0;
 	uint_fast16_t oldPage = 0;
@@ -212,7 +232,7 @@ int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<voi
 	clear();
 	if (choices.size() > 0){
 		while (true) {
-			diaBox.drawSurfaceClear();
+			
 			if (change) {
 				std::stringstream tempStr;
 				int oldmax = max;
@@ -280,6 +300,7 @@ int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<voi
 				change = false;
 				
 			}else {
+				clear();
 				sf::Event event;
 				while (w.pollEvent(event)) {
 					if (event.type == sf::Event::KeyPressed) {
@@ -295,6 +316,7 @@ int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<voi
 						}
 					}
 				}
+				background.draw(w);
 				draw();
 				w.display();
 

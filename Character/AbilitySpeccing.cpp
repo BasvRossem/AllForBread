@@ -67,7 +67,8 @@ void AbilitySpeccing::use(sf::RenderWindow & window) {
 
 	while (playerCharacter->getAbilityPoints() > 0) {
 		window.clear();
-
+		textBox.clear();
+		virtualWindow.drawSurfaceClear();
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -77,11 +78,12 @@ void AbilitySpeccing::use(sf::RenderWindow & window) {
 				keyhandle.processKey(event.key.code);
 
 		}
-		virtualWindow.drawSurfaceClear();
+		
 		background.draw(virtualWindow);
 		virtualWindow.drawSurfaceDraw(pointerArrow);
 		virtualWindow.drawSurfaceDisplay();
 		experienceBar.draw(virtualWindow);
+		
 		window.draw(virtualWindow);
 		textBox.draw();
 		window.display();
@@ -90,8 +92,7 @@ void AbilitySpeccing::use(sf::RenderWindow & window) {
 	buffer.loadFromFile("SoundEffects/ScrollClose1.wav");
 	sound.setBuffer(buffer);
 	sound.play();
-	playerCharacter->setIsLevelUp(false);
-	virtualWindow.drawSurfaceClear();
+
 }
 
 
@@ -154,5 +155,6 @@ void AbilitySpeccing::updateStats() {
 	ss << "Luck:		" << characterStats[AbilityScores::luck];
 	stringVector.push_back(ss.str());
 	ss.str(std::string());
+
 	textBox.printPerm(stringVector);
 }

@@ -22,8 +22,9 @@ void DialogNode::addDialogOption(std::shared_ptr<DialogOption> option){
 	dialogOptions.push_back(option);
 }
 
-DialogNode::DialogNode(std::string text) :
-	text(text)
+DialogNode::DialogNode(std::string text, std::string background) :
+	text(text),
+	background(background)
 {}
 
 const size_t DialogNode::getOptionsCount() {
@@ -46,6 +47,11 @@ const std::shared_ptr<DialogNode> DialogNode::getOptionNextNodeByIndex(int i) {
 	return dialogOptions[i]->getNextNode();
 }
 
+const std::string DialogNode::getBackgroundUrl()
+{
+	return background;
+}
+
 void DialogNode::removeAllOptions(){
 	dialogOptions.clear();
 }
@@ -61,14 +67,15 @@ void DialogTree::performDialogue(DialogBox& diaBox, bool sound, int speed){
 	if (!dialogNodes.empty()) {
 		std::shared_ptr<DialogNode> currentNode = dialogNodes[0];
 		while (currentNode) {
-			diaBox.print(currentNode->getText(),sound, speed);
+			diaBox.clear();
+			diaBox.print(currentNode->getText(), currentNode->getBackgroundUrl(), sound, speed);
 			std::cout << currentNode->getOptionsCount();
 			if (currentNode->getOptionsCount() > 0){
 				std::vector<std::pair<std::string, std::function<void()>>> choices;
 				for (size_t i = 0; i < currentNode->getOptionsCount(); i++) {
 					choices.push_back(std::pair<std::string, std::function<void()>>(currentNode->getOptionTextByIndex(i), currentNode->getOptionEventByIndex(i)));
 				}
-				int choice = diaBox.printChoices(choices);
+				int choice = diaBox.printChoices(choices, currentNode->getBackgroundUrl());
 				currentNode = currentNode->getOptionNextNodeByIndex(choice);
 			}else {
 				break;
