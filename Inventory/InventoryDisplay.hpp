@@ -92,7 +92,7 @@ public:
 	/// \brief
 	/// With this function you can remove a item from the character and add it to the party inventory.
 	/// It requires a character index from pTile.first, item colom index form a character and a item row index form a character.
-	void removeItemFromCharacer(const int & character, int & collom, const int & row);
+	void removeItemFromCharacer(const int & character, const int & collom, const int & row);
 
 	/// \brief
 	/// This function delets the tiles and add a updated version to the pTile.

@@ -75,3 +75,55 @@ const std::string EnumMethods::getDamageTypeName(const DamageTypes & type) {
 		break;
 	}
 }
+
+const std::string EnumMethods::getArmorSlotName(const ArmorSlots & slot) {
+	switch (slot) {
+	case ArmorSlots::chestplate:
+		return "Chestplate";
+		break;
+	
+	case ArmorSlots::boots:
+		return "Boots";
+		break;
+
+	case ArmorSlots::gauntlets:
+		return "Gauntlets";
+		break;
+
+	case ArmorSlots::helmet:
+		return "Helmet";
+		break;
+
+	case ArmorSlots::legs:
+		return "Legs";
+		break;
+
+	case ArmorSlots::ring:
+		return "Ring";
+		break;
+
+	default:
+		return "";
+		break;
+	}
+}
+
+const std::string EnumMethods::getWeaponSlotName(const WeaponSlots & slot) {
+	switch (slot) {
+	case WeaponSlots::mainhand:
+		return "Mainhand";
+		break;
+
+	case WeaponSlots::offhand:
+		return "Offhand";
+		break;
+
+	case WeaponSlots::twohanded:
+		return "Twohanded";
+		break;
+
+	default:
+		return "";
+		break;
+	}
+}

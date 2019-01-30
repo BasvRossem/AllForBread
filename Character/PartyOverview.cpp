@@ -1,9 +1,12 @@
 #include "partyOverview.hpp"
 #include <stdexcept>
+#include <string>
 #include "../Core/KeyboardHandler.hpp"
 #include "Character.hpp"
 
-PartyOverview::PartyOverview(Party & party) :
+PartyOverview::PartyOverview(Party & party, BackGround & backGround, const std::string & surrounding) :
+	backGround(backGround),
+	surrounding(surrounding),
 	party(party),
 	leftScreen(500, 1040),
 	rightScreen(900, 1040),
@@ -453,10 +456,14 @@ void PartyOverview::open(sf::RenderWindow & window) {
 		throw std::out_of_range("File shield_grey.png niet gevonden");
 	}
 
+	std::cout << backGround.getPath("takatiki") << " <-pad\n";
+
+	backGround.setBackGround(surrounding, window);
 
 	while (isOpen) {
-
-		window.clear();
+		
+		window.clear(sf::Color::Transparent);
+		backGround.draw(window);
 		//dostuff
 		drawAllPlayerCharacters(window);
 		drawSelectedPlayerStats(window);

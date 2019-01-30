@@ -97,6 +97,7 @@ std::shared_ptr<Item> PlayerInventoryTile::getItem(const int &collom, const int 
 	else if (collom == 1) {
 		return tileArmorNames[row]->getItem();
 	}
+	return std::shared_ptr<Item>(nullptr);
 }
 
 std::vector<std::shared_ptr<InventoryTile>> PlayerInventoryTile::getWeaponTiles() {

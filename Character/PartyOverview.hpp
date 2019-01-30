@@ -8,6 +8,8 @@
 class PartyOverview {
 private:
 	bool isOpen = false;
+	BackGround & backGround;
+	std::string surrounding;
 
 	Party & party;
 	std::shared_ptr<PlayerCharacter>* selected;
@@ -35,7 +37,7 @@ private:
 	VirtualScreen rightScreen;
 
 public:
-	PartyOverview(Party & party);
+	PartyOverview(Party & party, BackGround & backGround, const std::string & surrounding );
 
 	void open(sf::RenderWindow & window);
 };

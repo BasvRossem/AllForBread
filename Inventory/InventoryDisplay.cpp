@@ -39,7 +39,7 @@ InventoryDisplay::InventoryDisplay(Party & party, sf::RenderWindow & window) :
 			)
 		);
 	}
-
+	
 	////Initiate selectbox 
 	selectBox.setPosition(pTile.first[0]->getSelectboxPosition());
 	selectBox.setSize(sf::Vector2f{ 80,80 });
@@ -274,18 +274,55 @@ void InventoryDisplay::select(const int & collom, const int & row) {
 
 
 void InventoryDisplay::addItemToCharacter(const int & character, const int & item) {
+	// DONT TOUCH THIS FUNCTION WITH A 10FT POLE
+
 	std::shared_ptr<Weapon> a = std::dynamic_pointer_cast<Weapon>(pTile.second[item]->getItem());
 	std::shared_ptr<Armor> b = std::dynamic_pointer_cast<Armor>(pTile.second[item]->getItem());
 	if (a != nullptr) {
-		auto map = pTile.first[character]->getCharacter()->getWeaponMap();
-		std::vector<WeaponSlots> slots;
-		for (auto m: map) {
-			slots.push_back(m.first);
-		}
-		auto alreadyUquipt = std::find(slots.begin(), slots.end(), a->getWeaponSlot());
-		if (alreadyUquipt == slots.end()){
-			party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
-			deleteItem(item);
+		std::vector<int> itemsToRemove;
+		switch (a->getWeaponSlot()) {
+			case WeaponSlots::twohanded:
+				for (unsigned int i = 0; i < pTile.first[character]->getWeaponTiles().size(); i++) {
+					std::shared_ptr<Weapon> tmp = std::dynamic_pointer_cast<Weapon>(pTile.first[character]->getItem(0, i));
+					if (tmp != nullptr) {
+						itemsToRemove.push_back(i);
+					}
+				}
+				for (unsigned int i = 0; i < itemsToRemove.size(); i++) {
+					removeItemFromCharacer(character, 0, itemsToRemove[i] - i);
+				}
+				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
+				deleteItem(item);
+				break;
+				
+			case WeaponSlots::mainhand:
+				for (unsigned int i = 0; i < pTile.first[character]->getWeaponTiles().size(); i++) {
+					std::shared_ptr<Weapon> tmp = std::dynamic_pointer_cast<Weapon>(pTile.first[character]->getItem(0, i));
+					if (tmp != nullptr) {
+						if (tmp->getWeaponSlot() == WeaponSlots::mainhand || tmp->getWeaponSlot() == WeaponSlots::twohanded) {
+							removeItemFromCharacer(character, 0, i);
+						}
+					}
+				}
+				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
+				deleteItem(item);
+				break;
+
+			case WeaponSlots::offhand:
+				for (unsigned int i = 0; i < pTile.first[character]->getWeaponTiles().size(); i++) {
+					std::shared_ptr<Weapon> tmp = std::dynamic_pointer_cast<Weapon>(pTile.first[character]->getItem(0, i));
+					if (tmp != nullptr) {
+						if (tmp->getWeaponSlot() == WeaponSlots::offhand || tmp->getWeaponSlot() == WeaponSlots::twohanded) {
+							removeItemFromCharacer(character, 0, i);
+						}
+					}
+				}
+				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
+				deleteItem(item);
+				break;
+
+			default:
+				break;
 		}
 	}
 	else if (b != nullptr) {
@@ -298,13 +335,25 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 		if (alreadyUquipt == slots.end()) {
 			party.addArmortoPartyMember(pTile.first[character]->getCharacter(), b);
 			deleteItem(item);
+		} else {
+			std::cout << "else van armor item equip\n";
+			for (unsigned int i = 0; i < pTile.first[character]->getArmorTiles().size(); i++) {
+				std::shared_ptr<Armor> tmp = std::dynamic_pointer_cast<Armor>(pTile.first[character]->getItem(1, i));
+				if (tmp != nullptr) {
+					if (tmp->getArmorSlot() == b->getArmorSlot()) {
+						removeItemFromCharacer(character, 1, i);
+						party.addArmortoPartyMember(pTile.first[character]->getCharacter(), b);
+						deleteItem(item);
+					}
+				}
+			}
 		}
 	}
 	reloadTiles();
 }
 
 
-void InventoryDisplay::removeItemFromCharacer(const int & character, int & collom, const int & row) {
+void InventoryDisplay::removeItemFromCharacer(const int & character, const int & collom, const int & row) {
 	if (pTile.first[character]->getWeaponTiles().size() !=0 || pTile.first[character]->getArmorTiles().size() !=0 ) {
 		if (collom == 0) {
 			std::shared_ptr<Weapon> a = std::dynamic_pointer_cast<Weapon>(pTile.first[character]->getItem(collom, row));
@@ -351,8 +400,12 @@ void InventoryDisplay::reloadTiles(){
 
 void InventoryDisplay::useItem(const unsigned int & row) {
 	itemToUse = std::dynamic_pointer_cast<Consumable>(pTile.second[row]->getItem());
-	if (itemToUse != nullptr) {
-		deleteItem(row);
+	if (itemToUse != nullptr) {	
+		itemToUse->activate();
+		itemToUse->setQuantityUses(itemToUse->getQuantityUses() - 1);
+		if (itemToUse->getQuantityUses() <= 0) {
+			deleteItem(row);
+		}
 	}
 }
 

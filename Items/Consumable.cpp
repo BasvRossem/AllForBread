@@ -18,6 +18,10 @@ void Consumable::setQuantityUses(const int & uses) {
 	}
 }
 
+void Consumable::setAction(const std::function<void()>& newAction) {
+	action = newAction;
+}
+
 void Consumable::activate() {
 	action();
 }

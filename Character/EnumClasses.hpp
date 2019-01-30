@@ -50,4 +50,6 @@ struct EnumMethods {
 public:
 	const std::string static getAbilityScoreName(const AbilityScores & score);
 	const std::string static getDamageTypeName(const DamageTypes & type);
+	const std::string static getArmorSlotName(const ArmorSlots & slot);
+	const std::string static getWeaponSlotName(const WeaponSlots & slot);
 };

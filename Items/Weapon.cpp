@@ -1,7 +1,5 @@
 #include "Weapon.hpp"
 #include <algorithm>
-
-
 #include <iostream>
 
 Weapon::Weapon() {
