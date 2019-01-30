@@ -2,8 +2,8 @@
 
 Attacks::Attacks(){
 	attacksVector = { 
-		{ "Mainhand",	WeaponSlots::mainhand,	5 }, 
-		{ "Offhanded",  WeaponSlots::offhand,	3 }, 
+		{ "Mainhand",	WeaponSlots::mainhand,	5 },
+		{ "Offhanded",  WeaponSlots::offhand,	3 },
 		{ "Twohanded",	WeaponSlots::twohanded,	8 }
 	};
 }

@@ -45,8 +45,8 @@ public:
 	/// Returns a vector containing all the attacks a monster can perform
 	std::vector<std::tuple<std::string, WeaponSlots, int>> getAvailableAttacks() override;
 
-	/// \brief
-	/// Generates a vector that contains all information an attack contains (damagetype and damagevalue)
+	/// \brief 
+	/// Simplified version of the players generateAttack, damage scales with level
 	std::vector<std::pair<DamageTypes, int>> generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition) override;
 
 };

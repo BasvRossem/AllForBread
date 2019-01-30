@@ -23,7 +23,9 @@ enum class SoundEffect {
 	menuOpen,
 	menuClose,
 	buttonHover,
-	buttonBack
+	buttonBack,
+	weakAttack, 
+	strongAttack
 };
 
 class Sounds {
@@ -55,7 +57,9 @@ private:
 		{SoundEffect::menuOpen,		""},
 		{SoundEffect::menuClose,	""},
 		{SoundEffect::buttonHover,	"SoundEffects/ButtonHover.wav"},
-		{SoundEffect::buttonBack,	"SoundEffects/BackButton.wav"}
+		{SoundEffect::buttonBack,	"SoundEffects/BackButton.wav"},
+		{SoundEffect::weakAttack,	"SoundEffects/WeakAttack.wav"},
+		{SoundEffect::strongAttack,	"SoundEffects/StrongAttack.wav"}
 	};
 
 public:

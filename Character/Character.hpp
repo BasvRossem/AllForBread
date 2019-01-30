@@ -186,8 +186,10 @@ public:
 	/// Returns a vector containing attacks that the player can use
 	virtual std::vector<std::tuple<std::string, WeaponSlots, int>> getAvailableAttacks() = 0;
 
-	/// \brief
-	/// Uses the given attackDefenition (std::tuple<~, ~, ~>) to generate a vector containing all the damage types and values
+	/// \brief 
+	/// Generates an attack message and returns this as a vector containing pairs of damagetype and damagevalue,
+	/// Can be applied to characters using the processDamage() function
+	/// Index 0 always contains the weapons primary damage type and will scale based on AbilityScores
 	virtual std::vector<std::pair<DamageTypes, int>> generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition) = 0;
 
 	//=========================================================================================================

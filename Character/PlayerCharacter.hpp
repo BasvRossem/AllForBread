@@ -80,8 +80,14 @@ public:
 	/// Sets given weapon to given weaponslot
 	void setWeapon(const WeaponSlots & slot, const Weapon & newWeapon);
 
+	/// \brief 
+	/// Creates a vector containing all the moves the current character can use based on their equipped weapons
 	std::vector<std::tuple<std::string, WeaponSlots, int>> getAvailableAttacks();
 
+	/// \brief 
+	/// Generates an attack message and returns this as a vector containing pairs of damagetype and damagevalue,
+	/// Can be applied to characters using the processDamage() function
+	/// Index 0 always contains the weapons primary damage type and will scale based on AbilityScores
 	std::vector<std::pair<DamageTypes, int>> generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition) override;
 
 	std::unordered_map<WeaponSlots, Weapon> getWeaponMap();

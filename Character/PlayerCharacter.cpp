@@ -133,7 +133,7 @@ std::vector<std::tuple<std::string, WeaponSlots, int>> PlayerCharacter::getAvail
 
 	// Safeguard for when a player does not have weapons
 	if (availableAttacks.size() == 0) {
-		availableAttacks.push_back({ "Punch", WeaponSlots::mainhand, 0 });
+		availableAttacks.push_back({ "Punch", WeaponSlots::mainhand, 1 });
 	}
 
 	return availableAttacks;

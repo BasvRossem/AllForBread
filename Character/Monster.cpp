@@ -41,7 +41,9 @@ std::vector<std::tuple<std::string, WeaponSlots, int>> Monster::getAvailableAtta
 }
 
 std::vector<std::pair<DamageTypes, int>> Monster::generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition){
-	std::vector<std::pair<DamageTypes, int>> attackInformation = { {DamageTypes::slashing,  10 * level} };
-	return attackInformation;
+	int randomAttackIndex = (rand() % 2 + 0);
+
+	std::vector<std::vector<std::pair<DamageTypes, int>>> attackInformation = { {{DamageTypes::slashing, 10 * level}}, { {DamageTypes::bludgeoning, 20 * level}} };
+	return attackInformation[randomAttackIndex];
 }
 

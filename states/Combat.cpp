@@ -94,12 +94,8 @@ State* Combat::update() {
 	combatMenu state = combatMenu::main;
 	keyhandle.setOverride(true);
 
+	//Available attacks vector
 	std::vector<std::tuple<std::string, WeaponSlots, int>> availableAttacks;
-
-	//-Old Code
-	//==========================================================
-	//std::array<std::pair<std::string, int>, 4> attackKeys;
-	//==========================================================
 
 	while(!CombatFinished){
 		checkEvents();
@@ -134,6 +130,13 @@ State* Combat::update() {
 
 								int totalDamageDealt = monsters[0]->processDamage(currentCharacter->generateAttack(availableAttacks[i]));
 
+								if (totalDamageDealt > int(monsters[0]->getHealth() / 4)) {
+									sound.playSoundEffect(SoundEffect::strongAttack);
+								}
+								else {
+									sound.playSoundEffect(SoundEffect::weakAttack);
+								}
+
 									makeAttackFeedback(monsters[0], totalDamageDealt);
 									checkMonstersDeath();
 									state = combatMenu::main; 
@@ -154,18 +157,37 @@ State* Combat::update() {
 						break;
 					case combatMenu::flee:
 						CombatFinished = true;
+
+						while (sound.getMusicVolume() > 10.0f) {
+							sound.setMusicVolume(sound.getMusicVolume() - 0.2f);
+							draw();
+							sf::sleep(sf::milliseconds(1));
+						}
+						sound.stopMusic();
+
+						sound.playSoundEffect(SoundEffect::battleStart);
 						break;
 					}
 
 			//-Monster Actions
 			//===========================================================================================================================================
 			} else if(!isPlayer(initiative[currentInitiative])) {
+				clock.restart();
+				srand(clock.getElapsedTime().asMicroseconds());
 				int randomTargetSelect = (rand() % party.size() + 0);
 				while (party[randomTargetSelect]->getHealth() <= 0) {
 					randomTargetSelect = (rand() % party.size() + 0);
+					std::cout << "Random index: " << randomTargetSelect << "\n";
 				}
 
 				int totalDamageDealt = party[randomTargetSelect]->processDamage(currentCharacter->generateAttack({ "Punch", WeaponSlots::mainhand, 1 }));
+
+				if (totalDamageDealt > int(party[randomTargetSelect]->getHealth() / 4)) {
+
+				} else {
+					sound.playSoundEffect(SoundEffect::weakAttack);
+				}
+
 				makeAttackFeedback(party[randomTargetSelect], totalDamageDealt);
 				checkPlayerDeath();
 				newCurrentCharacter();
@@ -313,7 +335,6 @@ void Combat::partyVictory() {
 		draw();
 		sf::sleep(sf::milliseconds(1));
 	}
-	sound.stopMusic();
 
 	//=======================================================================================
 	// Construct and show rewards screen
@@ -337,6 +358,7 @@ void Combat::partyVictory() {
 	}
 
 	afterCombatBox.print(afterCombatInfo);
+	sound.stopMusic();
 
 	for (unsigned int i = 0; i < party.size(); i++) {
 		if (party[i]->getLevelUp()) {
@@ -348,7 +370,15 @@ void Combat::partyVictory() {
 void Combat::monsterVictory() {
 	CombatFinished = true;
 
+	while (sound.getMusicVolume() > 5.0f) {
+		sound.setMusicVolume(sound.getMusicVolume() - 0.2f);
+		draw();
+		sf::sleep(sf::milliseconds(1));
+	}
+	sound.stopMusic();
+
 	// Show "You died" screen
+	// Load from last save file
 
 }
 
@@ -379,8 +409,4 @@ bool Combat::isPlayer(const std::shared_ptr<Character> & character) {
 		}
 	}
 	return false;
-}
-
-std::shared_ptr<Monster> Combat::getMonster(unsigned int i) {
-	return monsters[i];
 }
