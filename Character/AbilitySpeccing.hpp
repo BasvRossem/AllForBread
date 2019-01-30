@@ -18,7 +18,6 @@ class AbilitySpeccing{
 private:
 	std::shared_ptr<PlayerCharacter> playerCharacter;
 	sf::Vector2f windowSize;
-	sf::RenderWindow window;
 	VirtualScreen virtualWindow;
 	sf::Texture spriteTexture;
 	sf::Sprite pointerArrow;

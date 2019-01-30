@@ -41,7 +41,5 @@ public:
 	///\brief
 	///Draws the backgroud to virtualscreen.
 	void draw(VirtualScreen & virtualScreen);
-
-
 };
 

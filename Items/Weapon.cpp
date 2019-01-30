@@ -1,7 +1,5 @@
 #include "Weapon.hpp"
 #include <algorithm>
-
-
 #include <iostream>
 
 Weapon::Weapon() {
@@ -12,6 +10,10 @@ Weapon::Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int>& dama
 	weaponSlot(slot),
 	primaryDamageEffect(damage)
 {}
+
+Weapon::~Weapon() {
+	
+}
 
 const WeaponSlots Weapon::getWeaponSlot() const {
 	return weaponSlot;

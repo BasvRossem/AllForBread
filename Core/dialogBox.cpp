@@ -173,9 +173,9 @@ void DialogBox::print(std::string str, bool sound, int speed) {
 				if (event.type == sf::Event::KeyPressed) {
 					if (event.key.code == sf::Keyboard::Enter) {
 						page++;
-					}if (event.type == sf::Event::Closed) {
-						w.close();
 					}
+				}if (event.type == sf::Event::Closed) {
+					w.close();
 				}
 			}
 

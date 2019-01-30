@@ -2,41 +2,19 @@
 #include <filesystem>
 #include <iostream>
 
-Character::Character(const std::string & characterName, const std::string & textureName):
+Character::Character(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture ):
 	name(characterName),
 	idleTexture(new(sf::Texture)),
 	deathTexture(new(sf::Texture)),
 	sprite(new sf::Sprite)
 {
-	idleTexture->loadFromFile(textureName);
-	idleTexture->setSmooth(true);
-	sprite->setPosition(sf::Vector2f(150, 350));
-	//Zorg dat setscale netjes wordt gedaan Dank u
-	sprite->setScale(0.4f, 0.4f);
-	currentAnimation = Animation(sprite, idleTexture, float(1.0));
-	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
-		std::cout << "Error loading Rip.png, constructor 1" << std::endl;
-	}
-	currentAnimation = Animation(sprite, idleTexture, float(1.0));
-	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
-
-	srand(clock.getElapsedTime().asMilliseconds());
-}
-
-
-Character::Character(const std::string & characterName, const std::string & textureName, const int & frameAmount):
-	name(characterName),
-	idleTexture(new(sf::Texture)),
-	deathTexture(new(sf::Texture)),
-	sprite(new sf::Sprite)
-{
-	idleTexture->loadFromFile(textureName);
-
+	idleTexture->loadFromFile(texture.first);
 	idleTexture->setSmooth(true);
 
-	sprite->setPosition(sf::Vector2f(50, 400));
-	//Zorg dat setscale netjes wordt gedaan Dank u
-	sprite->setScale(0.5, 0.5);
+	sf::Image tmpImage;
+	tmpImage.loadFromFile(texture.second);
+
+	unsigned int frameAmount = idleTexture->getSize().x / tmpImage.getSize().x;
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 
 	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
@@ -46,13 +24,16 @@ Character::Character(const std::string & characterName, const std::string & text
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 	deathAnimation = Animation(sprite, deathTexture, float(1.0), 1);
 
+	update();
+	auto spriteSize = sf::Vector2f(250, 300);
+	sprite->setOrigin(getSpriteMidpoint());
+	sprite->setScale(spriteSize.x / sprite->getGlobalBounds().width, spriteSize.y / sprite->getGlobalBounds().height);
+	
 	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 void Character::makeMonster() {
 	sprite->scale(-1.0f, 1.0f);
-	//BESTE BAS VAN MORGEN FIX DAT DIT NETJHES MET EEN TESTFRAME EN EEN OFFSET WORDT GEDAAN SetOrigin
-	sprite->setPosition(sf::Vector2f(1770, 400));
 }
 
 void Character::update() {
@@ -215,6 +196,22 @@ float Character::getModifier(const DamageTypes & modifier) {
 	return weaknessModifiers[modifier];
 }
 
+const int Character::getCharlevel() {
+	return level;
+}
+
+std::unordered_map<AbilityScores, int> Character::getStats() {
+	return characterStats;
+}
+
+std::unordered_map<DamageTypes, float> Character::getWeaknesses() {
+	return weaknessModifiers;
+}
+
+AbilityScores Character::getScaling(const DamageTypes & type) {
+	return scalingsMap[type];
+}
+
 void Character::doDeath() {
 	showDeathTexture();
 }
@@ -223,32 +220,30 @@ void Character::showDeathTexture() {
 	currentAnimation = deathAnimation;
 }
 
+//-Here is where I would put my generateAttack() functions
+//=========================================================================================================
+// IF I HAD ONE!!!
+//=========================================================================================================
 
-void Character::activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i) {
-	c->decreaseHealth(attacks.activate(i).second);
+int Character::processDamage(const std::vector<std::pair<DamageTypes, int>> & attackInformation) {
+	int totalDamage = 0;
+
+	for (auto & damagePair : attackInformation) {
+		int tempCalcDamage = static_cast<int>(damagePair.second * getModifier(damagePair.first));
+		this->decreaseHealth(tempCalcDamage);
+
+		totalDamage += tempCalcDamage;
+	}
+
+	return totalDamage;
 }
-
-
-std::array<std::pair<std::string, int>, 4> Character::getAttacks() {
-	return attacks.getAttacks();
-}
-
-
 
 sf::Vector2f Character::getSpriteMidpoint() {
 	sf::Vector2f midpoint = sf::Vector2f(
 		sprite->getGlobalBounds().left + (sprite->getGlobalBounds().width / 2),
 		sprite->getGlobalBounds().top + (sprite->getGlobalBounds().height / 2)
 	);
-	//std::cout << midpoint.x << ", " << midpoint.y << std::endl;
-	std::cout << sprite->getGlobalBounds().width << ", " << sprite->getGlobalBounds().height << std::endl;
-	//std::cout << sprite->getGlobalBounds().left << ", " << sprite->getGlobalBounds().top << std::endl;
 	return midpoint;
-}
-
-
-unsigned int Character::getModifier(const unsigned int & i) {
-	return attacks.getModifier(i);
 }
 
 std::shared_ptr<ResourceBar> Character::getHealthBar() {
@@ -263,6 +258,7 @@ void Character::positionHealthbar(const sf::Vector2f & position) {
 	healthBar.setPosition(position);
 }
 
+
 std::unordered_map<AbilityScores, int> Character::getCharacterStats() {
 	return characterStats;
 }
@@ -270,3 +266,32 @@ std::unordered_map<AbilityScores, int> Character::getCharacterStats() {
 void Character::setCharacterStats(const std::unordered_map<AbilityScores, int> & newStats) {
 	characterStats = newStats;
 }
+
+void Character::setWeakness(const DamageTypes & type, const float & factor) {
+	weaknessModifiers[type] = factor;
+}
+
+bool Character::checkLuckStat() {
+	if ((rand() % 100 + 1) <= characterStats[AbilityScores::luck]) {
+		return true;
+	}
+	return false;
+}
+
+void Character::stopAnimation() {
+	currentAnimation.stop();
+}
+
+void Character::startAnimation() {
+	currentAnimation.start();
+}
+
+void Character::setSpriteBottomPosition(const sf::Vector2f & position) {
+	sf::Vector2f newPosition;
+
+	newPosition.x += position.x;
+	newPosition.y += position.y;
+	newPosition.y -= sprite->getGlobalBounds().height /2;
+	sprite->setPosition(newPosition);
+}
+

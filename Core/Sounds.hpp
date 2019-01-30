@@ -22,7 +22,10 @@ enum class SoundEffect {
 	battleClose,
 	menuOpen,
 	menuClose,
-	buttonHover
+	buttonHover,
+	buttonBack,
+	weakAttack, 
+	strongAttack
 };
 
 class Sounds {
@@ -39,7 +42,7 @@ private:
 		{MusicType::ambient,	""},
 		{MusicType::overworld,	"GameMusic/OverworldMap.wav"},
 		{MusicType::battle,		"GameMusic/Battle.wav"},
-		{MusicType::boss,		""},
+		{MusicType::boss,		"GameMusic/TheGrandFinale.wav"},
 		{MusicType::shop,		""},
 		{MusicType::despacito,	""}
 	};
@@ -53,16 +56,21 @@ private:
 		{SoundEffect::battleClose,	""},
 		{SoundEffect::menuOpen,		""},
 		{SoundEffect::menuClose,	""},
-		{SoundEffect::buttonHover,	""}
+		{SoundEffect::buttonHover,	"SoundEffects/ButtonHover.wav"},
+		{SoundEffect::buttonBack,	"SoundEffects/BackButton.wav"},
+		{SoundEffect::weakAttack,	"SoundEffects/WeakAttack.wav"},
+		{SoundEffect::strongAttack,	"SoundEffects/StrongAttack.wav"}
 	};
 
 public:
 	Sounds(const MusicType & musicType, const float & volume = 100.0f, const float & pitch = 1.0f);
 	Sounds(const std::string & soundName, const float & volume = 100.0f, const float & pitch = 1.0f);
+	Sounds(const float & volume = 100.0f, const float & pitch = 1.0f);
 
 	//============================================================================================
 	//-Music
 	//============================================================================================
+
 	/// \brief
 	/// Plays a music type from the enum class on the sf::Music object
 	void playMusicType(const MusicType & musicType);

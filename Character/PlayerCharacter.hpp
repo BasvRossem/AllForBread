@@ -9,8 +9,10 @@
 #include "../Core/KeyboardHandler.hpp"
 #include "../Core/background.hpp"
 #include "../Core/dialogBox.h"
+#include "../Core/Sounds.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <tuple>
 #include <sstream>
 
 /// @file
@@ -22,15 +24,26 @@ private:
 	bool isLevelUp = false;
 	int experience = 0;
 	int experienceGauge = 100;
-	int abilityPoints = 2;
+	int abilityPoints = 0;
+
+	// Filename for the portrait
+	std::string portraitFileName;
+
 
 	std::unordered_map<WeaponSlots, Weapon> weapons;
 	std::unordered_map<ArmorSlots, Armor> armor;
 
 public:
-	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & exp = 99);
+	PlayerCharacter(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture, const int & exp = 99);
 	//- Fix constructor initialization sequence to a logical order
-	PlayerCharacter(const std::string & characterName, const std::string & textureName, const int & frameAmount, const int & exp = 99);
+
+	/// \brief 
+	/// Draws the playercharacter on the renderwindow
+	void draw(sf::RenderWindow & window) override;
+
+	/// \brief
+	/// Draws the playercharacter on the virtualscreen
+	void draw(VirtualScreen & virtualWindow) override;
 
 	/// \brief
 	/// Increases experience by given amount
@@ -72,10 +85,46 @@ public:
 	/// Sets given weapon to given weaponslot
 	void setWeapon(const WeaponSlots & slot, const Weapon & newWeapon);
 
+	/// \brief
+	/// Returns the current experience this player has
+	const int getCurrentExperience();
+
+	/// \brief
+	/// Returns the maximum experience required to levelup
+	const int getMaxExperience();
+
+	/// \brief
+	/// Sets the filename of the portrait
+	void setPortraitFilename(const std::string & filename);
+
+	/// \brief
+	/// Returns current portrait filename
+	/// Remember that the portrait gets loaded at the open function of partyOverview
+	const std::string getFilename();
+
+	/// \brief
+	/// Sets given armor to given armorslot
+	void removeArmor(const ArmorSlots & slot);
+
+	/// \brief
+	/// Sets given weapon to given weaponslot
+	void removeWeapon(const WeaponSlots & slot);
+
+
+	/// \brief 
+	/// Creates a vector containing all the moves the current character can use based on their equipped weapons
+	std::vector<std::tuple<std::string, WeaponSlots, int>> getAvailableAttacks();
+
+	/// \brief 
+	/// Generates an attack message and returns this as a vector containing pairs of damagetype and damagevalue,
+	/// Can be applied to characters using the processDamage() function
+	/// Index 0 always contains the weapons primary damage type and will scale based on AbilityScores
+	std::vector<std::pair<DamageTypes, int>> generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition) override;
 
 	std::unordered_map<WeaponSlots, Weapon> getWeaponMap();
 
 	std::unordered_map<ArmorSlots, Armor> getArmorMap();
+
 
 	void clearEquipment();
 
@@ -84,4 +133,13 @@ public:
 	int getExperience();
 	void setIsLevelUp(bool value);
 	void setAbilityPoints(const unsigned int & ap);
+/*
+	/// \brief
+	/// Creates a window the player can interact with to level up
+	void levelUp(sf::RenderWindow & window);
+	*/
+	/// \brief
+	/// gets all modifiers combined from armor
+	std::unordered_map<AbilityScores, int> getArmorModifierTotal();
+
 };

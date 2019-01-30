@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "../virtualScreen/virtualScreen.hpp"
 #include <functional>
 #include <string>
 
@@ -14,5 +15,7 @@ public:
 	Tile(std::string & imageName, sf::Vector2f & position, sf::Vector2f & size);
 	void activate();
 	void draw(sf::RenderWindow & window);
+	void draw(VirtualScreen & vScreen);
+	
 	sf::FloatRect getGlobalBound();
 };

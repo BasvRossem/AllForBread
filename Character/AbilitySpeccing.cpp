@@ -91,6 +91,7 @@ void AbilitySpeccing::use(sf::RenderWindow & window) {
 	sound.setBuffer(buffer);
 	sound.play();
 	playerCharacter->setIsLevelUp(false);
+	virtualWindow.drawSurfaceClear();
 }
 
 

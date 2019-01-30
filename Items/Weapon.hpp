@@ -10,9 +10,11 @@ private:
 	WeaponSlots weaponSlot = WeaponSlots::mainhand;
 	std::pair<DamageTypes, int> primaryDamageEffect;
 	std::vector<std::pair<DamageTypes, int>> secondaryDamageEffects;
+
 public:
 	Weapon();
 	Weapon(const WeaponSlots & slot, const std::pair<DamageTypes, int> & damage);
+	virtual ~Weapon() override;
 
 	const WeaponSlots getWeaponSlot() const;
 	const std::pair<DamageTypes, int> getPrimaryDamageEffect() const;
