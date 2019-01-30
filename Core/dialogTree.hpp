@@ -36,6 +36,7 @@ private:
 	std::string text;
 	std::vector<std::shared_ptr<DialogOption>> dialogOptions;
 public:
+
 	///\brief
 	/// make adialogNode with a string of the text that needs to
 	DialogNode(std::string text);
@@ -66,6 +67,7 @@ class DialogTree{
 private:
 	std::vector< std::shared_ptr<DialogNode>> dialogNodes;
 public:
+	DialogTree();
 	///\brief
 	/// displays the dialogTree
 	void performDialogue(DialogBox& diaBox, bool sound = true, int speed = 100);

@@ -318,11 +318,13 @@ int main( int argc, char *argv[] ){
 
 	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
 
-	DM.load(poibox);
 
 
 	//city dialog
 	DialogTree cityDialogPoint1;
+	functions["cityDialogPoint1"] = [&cityDialogPoint1, &overWorldDialog]() {cityDialogPoint1.performDialogue(overWorldDialog); };
+	DM.load(poibox);
+
 	std::shared_ptr<DialogNode> cityDialogPoint1Node0(new DialogNode("Do you wish to enter Villageville?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1BankNode(new DialogNode("We are sorry the bank is under construction"));
@@ -365,8 +367,8 @@ int main( int argc, char *argv[] ){
 
 	std::function<void()> combatPoint2 = [&testCombat]() {testCombat.update(); };
 
-	std::function<void()> cityPoint1 = [&]() {cityDialogPoint1.performDialogue(overWorldDialog, false, 0); };
-	PointOfInterestContainer poiCont;
+	std::function<void()> cityPoint1 = [&]() {cityDialogPoint1.performDialogue(overWorldDialog); };
+
 	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cityPoint1, path);
 	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);
 
@@ -391,7 +393,7 @@ int main( int argc, char *argv[] ){
 
 	KeyboardHandler keyHandl;
 
-	keyHandl.addListener(sf::Keyboard::I, [&]() { AbilitySpeccing a(testCharacter, window); a.resetAbilits(); a.use(window); });
+	//keyHandl.addListener(sf::Keyboard::I, [&]() { AbilitySpeccing a(testCharacter, window); a.resetAbilits(); a.use(window); });
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
 	

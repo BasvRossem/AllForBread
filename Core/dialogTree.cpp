@@ -56,10 +56,6 @@ void DialogTree::addNode(std::shared_ptr< DialogNode> node) {
 	dialogNodes.push_back(node);
 }
 
-void DialogTree::destroyTree()
-{
-}
-
 void DialogTree::performDialogue(DialogBox& diaBox, bool sound, int speed){
 
 	if (!dialogNodes.empty()) {
