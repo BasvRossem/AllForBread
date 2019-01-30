@@ -456,7 +456,7 @@ void PartyOverview::open(sf::RenderWindow & window) {
 		throw std::out_of_range("File shield_grey.png niet gevonden");
 	}
 
-	backGround.setBackGround(surrounding, window);
+	backGround.setBackGround(surrounding, sf::Vector2f{ 0,0 }, window);
 
 	while (isOpen) {
 		

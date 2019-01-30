@@ -79,7 +79,7 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 
 int main( int argc, char *argv[] ){
 
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
 	window.setFramerateLimit(60);
 	//=======================================================
 	// OverWorld dialog box
@@ -399,7 +399,7 @@ int main( int argc, char *argv[] ){
 	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);
 
 
-	background.setBackGround(takatikimap, window);
+	background.setBackGround(takatikimap, sf::Vector2f(0.0f, 0.0f), window);
 
 	std::shared_ptr<sf::RectangleShape> partey(new sf::RectangleShape);
 	sf::Vector2f abh(20, 20);
