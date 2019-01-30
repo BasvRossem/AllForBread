@@ -87,7 +87,6 @@ int main( int argc, char *argv[] ){
 	// Creating Character
 	//=======================================================
 
-
 	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
 	testMonster->makeMonster();
 	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
@@ -546,6 +545,7 @@ int main( int argc, char *argv[] ){
 		if (!POIMove.isFinished()) {
 			POIMove.update();
 		}
+
 
 		window.clear();
 		background.draw(window);

@@ -7,7 +7,7 @@
 #include "EnumClasses.hpp"
 #include "../virtualScreen/virtualScreen.hpp"
 #include <cstdlib>
-#include "Attack.hpp"
+#include "Attacks.hpp"
 #include "ResourceBar.hpp"
 /// @file
 
@@ -27,7 +27,8 @@ protected:
 	sf::Vector2f position;
 	sf::Clock clock;
 
-	int maxHealth = 10;
+
+	int maxHealth = 100;
 	int currentHealth = maxHealth;
 
 	int maxMana = 100;
@@ -62,9 +63,25 @@ protected:
 		{DamageTypes::thunder,		1.0f}
 	};
 
+	std::unordered_map<DamageTypes, AbilityScores> scalingsMap = {
+		{DamageTypes::piercing,		AbilityScores::dexterity},
+		{DamageTypes::bludgeoning,	AbilityScores::strength	},
+		{DamageTypes::slashing,		AbilityScores::dexterity},
+		{DamageTypes::acid,			AbilityScores::arcanism	},
+		{DamageTypes::frost,		AbilityScores::arcanism },
+		{DamageTypes::fire,			AbilityScores::arcanism	},
+		{DamageTypes::force,		AbilityScores::strength	},
+		{DamageTypes::lightning,	AbilityScores::arcanism },
+		{DamageTypes::necrotic,		AbilityScores::arcanism },
+		{DamageTypes::poison,		AbilityScores::arcanism },
+		{DamageTypes::psychic,		AbilityScores::arcanism },
+		{DamageTypes::radiant,		AbilityScores::arcanism },
+		{DamageTypes::thunder,		AbilityScores::arcanism }
+	};
+
+
 public:
-	Character(const std::string &, const std::string &);
-	Character(const std::string &, const std::string &, const int &);
+	Character(const std::string & characterName, const std::pair<const std::string &, const std::string &> & texture);
 	~Character();
 
 	/// \brief
@@ -73,11 +90,11 @@ public:
 
 	/// \brief
 	/// Draws character to given window
-	void draw(sf::RenderWindow & window);
+	virtual void draw(sf::RenderWindow & window);
 
 	/// \brief
 	/// Draws character to given VirtualScreen
-	void draw(VirtualScreen & window);
+	virtual void draw(VirtualScreen & window);
 
 	/// \brief
 	/// Creates an idleAnimation
@@ -123,6 +140,9 @@ public:
 	/// Returns unordered map of weaknesses
 	std::unordered_map<DamageTypes, float> getWeaknesses();
 
+	/// Returns an AbilityScore type which the damagetype and damage will scale with
+	AbilityScores getScaling(const DamageTypes & type);
+
 	/// \brief
 	/// Lowers health by given amount
 	void decreaseHealth(const int & modifier);
@@ -139,8 +159,12 @@ public:
 	/// Increases mana by given amount
 	void increaseMana(const int & modifier);
 
-	//-Added 2 functions (Niels)
+	/// \brief
+	/// Death function called when character dies.
 	virtual void doDeath();
+
+	/// \brief 
+	/// Sets the current animation to death texture with 1 frame
 	void showDeathTexture();
 
 	/// \brief
@@ -163,32 +187,58 @@ public:
 	/// Prints all abilities and values
 	void printAbilityStats();
 
-
 	/// \brief
 	/// Returns the coodinates of the midpoint of the sprite
 	sf::Vector2f getSpriteMidpoint();
 
+	//Currently not yet implemented for default characters or monsters because lack of weapons and time
+	//-Niels
+	//=========================================================================================================
+	/// \brief
+	/// Returns a vector containing attacks that the player can use
+	virtual std::vector<std::tuple<std::string, WeaponSlots, int>> getAvailableAttacks() = 0;
 
-	void activateAttack(const std::shared_ptr<Character> &c, const unsigned int & i);
+	/// \brief 
+	/// Generates an attack message and returns this as a vector containing pairs of damagetype and damagevalue,
+	/// Can be applied to characters using the processDamage() function
+	/// Index 0 always contains the weapons primary damage type and will scale based on AbilityScores
+	virtual std::vector<std::pair<DamageTypes, int>> generateAttack(const std::tuple<std::string, WeaponSlots, int> & attackDefenition) = 0;
 
-	std::array<std::pair<std::string, int>, 4> getAttacks();
+	//=========================================================================================================
+	
+	//-Process Damage
+	//=========================================================================================================
 
-	unsigned int getModifier(const unsigned int & i);
+	/// \brief
+	/// Process the damage and applies it to the character, and returns an integer with the total damage applied
+	int processDamage(const std::vector<std::pair<DamageTypes, int>> & attackInformation);
+
+	//=========================================================================================================
 
 	/// brief
 	/// Returns a shared pointer to the healthBar
-	std::shared_ptr<ResourceBar> getHealthBar(); \
+	std::shared_ptr<ResourceBar> getHealthBar();
 
 	/// \brief
 	/// Repositions the healthbar to directly above the characterSprite
 	void centreHealthBar();
 
+	/// \brief
+	/// Passes parameter position to the healthbar of the character
 	void positionHealthbar(const sf::Vector2f & position);
-
 	std::unordered_map<AbilityScores, int> getCharacterStats();
 	void setCharacterStats(const std::unordered_map<AbilityScores, int> & newStats);
 
 	void setWeakness(const DamageTypes & type, const float & factor);
 
+	/// \brief
+	/// Checks wether a lucky event can be generated by checking the charaters luck stat
+	bool checkLuckStat();
+
+	void stopAnimation();
+
+	void startAnimation();
+
+	void setSpriteBottomPosition(const sf::Vector2f & position);
 };
 

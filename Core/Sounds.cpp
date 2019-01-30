@@ -19,10 +19,21 @@ Sounds::Sounds(const std::string & soundName, const float & volume, const float 
 	currentSound.setPitch(pitch);
 }
 
+Sounds::Sounds(const float & volume, const float & pitch) :
+	soundName(""),
+	currentMusicType(MusicType::none)
+{
+	currentSound.setBuffer(buffer);
+
+	currentSound.setVolume(volume);
+	currentMusic.setVolume(volume);
+	currentSound.setPitch(pitch);
+	currentMusic.setPitch(pitch);
+}
+
 //=====================================================================================================================================
 //-Music Functions
 //=====================================================================================================================================
-
 
 void Sounds::playMusicType(const MusicType & musicType) {
 	if (!currentMusic.openFromFile(songs[musicType])) {
