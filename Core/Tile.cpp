@@ -31,6 +31,10 @@ void Tile::draw(sf::RenderWindow & window) {
 	window.draw(sprite);
 }
 
+void Tile::draw(VirtualScreen & vScreen) {
+	vScreen.drawSurfaceDraw(sprite);
+}
+
 sf::FloatRect Tile::getGlobalBound() {
 	return sprite.getGlobalBounds();
 }

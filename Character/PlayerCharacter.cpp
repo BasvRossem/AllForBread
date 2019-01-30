@@ -100,6 +100,23 @@ void PlayerCharacter::setWeapon(const WeaponSlots & slot, const Weapon & newWeap
 	weapons[slot] = newWeapon;
 }
 
+const int PlayerCharacter::getCurrentExperience() {
+	return experience;
+}
+
+const int PlayerCharacter::getMaxExperience() {
+	return experienceGauge;
+}
+
+void PlayerCharacter::setPortraitFilename(const std::string & filename) {
+	if (filename.size() > 0) {
+		portraitFileName = filename;
+	}
+}
+
+const std::string PlayerCharacter::getFilename() {
+	return portraitFileName;
+}
 
 std::unordered_map<WeaponSlots, Weapon> PlayerCharacter::getWeaponMap(){
 	return weapons;
@@ -135,4 +152,23 @@ int PlayerCharacter::getExperience() {
 	return experience;
 }
 
+std::unordered_map<AbilityScores, int> PlayerCharacter::getArmorModifierTotal() {
+	std::unordered_map<AbilityScores, int> totals;
 
+	for (auto armorPiece : armor) {
+		for (auto stat : armorPiece.second.getPropertyModifiers()) {
+			totals[stat.first] += stat.second;
+		}
+	}
+
+	return totals;
+}
+
+void PlayerCharacter::removeArmor(const ArmorSlots & slot) {
+	armor.erase(slot);
+}
+
+
+void PlayerCharacter::removeWeapon(const WeaponSlots & slot) {
+	weapons.erase(slot);
+}
