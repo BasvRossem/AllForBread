@@ -19,6 +19,7 @@ public:
 	Menu(std::string & surroundings, BackGround & backGround);
 	void addTile(std::string & imageName, std::function<void()> & f);
 	void update(sf::RenderWindow & window);
+	void draw(sf::RenderWindow & window);
 	void select();
 	void selectChangePosition(const unsigned int & id);
 };
