@@ -52,7 +52,7 @@ void Combat::checkEvents() {
 		if (event.type == sf::Event::Closed) {
 			window.close();
 		}
-		if (attackFeedbackFinished && event.type == sf::Event::KeyPressed) {
+		if (attackFeedbackFinished && event.type == sf::Event::KeyPressed && isPlayer(currentCharacter)) {
 			keyhandle.processKey(event.key.code);
 		}
 	}
@@ -316,6 +316,7 @@ void Combat::checkPlayerDeath() {
 
 void Combat::partyVictory() {
 	CombatFinished = true;
+	combatChoices.clear();
 	//=======================================================================================
 	//-Calculate total rewards
 	//=======================================================================================
@@ -340,7 +341,7 @@ void Combat::partyVictory() {
 	//=======================================================================================
 	// Construct and show rewards screen
 	//=======================================================================================
-
+	std::cout << "currency: " << totalCurrencyReward << '\n';
 	party.addCurrency(totalCurrencyReward);
 	std::vector<std::pair<std::shared_ptr<PlayerCharacter>, bool>> luckyBastards = party.addExperience(totalExperienceReward);
 

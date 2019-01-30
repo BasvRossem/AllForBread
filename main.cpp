@@ -47,8 +47,27 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 		itemBuyName << item->getName() << " (" << item->getBaseValue() << ")";
 		shop->addDialogOption(std::make_shared<DialogOption>(itemBuyName.str(), returnPoint, [&, item]() {
 			if (heroParty.getCurrency() >= item->getBaseValue()) {
-				heroParty.addToInventory(item);
-				heroParty.decreaseCurrency(item->getBaseValue());
+				std::shared_ptr<Weapon> itemWeapon = std::dynamic_pointer_cast<Weapon>(item);
+				std::shared_ptr<Armor> itemArmor = std::dynamic_pointer_cast<Armor>(item);
+				std::shared_ptr<Consumable> itemConsumable = std::dynamic_pointer_cast<Consumable>(item);
+				std::shared_ptr<Item> itemCopy;
+				if (itemWeapon != nullptr) {
+					std::cout << "\nJe bent niet vergeten dat je een wapen bent :D\n";
+					//itemCopy = std::make_shared<Item>(*itemWeapon);
+					heroParty.addToInventory(std::make_shared<Weapon>(*itemWeapon));
+					heroParty.decreaseCurrency(item->getBaseValue());
+				}else if (itemArmor != nullptr) {
+					std::cout << "\nJe bent niet vergeten dat je een armor bent :D\n";
+					//itemCopy = std::make_shared<Item>(*itemArmor);
+					heroParty.addToInventory(std::make_shared<Armor>(*itemArmor));
+					heroParty.decreaseCurrency(item->getBaseValue());
+				}else if (itemConsumable != nullptr) {
+					heroParty.addToInventory(std::make_shared<Consumable>(*itemConsumable));
+					heroParty.decreaseCurrency(item->getBaseValue());
+				}else {
+					std::cout << "\nJe bent vergeten wie je bent :(\n";
+				}
+
 				// #mergefix good sound
 			}else {
 				// #mergefix bad sound
@@ -70,6 +89,7 @@ int main( int argc, char *argv[] ){
 	overWorldDialog.setSound("Assets/key.wav");
 
 	DataManager DM("dataManager/data.db");
+	
 
 	//=======================================================
 	// Weapon testing
@@ -86,8 +106,10 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Character
 	//=======================================================
-
-	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", "Assets/RobotIdle.png", 12);
+	std::pair< std::string, std::string> anubisPair;
+	anubisPair.first = "Assets/AnubisIdle.png";
+	anubisPair.second = "Assets/AnubisIdleFrameNoBottomWhitespace.png";
+	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", anubisPair);
 	testMonster->makeMonster();
 	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 	Mob monsters = (monsterVector);
@@ -96,7 +118,7 @@ int main( int argc, char *argv[] ){
 	DM.load(hParty);
 	Party heroParty = *hParty;
 	delete hParty;
-
+	heroParty.addCurrency(200);
 
 	heroParty[0]->setPortraitFilename("Anubis_head.png");
 	heroParty[1]->setPortraitFilename("Barbarian_head.png");
@@ -167,12 +189,12 @@ int main( int argc, char *argv[] ){
 		lowest->increaseHealth(2);
 	}));
 
-	/*heroParty.addToInventory(std::make_shared<Item>(stick));
-	heroParty.addToInventory(std::make_shared<Weapon>(pointyStick));
+	heroParty.addToInventory(std::make_shared<Item>(stick));
+	heroParty.addToInventory(std::make_shared<Armor>(boots));
+	heroParty.addToInventory(std::make_shared<Weapon>(pointyStick));/*
 	heroParty.addToInventory(std::make_shared<Weapon>(thunderfury));
 	heroParty.addToInventory(std::make_shared<Weapon>(sting));
 	heroParty.addToInventory(std::make_shared<Weapon>(defender));
-	heroParty.addToInventory(std::make_shared<Armor>(boots));
 	heroParty.addToInventory(std::make_shared<Armor>(wingedBoots));
 	heroParty.addToInventory(std::make_shared<Armor>(juggernaut));
 	heroParty.addToInventory(std::make_shared<Armor>(poorlyFittedClothing));*/
@@ -507,23 +529,14 @@ int main( int argc, char *argv[] ){
 	
 
 	while (window.isOpen()) {
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed) {
-				window.close();
-			}
-			if (event.type == sf::Event::KeyPressed) {
-				keyHandl.processKey(event.key.code);
-			}
-		}
 
 		if (moveList.size() > 0 && POIMove.isFinished()) {
 			// calc random encounter
 			int encounterChange = rand() % 100 + 1;
 
 			if (encounterChange > 90 && encounterChange < 95){
-				testMonster = std::make_shared<Monster>("U snap it is u", "Assets/AnubisIdle.png");
-				testMonster->makeMonster();
+
+				testMonster = std::make_shared<Monster>("U snap it is u", anubisPair);
 				std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 				Mob monsterParty(monsterVector);
 				Combat testCombat(window, heroParty, monsterParty, combatBackground, background);
@@ -546,6 +559,15 @@ int main( int argc, char *argv[] ){
 			POIMove.update();
 		}
 
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+			}
+			if (event.type == sf::Event::KeyPressed) {
+				keyHandl.processKey(event.key.code);
+			}
+		}
 
 		window.clear();
 		background.draw(window);

@@ -175,6 +175,7 @@ std::vector<std::pair<DamageTypes, int>> PlayerCharacter::generateAttack(const s
 		return attackInformation;
 
 	} else {
+
 		Weapon currentWeapon = this->getWeapon(std::get<1>(attackDefenition));
 
 		DamageTypes weaponDamageType = currentWeapon.getPrimaryDamageEffect().first;
@@ -235,12 +236,11 @@ std::unordered_map<AbilityScores, int> PlayerCharacter::getArmorModifierTotal() 
 void PlayerCharacter::removeArmor(const ArmorSlots & slot) {
 	armor.erase(slot);
 
-	sf::sleep(sf::seconds(0.5f));
+	/*sf::sleep(sf::seconds(0.5f));
 	sound.playSoundEffect(SoundEffect::scrollClose);
-	sf::sleep(sf::seconds(0.5f));
+	sf::sleep(sf::seconds(0.5f));*/
 	isLevelUp = false;
 }
-
 
 void PlayerCharacter::removeWeapon(const WeaponSlots & slot) {
 	weapons.erase(slot);

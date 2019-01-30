@@ -206,6 +206,7 @@ std::unordered_map<AbilityScores, int> Character::getStats() {
 
 std::unordered_map<DamageTypes, float> Character::getWeaknesses() {
 	return weaknessModifiers;
+}
 
 AbilityScores Character::getScaling(const DamageTypes & type) {
 	return scalingsMap[type];

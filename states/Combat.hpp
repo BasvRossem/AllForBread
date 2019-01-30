@@ -23,7 +23,7 @@ private:
 	bool CombatFinished = false;
 
 	//Party and monsters
-	Party party;
+	Party& party;
 	Mob monsters;
 
 	std::vector<std::shared_ptr<Character>> allCharacters = {};
