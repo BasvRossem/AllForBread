@@ -2,7 +2,8 @@
 
 
 
-DataManager::DataManager(const char * s)
+DataManager::DataManager(const char * s, std::map<std::string, std::function<void()>>&func) :
+	functions(func)
 {
 	db.open(s);
 

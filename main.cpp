@@ -88,7 +88,8 @@ int main( int argc, char *argv[] ){
 	DialogBox overWorldDialog(window, 75, 10, "Assets/arial.ttf", sf::Vector2i{ 900, 400 }, sf::Vector2f{ 510, 680 }, sf::Color::Black);
 	overWorldDialog.setSound("Assets/key.wav");
 
-	DataManager DM("dataManager/data.db");
+	std::map<std::string, std::function<void()>> functions;
+	DataManager DM("dataManager/data.db", functions);
 	
 
 	//=======================================================
@@ -335,20 +336,17 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Point Of Interest
 	//=======================================================
-	std::map<std::string, std::function<void()>> functions;
+	
 	functions["function1"] = [&testCombat]() {testCombat.update(); };
 
 
 	PointOfInterestContainer poiCont(heroParty);
 
-	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
-
-
 
 	//city dialog
 	DialogTree cityDialogPoint1;
 	functions["cityDialogPoint1"] = [&cityDialogPoint1, &overWorldDialog]() {cityDialogPoint1.performDialogue(overWorldDialog); };
-	DM.load(poibox);
+	DM.load(poiCont);
 
 	std::shared_ptr<DialogNode> cityDialogPoint1Node0(new DialogNode("Do you wish to enter Villageville?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?"));
