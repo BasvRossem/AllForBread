@@ -173,4 +173,8 @@ public:
 
 	void positionHealthbar(const sf::Vector2f & position);
 
+	std::unordered_map<AbilityScores, int> getCharacterStats();
+	void setCharacterStats(const std::unordered_map<AbilityScores, int> & newStats);
+
 };
+

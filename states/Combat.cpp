@@ -279,7 +279,8 @@ void Combat::partyVictory() {
 
 	for (unsigned int i = 0; i < party.size(); i++) {
 		if (party[i]->getLevelUp()) {
-			party[i]->levelUp(window);
+			AbilitySpeccing a(party[i],window);
+			a.use(window);
 		}
 	}
 }
