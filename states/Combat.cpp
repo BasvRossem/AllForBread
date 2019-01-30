@@ -265,10 +265,10 @@ void Combat::partyVictory() {
 
 	// Show victory screen
 	std::string afterCombatInfo;
-	afterCombatInfo += "You recieved ";
+	afterCombatInfo += "You received ";
 	afterCombatInfo += std::to_string(totalCurrencyReward);
 	afterCombatInfo += " crumbs \n";
-	afterCombatInfo += "You recieved ";
+	afterCombatInfo += "You received ";
 	afterCombatInfo += std::to_string(totalExperienceReward);
 	afterCombatInfo += " experience points \n";
 
@@ -279,7 +279,8 @@ void Combat::partyVictory() {
 
 	for (unsigned int i = 0; i < party.size(); i++) {
 		if (party[i]->getLevelUp()) {
-			party[i]->levelUp(window);
+			AbilitySpeccing a(party[i],window);
+			a.use(window);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 #include "dialogBox.h"
 
-DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, sf::Color backgroundColor) :
+DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, sf::Color backgroundColor, sf::Color edgeColor) :
 	w(window),
 	bufferWidth(bufferWidth),
 	maxLines(maxLines),
@@ -16,13 +16,19 @@ DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_
 	text.setCharacterSize(24);
 	text.setFillColor(sf::Color::White);
 	text.setOutlineColor(sf::Color::Black);
+	text.setPosition(5, 5);
 	diaBox.setLocation(position);
 
-
+	backgroundSquare.setSize(sf::Vector2f(float(size.x - 6), float(size.y - 6)));
+	backgroundSquare.setPosition(3, 3);
+	backgroundSquare.setFillColor(backgroundColor);
+	backgroundSquare.setOutlineColor(edgeColor);
+	backgroundSquare.setOutlineThickness(3);
 }
 
 void DialogBox::draw() {
 	diaBox.drawSurfaceClear(backgroundColor);
+	diaBox.drawSurfaceDraw(backgroundSquare);
 	diaBox.drawSurfaceDraw(text);
 	diaBox.drawSurfaceDisplay();
 	w.draw(diaBox);
@@ -74,11 +80,11 @@ std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 		const unsigned int idealEnd = beginLine + bufferWidth;
 		unsigned int endLine = idealEnd < str.size() ? idealEnd : str.size() - 1;
 		if (endLine == str.size() - 1) {
-			returnstring.push_back(str.substr(beginLine, (endLine - beginLine)).append("\n"));
+			returnstring.push_back(str.substr(beginLine, (endLine - beginLine + 1)).append("\n"));
 			++endLine;
 		}
 		else if (std::isspace(str[endLine]) || str[endLine] == ',' || str[endLine] == '.') {
-			returnstring.push_back(str.substr(beginLine, (endLine - beginLine)).append("\n"));
+			returnstring.push_back(str.substr(beginLine, (endLine - beginLine + 1)).append("\n"));
 			++endLine;
 		}
 		else {
@@ -92,11 +98,11 @@ std::vector<std::string> DialogBox::wordwrap(std::string& str) {
 			if (end != beginLine) {
 				endLine = end;
 				endLine++;
-				returnstring.push_back(str.substr(beginLine, (end - beginLine)).append("\n"));
+				returnstring.push_back(str.substr(beginLine, (end - beginLine + 1)).append("\n"));
 			}
 			else {
 
-				returnstring.push_back(str.substr(beginLine, (endLine - beginLine)).append("\n"));
+				returnstring.push_back(str.substr(beginLine, (endLine - beginLine + 1)).append("\n"));
 			}
 		}
 		beginLine = endLine;
@@ -115,7 +121,7 @@ void DialogBox::printPerm(std::vector<std::string>& textVector) {
 	}
 }
 
-void DialogBox::print(std::string& str, bool sound, int speed) {
+void DialogBox::print(std::string str, bool sound, int speed) {
 	std::vector<std::string> strVect = wordwrap(str);
 	uint_fast16_t page = 0;
 
@@ -125,7 +131,7 @@ void DialogBox::print(std::string& str, bool sound, int speed) {
 	clear();
 	draw();
 	while (true) {
-		w.clear();
+		diaBox.drawSurfaceClear();
 		unsigned int maxLTimesPage = (maxLines)* page;
 		if (maxLTimesPage > strVect.size()) {
 			break;
@@ -145,7 +151,8 @@ void DialogBox::print(std::string& str, bool sound, int speed) {
 			
 
 			for (size_t i = 0; i < tempStr.size(); i++) {
-				w.clear();
+
+				diaBox.drawSurfaceClear();
 				text.setString(tempStr.substr(0, i));
 				if (sound && tempStr[i] != ' ' && feedbackSound.getBuffer() != NULL){
 					float pitch = 1.0f;
@@ -185,8 +192,8 @@ void DialogBox::clear() {
 
 
 
-void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices) {
-	
+int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices) {
+	int selectedValue = -1;
 	uint_fast16_t page = 0;
 	uint_fast16_t oldPage = 0;
 	bool change = true;
@@ -200,9 +207,12 @@ void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<vo
 	KeyboardHandler keyHandle;
 	keyHandle.setOverride(true);
 
+	bool selected = false;
+
 	clear();
 	if (choices.size() > 0){
 		while (true) {
+			diaBox.drawSurfaceClear();
 			if (change) {
 				std::stringstream tempStr;
 				int oldmax = max;
@@ -220,9 +230,9 @@ void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<vo
 					begin = 0;
 				}
 				if (page >= oldPage){
-					if (overAllMax + max > choices.size() - 1) {
-						max = choices.size() - overAllMax - 1;
-						overAllMax = choices.size() - 1;
+					if (overAllMax + max > choices.size()) {
+						max = choices.size() - overAllMax;
+						overAllMax = choices.size();
 						needNext = false;
 					}
 					else {
@@ -231,14 +241,14 @@ void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<vo
 						needNext = true;
 					}
 				}else if(page < oldPage) {
-					if (overAllMax - max > choices.size() - 1) {
-						max = choices.size() - overAllMax - 1;
-						overAllMax = choices.size() - 1;
+					if (overAllMax - max > choices.size()) {
+						max = choices.size() - overAllMax;
+						overAllMax = choices.size();
 						needNext = false;
 					}
 					else {
 						max -= 1;
-						overAllMax -= max;
+						overAllMax -= oldmax;
 						needNext = true;
 					}
 					if (page == 0){
@@ -273,18 +283,27 @@ void DialogBox::printChoices(std::vector<std::pair<std::string, std::function<vo
 				sf::Event event;
 				while (w.pollEvent(event)) {
 					if (event.type == sf::Event::KeyPressed) {
-						if (event.type == sf::Event::KeyPressed)
+						if (event.type == sf::Event::KeyPressed){
 							keyHandle.processKey(event.key.code);
+						}
 						if (event.type == sf::Event::Closed)
 							w.close();
-
+						if (event.key.code >= static_cast<int>(sf::Keyboard::Num1 + begin) && event.key.code <= static_cast<int>(sf::Keyboard::Num0 + max + begin)){
+							selected = true;
+							int index = overAllMax - max;
+							selectedValue = (event.key.code - 26) + index + begin - 1;
+						}
 					}
 				}
 				draw();
 				w.display();
+
+			}
+			if (selected) {
+				return selectedValue;
 			}
 
 		}
 	}
-	
+	return -1;
 }

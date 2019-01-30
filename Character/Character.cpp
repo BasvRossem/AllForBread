@@ -262,3 +262,11 @@ void Character::centreHealthBar() {
 void Character::positionHealthbar(const sf::Vector2f & position) {
 	healthBar.setPosition(position);
 }
+
+std::unordered_map<AbilityScores, int> Character::getCharacterStats() {
+	return characterStats;
+}
+
+void Character::setCharacterStats(const std::unordered_map<AbilityScores, int> & newStats) {
+	characterStats = newStats;
+}

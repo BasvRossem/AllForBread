@@ -13,6 +13,7 @@
 #include "../Character/Attack.hpp"
 #include "../Character/ResourceBar.hpp"
 #include "../Character/Mob.hpp"
+#include "../Character/AbilitySpeccing.hpp"
 
 class Combat : public State {
 private:
@@ -61,6 +62,9 @@ private:
 
 	//Functions
 	void attackFeedbackInitialiser(const std::shared_ptr<Character> & target, const sf::String& info);
+
+	//levelUp
+
 
 	bool attackFeedbackDone = true;
 public:
