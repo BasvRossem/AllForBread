@@ -64,7 +64,7 @@ State* Combat::update() {
 
 	//Position players
 	for (unsigned int i = 0; i < party.size(); i++) {
-		party[i]->setSpriteBottomPosition(sf::Vector2f(100 + (i * 200), 660));
+		party[i]->setSpriteBottomPosition(sf::Vector2f(static_cast<float>(100 + (i * 200)), static_cast<float>(660)));
 	}
 
 	//Place health bars
@@ -79,13 +79,14 @@ State* Combat::update() {
 		sf::sleep(sf::milliseconds(50));
 		sound.setMusicLoop(true);
 		sound.playMusic();
-	} else {
+	}
+	else {
 		sound.playSoundEffect(SoundEffect::error);
 	}
 
 	//Position monsters
 	for (unsigned int i = 0; i < monsters.size(); i++) {
-		monsters[i]->setSpriteBottomPosition(sf::Vector2f(1820 - (i * 200), 660));
+		monsters[i]->setSpriteBottomPosition(sf::Vector2f(static_cast<float>(1820 - (i * 200)), static_cast<float>(660)));
 	}
 
 	
@@ -173,7 +174,7 @@ State* Combat::update() {
 			//===========================================================================================================================================
 			} else if(!isPlayer(initiative[currentInitiative])) {
 				clock.restart();
-				srand(clock.getElapsedTime().asMicroseconds());
+				srand(static_cast<unsigned int>(clock.getElapsedTime().asMicroseconds()));
 				int randomTargetSelect = (rand() % party.size() + 0);
 				while (party[randomTargetSelect]->getHealth() <= 0) {
 					randomTargetSelect = (rand() % party.size() + 0);
