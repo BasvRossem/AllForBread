@@ -21,7 +21,9 @@ private:
 	VirtualScreen virtualWindow;
 	sf::Texture spriteTexture;
 	sf::Sprite pointerArrow;
-	BackGround background;
+	BackGround page;
+	BackGround backGround;
+	std::string surroundings;
 	DialogBox textBox;
 	std::vector<std::string> stringVector;
 	KeyboardHandler keyhandle;
@@ -40,7 +42,7 @@ private:
 	};
 
 public:
-	AbilitySpeccing(std::shared_ptr<PlayerCharacter> playerCharacter, sf::RenderWindow & window);
+	AbilitySpeccing(std::shared_ptr<PlayerCharacter> playerCharacter, sf::RenderWindow & window, BackGround & backGround, const std::string & surroundings);
 	~AbilitySpeccing();
 	void use(sf::RenderWindow & window);
 	void resetAbilits();

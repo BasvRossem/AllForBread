@@ -46,6 +46,7 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	turnPointer.setTexture(turnPointerTexture);
 	turnPointer.setScale(sf::Vector2f(0.1f, 0.1f));
 	turnPointer.setPosition(currentCharacter->getSpriteMidpoint().x - 50, currentCharacter->getSpriteMidpoint().y - 250);
+
 }
 
 
@@ -386,7 +387,7 @@ void Combat::partyVictory() {
 
 	for (unsigned int i = 0; i < party.size(); i++) {
 		if (party[i]->getLevelUp()) {
-			AbilitySpeccing a(party[i], window);
+			AbilitySpeccing a(party[i], window, backgrnd, "takatiki");
 			a.use(window);
 			party[i]->setIsLevelUp(false);
 		}

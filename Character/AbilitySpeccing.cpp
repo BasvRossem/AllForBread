@@ -2,17 +2,19 @@
 
 
 
-AbilitySpeccing::AbilitySpeccing(std::shared_ptr<PlayerCharacter> playerCharacter, sf::RenderWindow & window):
+AbilitySpeccing::AbilitySpeccing(std::shared_ptr<PlayerCharacter> playerCharacter, sf::RenderWindow & window, BackGround & backGround, const std::string & surroundings):
 	playerCharacter(playerCharacter),
-	textBox(window, 100, 10, "Assets/arial.ttf", sf::Vector2i(400, 750), sf::Vector2f(0, 150), sf::Color::Transparent),
+	textBox(window, 100, 10, "Assets/arial.ttf", sf::Vector2i(400, 750), sf::Vector2f(0, 150), sf::Color::Transparent, sf::Color::Transparent),
 	windowSize(400, 900),
-	virtualWindow(unsigned int(windowSize.x), unsigned int(windowSize.y))
+	virtualWindow(unsigned int(windowSize.x), unsigned int(windowSize.y)),
+	backGround(backGround),
+	surroundings(surroundings)
 {
 	spriteTexture.loadFromFile("Assets/PointerArrow.png");
 	pointerArrow.setTexture(spriteTexture);
 
-	background.add("levelParchment", "Assets/levelUpParchment.png");
-	background.setBackGround("levelParchment", sf::Vector2f{ 0,0 }, windowSize);
+	page.add("levelParchment", "Assets/levelUpParchment.png");
+	page.setBackGround("levelParchment", sf::Vector2f{ 0,0 }, windowSize);
 
 	textBox.setTextFillColor(sf::Color::Black);
 	textBox.setTextOutlineColor(sf::Color::White);
@@ -41,7 +43,9 @@ void AbilitySpeccing::resetAbilits() {
 
 void AbilitySpeccing::use(sf::RenderWindow & window) {
 
-	experienceBar = ResourceBar(sf::Vector2f(50, 800), sf::Vector2f(150, 30), playerCharacter->getExperienceGauge(), playerCharacter->getExperience(), sf::Color::Green);
+	backGround.setBackGround(surroundings, window);
+
+	experienceBar = ResourceBar(sf::Vector2f(200, 750), sf::Vector2f(150, 30), playerCharacter->getExperienceGauge(), playerCharacter->getExperience(), sf::Color::Green);
 
 	vectorIndex = 0;
 
@@ -65,10 +69,10 @@ void AbilitySpeccing::use(sf::RenderWindow & window) {
 
 	keyhandle.addListener(sf::Keyboard::Enter, [&]()->void {levelUp(); });
 
-	while (playerCharacter->getAbilityPoints() > 0) {
+	while (playerCharacter->getAbilityPoints() > 0 && window.isOpen()) {
 		window.clear();
 		textBox.clear();
-		virtualWindow.drawSurfaceClear();
+		virtualWindow.drawSurfaceClear(sf::Color::Transparent);
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -79,11 +83,11 @@ void AbilitySpeccing::use(sf::RenderWindow & window) {
 
 		}
 		
-		background.draw(virtualWindow);
+		page.draw(virtualWindow);
 		virtualWindow.drawSurfaceDraw(pointerArrow);
 		virtualWindow.drawSurfaceDisplay();
 		experienceBar.draw(virtualWindow);
-		
+		backGround.draw(window);
 		window.draw(virtualWindow);
 		textBox.draw();
 		window.display();

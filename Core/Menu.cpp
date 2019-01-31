@@ -7,9 +7,9 @@ Menu::Menu(std::string & surroundings, BackGround & backGround):
 	surroundings(surroundings),
 	size(200,200)
 {
-	selectRectangle.setFillColor(sf::Color::Blue);
-	selectRectangle.setPosition(850, 435);
-	selectRectangle.setSize(sf::Vector2f{ size.x + 10 , size.y + 10 });
+	selectCircle.setFillColor(sf::Color(47, 108, 206));
+	selectCircle.setPosition(850, 435);
+	selectCircle.setRadius((size.x + 10)/2);
 }
 
 void Menu::addTile(std::string & imageName, std::function<void()> & f) {
@@ -22,7 +22,7 @@ void Menu::addTile(std::string & imageName, std::function<void()> & f) {
 void Menu::selectChangePosition(const unsigned int & id) {
 	if (id >= 0 && id < tiles.size()) {
 		selectedID = id;
-		selectRectangle.setPosition(sf::Vector2f{ 430 + float(210 * id), 435 });
+		selectCircle.setPosition(sf::Vector2f{ 430 + float(210 * id), 435 });
 	}
 }
 
@@ -34,7 +34,7 @@ void Menu::draw(sf::RenderWindow & window) {
 	window.clear();
 	backGround.draw(window);
 	if (tiles.size() != 0) {
-		window.draw(selectRectangle);
+		window.draw(selectCircle);
 	}
 	for (auto &t : tiles) {
 		t->draw(window);
