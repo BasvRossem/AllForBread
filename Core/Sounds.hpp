@@ -5,12 +5,13 @@
 
 enum class MusicType {
 	none,
-	ambient,
+	menu,
 	overworld,
 	battle,
 	boss,
-	shop,
-	despacito
+	town,
+	avengers,
+	unicorns
 };
 
 enum class SoundEffect {
@@ -25,7 +26,20 @@ enum class SoundEffect {
 	buttonHover,
 	buttonBack,
 	weakAttack, 
-	strongAttack
+	strongAttack,
+	key,
+	armorEquip,
+	weaponEquip,
+	bagClose, 
+	bagOpen,
+	consumable,
+	playerDeath,
+	monsterDeath,
+	purchase,
+	gameStart,
+	threaten,
+	laugh,
+	partyLeader
 };
 
 class Sounds {
@@ -38,13 +52,14 @@ private:
 	sf::Music currentMusic;
 
 	std::unordered_map<MusicType, std::string> songs = {
-		{MusicType::none,		""},
-		{MusicType::ambient,	""},
-		{MusicType::overworld,	"GameMusic/OverworldMap.wav"},
-		{MusicType::battle,		"GameMusic/Battle.wav"},
-		{MusicType::boss,		"GameMusic/TheGrandFinale.wav"},
-		{MusicType::shop,		""},
-		{MusicType::despacito,	""}
+		{MusicType::none,			"Empty, you nosey programmer"},
+		{MusicType::menu,			"GameMusic/Menu.wav"},
+		{MusicType::overworld,		"GameMusic/OverworldMap.wav"},
+		{MusicType::battle,			"GameMusic/Battle.wav"},
+		{MusicType::boss,			"GameMusic/TheGrandFinale.wav"},
+		{MusicType::town,			"GameMusic/Town.wav"},
+		{MusicType::avengers,		"GameMusic/Avengers.wav"},
+		{MusicType::unicorns,		"GameMusic/PinkFluffyUnicorns.wav"}
 	};
 
 	std::unordered_map<SoundEffect, std::string> soundEffects{
@@ -53,13 +68,26 @@ private:
 		{SoundEffect::scrollOpen,	"SoundEffects/ScrollOpen1.wav"},
 		{SoundEffect::scrollClose,	"SoundEffects/ScrollClose1.wav"},
 		{SoundEffect::battleStart,	"SoundEffects/BattleStart.wav"},
-		{SoundEffect::battleClose,	""},
-		{SoundEffect::menuOpen,		""},
-		{SoundEffect::menuClose,	""},
+		{SoundEffect::battleClose,	"SoundEffects/"},
+		{SoundEffect::menuOpen,		"SoundEffects/"},
+		{SoundEffect::menuClose,	"SoundEffects/"},
 		{SoundEffect::buttonHover,	"SoundEffects/ButtonHover.wav"},
 		{SoundEffect::buttonBack,	"SoundEffects/BackButton.wav"},
 		{SoundEffect::weakAttack,	"SoundEffects/WeakAttack.wav"},
-		{SoundEffect::strongAttack,	"SoundEffects/StrongAttack.wav"}
+		{SoundEffect::strongAttack,	"SoundEffects/StrongAttack.wav"},
+		{SoundEffect::key,			"SoundEffects/Key.wav"},
+		{SoundEffect::armorEquip,	"SoundEffects/ArmorEquip.wav"},
+		{SoundEffect::weaponEquip,	"SoundEffects/WeaponEquip.wav"},
+		{SoundEffect::bagClose,		"SoundEffects/BagClose.wav"},
+		{SoundEffect::bagOpen,		"SoundEffects/BagOpen.wav"},
+		{SoundEffect::consumable,	"SoundEffects/Consumable.wav"},
+		{SoundEffect::playerDeath,	"SoundEffects/PlayerDeath.wav"},
+		{SoundEffect::monsterDeath,	"SoundEffects/MonsterDeath.wav"},
+		{SoundEffect::purchase,		"SoundEffects/Purchase.wav"},
+		{SoundEffect::gameStart,	"SoundEffects/GameStart.wav"},
+		{SoundEffect::threaten,		"SoundEffects/DeathIsImminent.wav"},
+		{SoundEffect::laugh,		"SoundEffects/Laugh.wav"},
+		{SoundEffect::partyLeader,	"SoundEffects/PartyLeader.wav"}
 	};
 
 public:

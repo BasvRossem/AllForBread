@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <utility>
+#include "../Core/Sounds.hpp"
 /// @file
 
 /// \brief
@@ -12,6 +13,8 @@ class Monster : public Character {
 private:
 	const int rewardExperience;
 	const int rewardCurrency;
+
+	Sounds sound;
 
 public:
 	Monster(const std::string & characterName, const std::pair< std::string,  std::string> & texture);
@@ -40,6 +43,10 @@ public:
 	/// DEBUG!
 	/// Prints all reward variables in console
 	void printRewards();
+
+	/// \brief
+	/// Sets the level of the monster, makes the monster stronger based on level
+	void setLevel(const int & newLevel) override;
 
 	/// \brief
 	/// Returns a vector containing all the attacks a monster can perform

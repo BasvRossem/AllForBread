@@ -133,6 +133,10 @@ public:
 	const int getCharlevel();
 
 	/// \brief
+	/// Sets the level of the character
+	virtual void setLevel(const int & newLevel);
+
+	/// \brief
 	/// Returns unordered map of ability scores
 	std::unordered_map<AbilityScores, int> getStats();
 
@@ -169,11 +173,11 @@ public:
 
 	/// \brief
 	/// Lowers given ability score by given amount
-	void decreaseAbilityScore(const AbilityScores & stat, const int & statIncrease);
+	void decreaseAbilityScore(const AbilityScores & stat, const int & statDecrease);
 
 	/// \brief
 	/// Increases given ability score by given amount
-	void increaseAbilityScore(const AbilityScores & stat, const int & statDecrease);
+	void increaseAbilityScore(const AbilityScores & stat, const int & statIncrease);
 
 	/// \brief
 	/// Increases given weakness modifier by given amount
@@ -240,5 +244,9 @@ public:
 	void startAnimation();
 
 	void setSpriteBottomPosition(const sf::Vector2f & position);
+
+	/// \brief
+	/// Recalculated health based on points specced into vitality
+	void reCalculateHealth();
 };
 

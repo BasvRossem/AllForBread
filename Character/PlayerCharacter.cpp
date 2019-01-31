@@ -26,7 +26,7 @@ void PlayerCharacter::increaseExperience(const int & exp) {
 		experience = 0;
 		level++;
 		isLevelUp = true;
-		abilityPoints++;
+		abilityPoints += 2;
 		float newExperienceGauge = experienceGauge * float(1.2);
 		experienceGauge = static_cast<int>(newExperienceGauge);
 		increaseExperience(excessExperience);

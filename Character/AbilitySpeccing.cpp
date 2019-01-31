@@ -88,6 +88,8 @@ void AbilitySpeccing::use(sf::RenderWindow & window) {
 		textBox.draw();
 		window.display();
 	}
+
+	playerCharacter->reCalculateHealth();
 	sf::sleep(sf::seconds(0.5f));
 	buffer.loadFromFile("SoundEffects/ScrollClose1.wav");
 	sound.setBuffer(buffer);

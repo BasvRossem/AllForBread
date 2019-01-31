@@ -33,6 +33,10 @@ private:
 	uint_fast16_t currentInitiative = 0;
 	std::shared_ptr<Character> currentCharacter;
 
+	//Combat turn pointer
+	sf::Texture turnPointerTexture;
+	sf::Sprite turnPointer;
+
 	//Virtual screens
 	sf::Vector2u animationScreenSize = sf::Vector2u(1920, 680);
 	sf::Vector2u damageScreenSize = sf::Vector2u(1920, 680);

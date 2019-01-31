@@ -38,7 +38,14 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	
 	//Load a font
 	attackFont.loadFromFile("Assets/PIXEARG_.ttf");
-	srand(clock.getElapsedTime().asMilliseconds());
+
+	//Initalize turnPointer	 
+	if (!turnPointerTexture.loadFromFile("Assets/turnPointer.png")) {
+		//Reee
+	}
+	turnPointer.setTexture(turnPointerTexture);
+	turnPointer.setScale(sf::Vector2f(0.1f, 0.1f));
+	turnPointer.setPosition(currentCharacter->getSpriteMidpoint().x - 50, currentCharacter->getSpriteMidpoint().y - 250);
 }
 
 
@@ -59,6 +66,10 @@ void Combat::checkEvents() {
 }
 
 State* Combat::update() {
+	//Avengers Mode
+	bool avengersMode = false;
+	bool avengersIsPlaying = false;
+
 	//Load background
 	backgrnd.setBackGround(surrounding, sf::Vector2f{ 0,0 }, sf::Vector2f(animationScreenSize));
 
@@ -66,6 +77,10 @@ State* Combat::update() {
 	for (unsigned int i = 0; i < party.size(); i++) {
 		party[i]->setSpriteBottomPosition(sf::Vector2f(static_cast<float>(100 + (i * 200)), static_cast<float>(660)));
 	}
+
+	//Calculate Initiative
+	calculateInitiative(initiative);
+	turnPointer.setPosition(initiative[0]->getSpriteMidpoint().x - 50, initiative[0]->getSpriteMidpoint().y - 250);
 
 	//Place health bars
 	for (unsigned int i = 0; i < party.size(); i++) {
@@ -91,7 +106,7 @@ State* Combat::update() {
 
 	
 	//State machine setup
-	enum class combatMenu { main, attack, inventory, flee };
+	enum class combatMenu { main, attack, flee };
 	combatMenu state = combatMenu::main;
 	keyhandle.setOverride(true);
 
@@ -116,13 +131,11 @@ State* Combat::update() {
 					case combatMenu::main:
 						combatChoices.push_back("1. Attacks");
 						keyhandle.addListener(sf::Keyboard::Num1, [&state]()->void {state = combatMenu::attack; });
-						combatChoices.push_back("2. inventory");
-						keyhandle.addListener(sf::Keyboard::Num2, [&state]()->void {state = combatMenu::inventory; });
-						combatChoices.push_back("3. flee");
-						keyhandle.addListener(sf::Keyboard::Num3, [&state]()->void {state = combatMenu::flee; });
+						combatChoices.push_back("2. Flee");
+						keyhandle.addListener(sf::Keyboard::Num2, [&state]()->void {state = combatMenu::flee; });
+						keyhandle.addListener(sf::Keyboard::A, [&avengersMode]()->void {avengersMode = true; });
 						break;
 					case combatMenu::attack:
-						//attackKeys = currentCharacter->getAttacks();
 						availableAttacks = currentCharacter->getAvailableAttacks();
 						for (unsigned int i = 0; i < availableAttacks.size(); i++) {
 							keyhandle.addListener(
@@ -138,29 +151,27 @@ State* Combat::update() {
 									sound.playSoundEffect(SoundEffect::weakAttack);
 								}
 
+								if (totalDamageDealt > monsters[0]->getHealth()) {
+									//sound.playSoundEffect(SoundEffect::monsterDeath);
+								}
+
 									makeAttackFeedback(monsters[0], totalDamageDealt);
 									checkMonstersDeath();
 									state = combatMenu::main; 
 									newCurrentCharacter();
 								});
 							std::stringstream tempstring;
-							//tempstring << i + 1 << ' ' << attackKeys[i].first;
-							tempstring << i + 1 << ' ' << std::get<0>(availableAttacks[i]);
+							tempstring << i + 1 << ". " << std::get<0>(availableAttacks[i]);
 							combatChoices.push_back(tempstring.str());
 						}
-						combatChoices.push_back("5. Back");
-						keyhandle.addListener(sf::Keyboard::Num5, [&state]()->void {state = combatMenu::main; });
-						break;
-					case combatMenu::inventory:
-						combatChoices.push_back("1. Back");
-						keyhandle.addListener(sf::Keyboard::Num1, [&state]()->void {state = combatMenu::main; });
-						checkMonstersDeath();
+						combatChoices.push_back("0. Back");
+						keyhandle.addListener(sf::Keyboard::Num0, [&state]()->void {state = combatMenu::main; });
 						break;
 					case combatMenu::flee:
 						CombatFinished = true;
 
 						while (sound.getMusicVolume() > 10.0f) {
-							sound.setMusicVolume(sound.getMusicVolume() - 0.2f);
+							sound.setMusicVolume(sound.getMusicVolume() - 0.4f);
 							draw();
 							sf::sleep(sf::milliseconds(1));
 						}
@@ -173,8 +184,6 @@ State* Combat::update() {
 			//-Monster Actions
 			//===========================================================================================================================================
 			} else if(!isPlayer(initiative[currentInitiative])) {
-				clock.restart();
-				srand(static_cast<unsigned int>(clock.getElapsedTime().asMicroseconds()));
 				int randomTargetSelect = (rand() % party.size() + 0);
 				while (party[randomTargetSelect]->getHealth() <= 0) {
 					randomTargetSelect = (rand() % party.size() + 0);
@@ -183,10 +192,16 @@ State* Combat::update() {
 
 				int totalDamageDealt = party[randomTargetSelect]->processDamage(currentCharacter->generateAttack({ "Punch", WeaponSlots::mainhand, 1 }));
 
-				if (totalDamageDealt > int(party[randomTargetSelect]->getHealth() / 4)) {
-
+				if (totalDamageDealt > int(party[randomTargetSelect]->getHealth() / 2)) {
+					sound.playSoundEffect(SoundEffect::laugh);
+				} else if (totalDamageDealt > int(party[randomTargetSelect]->getHealth() / 4)) {
+					sound.playSoundEffect(SoundEffect::strongAttack);
 				} else {
 					sound.playSoundEffect(SoundEffect::weakAttack);
+				}
+
+				if (totalDamageDealt > party[randomTargetSelect]->getHealth()) {
+					sound.playSoundEffect(SoundEffect::playerDeath);
 				}
 
 				makeAttackFeedback(party[randomTargetSelect], totalDamageDealt);
@@ -198,6 +213,11 @@ State* Combat::update() {
 			} else {
 				std::cout << "You stupid!\n";
 			}
+		}
+
+		if (avengersMode && !avengersIsPlaying) {
+			sound.playMusicType(MusicType::avengers);
+			avengersIsPlaying = true;
 		}
 
 		draw();
@@ -213,6 +233,7 @@ void Combat::newCurrentCharacter() {
 		currentInitiative++;
 	}
 	currentCharacter = initiative[currentInitiative];
+	turnPointer.setPosition(currentCharacter->getSpriteMidpoint().x - 50, currentCharacter->getSpriteMidpoint().y - 250);
 }
 
 void Combat::draw() {
@@ -240,6 +261,7 @@ void Combat::draw() {
 	window.draw(menuScreen);
 	window.draw(animationScreen);
 	window.draw(damageScreen);
+	window.draw(turnPointer);
 
 	diaBox.printPerm(combatChoices);
 	diaBox.draw();
@@ -333,7 +355,7 @@ void Combat::partyVictory() {
 	// Final frames and cut out music
 	//=======================================================================================
 	while (sound.getMusicVolume() > 10.0f) {
-		sound.setMusicVolume(sound.getMusicVolume() - 0.2f);
+		sound.setMusicVolume(sound.getMusicVolume() - 0.4f);
 		draw();
 		sf::sleep(sf::milliseconds(1));
 	}
@@ -372,9 +394,9 @@ void Combat::partyVictory() {
 
 void Combat::monsterVictory() {
 	CombatFinished = true;
-
+	sound.playSoundEffect(SoundEffect::laugh);
 	while (sound.getMusicVolume() > 5.0f) {
-		sound.setMusicVolume(sound.getMusicVolume() - 0.2f);
+		sound.setMusicVolume(sound.getMusicVolume() - 0.4f);
 		draw();
 		sf::sleep(sf::milliseconds(1));
 	}

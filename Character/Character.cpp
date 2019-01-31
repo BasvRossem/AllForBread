@@ -28,8 +28,6 @@ Character::Character(const std::string & characterName, const std::pair<const st
 	auto spriteSize = sf::Vector2f(250, 300);
 	sprite->setOrigin(getSpriteMidpoint());
 	sprite->setScale(spriteSize.x / sprite->getGlobalBounds().width, spriteSize.y / sprite->getGlobalBounds().height);
-	
-	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 void Character::makeMonster() {
@@ -200,6 +198,10 @@ const int Character::getCharlevel() {
 	return level;
 }
 
+void Character::setLevel(const int & newLevel) {
+	level = newLevel;
+}
+
 std::unordered_map<AbilityScores, int> Character::getStats() {
 	return characterStats;
 }
@@ -295,3 +297,14 @@ void Character::setSpriteBottomPosition(const sf::Vector2f & position) {
 	sprite->setPosition(newPosition);
 }
 
+void Character::reCalculateHealth() {
+	int bonusVitality = getStat(AbilityScores::vitality) - 10;
+	int newMaxHealth = 100;
+
+	while (bonusVitality > 0) {
+		newMaxHealth += 10;
+		bonusVitality--;
+	}
+
+	healthBar.setMaxResource(newMaxHealth);
+}
