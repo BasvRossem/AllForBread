@@ -24,9 +24,6 @@
 #include "Character/PartyOverview.hpp"
 #include "Core/Sounds.hpp"
 
-
-
-
 void constructSellList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNode> returnPoint, Party & heroParty) {
 	shop->removeAllOptions();
 	std::stringstream currency;
@@ -300,7 +297,25 @@ int main( int argc, char *argv[] ){
 	std::shared_ptr<DialogNode> shopDialogBuyNode(new DialogNode("What item do you wish to buy?"));
 	std::shared_ptr<DialogNode> shopDialogSellNode(new DialogNode("What item do you wish to sell?"));
 
-	std::function<void()> buyFunc = [&] {constructBuyList(shopDialogBuyNode, shopDialogNode0, heroParty, heroParty.getInventory() ); };// #mergefix get all  items
+
+	std::map<std::string, Armor> inventoryArmor;
+	std::map<std::string, Weapon> inventoryWeapon;
+	//std::map<std::string, Consumable> inventoryWeapon;
+
+	DM.load(inventoryWeapon, inventoryArmor);
+
+	std::vector<std::shared_ptr<Item>> blackSmithInventoryVector;
+
+	for (auto &item : inventoryArmor) {
+		blackSmithInventoryVector.push_back(std::make_shared<Item>(item.second));
+	}
+
+	for (auto &item : inventoryWeapon) {
+		blackSmithInventoryVector.push_back(std::make_shared<Item>(item.second));
+	}
+	// MapToVec(
+
+	std::function<void()> buyFunc = [&] {constructBuyList(shopDialogBuyNode, shopDialogNode0, heroParty, blackSmithInventoryVector); };
 	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", shopDialogBuyNode, buyFunc));
 	std::function<void()> sellFunc = [&] {constructSellList(shopDialogSellNode, shopDialogNode0, heroParty); };
 	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", shopDialogSellNode, sellFunc));
@@ -380,13 +395,13 @@ int main( int argc, char *argv[] ){
 	PointOfInterestContainer poiCont(heroParty);
 
 	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
-
+	DM.load(poibox);
 
 
 	//city dialog
 	DialogTree cityDialogPoint1;
 	functions["cityDialogPoint1"] = [&cityDialogPoint1, &overWorldDialog]() {cityDialogPoint1.performDialogue(overWorldDialog); };
-	DM.load(poibox);
+	
 
 	std::shared_ptr<DialogNode> cityDialogPoint1Node0(new DialogNode("Do you wish to enter Villageville?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?", "Assets/town.png"));
@@ -432,7 +447,7 @@ int main( int argc, char *argv[] ){
 	//
 
 	//end city dialog
-	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
+	/*sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
 	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
 	std::vector<sf::Vector2f> notPath = {};
 	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
@@ -445,20 +460,26 @@ int main( int argc, char *argv[] ){
 	std::function<void()> cityPoint1 = [&]() {cityDialogPoint1.performDialogue(overWorldDialog); };
 
 	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cityPoint1, path);
-	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);
+	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);*/
+
+
 
 
 	background.setBackGround(takatikimap, window);
 
-	std::shared_ptr<sf::RectangleShape> partey(new sf::RectangleShape);
-	sf::Vector2f abh(20, 20);
+	std::shared_ptr<sf::RectangleShape> partyOverWorldIcon(new sf::RectangleShape);
+	sf::Texture partyOverWorldIconTexture;
+	sf::Vector2f partyIconSize(50, 50);
+	partyOverWorldIconTexture.create(50, 50);
+	partyOverWorldIconTexture.loadFromFile("PartyBanner.png");
 	sf::Vector2f newLocation;
 	newLocation = poiCont.getCurrentPointLocation();
-	partey->setSize(abh);
-	partey->setPosition(newLocation);
-	partey->setFillColor(sf::Color::Black);
+	partyOverWorldIcon->setSize(partyIconSize);
+	partyOverWorldIcon->setTexture(&partyOverWorldIconTexture);
+	partyOverWorldIcon->setOrigin(25.0f, 50.0f);
+	partyOverWorldIcon->setPosition(newLocation);
 
-	TransformableMovement POIMove(partey, newLocation, 0.0f);
+	TransformableMovement POIMove(partyOverWorldIcon, newLocation, 0.0f);
 	POIMove.blend();
 	std::vector<sf::Vector2f> moveList;
 
@@ -615,8 +636,9 @@ int main( int argc, char *argv[] ){
 		window.display();
 	}
 
-	while (window.isOpen()) {
+	
 
+	while (window.isOpen()) {
 		if (playMenuTheme) {
 			sound.playMusicType(MusicType::overworld);
 			playMenuTheme = false;
@@ -646,7 +668,7 @@ int main( int argc, char *argv[] ){
 			else if (encounterChange > 5 && encounterChange < 10) {
 				waterWellTree.performDialogue(overWorldDialog, false, 0);
 			}
-			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
+			POIMove = TransformableMovement(partyOverWorldIcon, moveList.back(), 1.0f);
 			moveList.pop_back();
 			POIMove.blend();
 		} else if (moveList.size() == 0 && POIMove.isFinished()) {
@@ -669,7 +691,7 @@ int main( int argc, char *argv[] ){
 		window.clear();
 		background.draw(window);
 		poiCont.draw(window);
-		window.draw(*partey);
+		window.draw(*partyOverWorldIcon);
 		window.display();
 
 	}
