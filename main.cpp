@@ -22,6 +22,7 @@
 #include "Character/AbilitySpeccing.hpp"
 #include "Core/dialogTree.hpp"
 #include "Character/PartyOverview.hpp"
+#include "Core/Sounds.hpp"
 
 
 
@@ -111,7 +112,17 @@ int main( int argc, char *argv[] ){
 	overWorldDialog.setSound("SoundEffects/key.wav");
 
 	DataManager DM("dataManager/data.db");
-	
+
+
+	//=======================================================
+	// Sound and Music
+	//=======================================================
+	Sounds sound;
+	bool playMenuTheme = true;
+	sound.setMusicLoop(true);
+
+
+
 
 	//=======================================================
 	// Weapon testing
@@ -568,12 +579,24 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	bool startGame = false;
 	KeyboardHandler homeMenuKeyHandler;
-	homeMenuKeyHandler.addListener(sf::Keyboard::Enter, [&]() { startGame = true;  });
+	homeMenuKeyHandler.addListener(sf::Keyboard::Enter, [&]() { 
+		startGame = true;
+		sound.playSoundEffect(SoundEffect::gameStart);
+		sf::sleep(sf::seconds(1));
+		sound.stopMusic();
+	});
 
 	sf::Texture homeImage;
 	homeImage.loadFromFile("Assets/BeginscreenWithUnicorn.png");
 	sf::Sprite homeBackground;
 	homeBackground.setTexture(homeImage);
+
+	if ((rand() % 101 + 0) < 11) {
+		sound.playMusicType(MusicType::unicorns);
+	} else {
+		sound.playMusicType(MusicType::menu);
+	}
+
 	while (!startGame) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -591,6 +614,11 @@ int main( int argc, char *argv[] ){
 
 	while (window.isOpen()) {
 
+		if (playMenuTheme) {
+			sound.playMusicType(MusicType::overworld);
+			playMenuTheme = false;
+		}
+
 		if (moveList.size() > 0 && POIMove.isFinished()) {
 			// calc random encounter
 			int encounterChange = rand() % 100 + 1;
@@ -603,7 +631,12 @@ int main( int argc, char *argv[] ){
 				Combat testCombat(window, heroParty, monsterParty, combatBackground, background);
 				std::cout << "QUEUEUEUE battle music" << '\n';
 				std::cout << encounterChange << '\n';
+
+				//Stop music
+				playMenuTheme = true;
+				sound.stopMusic();
 				testCombat.update();
+
 			}else if (encounterChange > 0 && encounterChange < 5) {
 				randomEncounter.performDialogue(overWorldDialog);
 			}
