@@ -2,6 +2,8 @@
 #include <string>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
+#include <time.h>
+#include <stdio.h>
 
 #include "Items/Weapon.hpp"
 #include "Character/PlayerCharacter.hpp"
@@ -77,8 +79,10 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 	shop->addDialogOption(std::make_shared<DialogOption>("back", returnPoint));
 }
 
-int main( int argc, char *argv[] ){
 
+
+int main( int argc, char *argv[] ){
+	srand(static_cast<unsigned int>(time(NULL)));
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
 	//=======================================================
