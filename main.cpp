@@ -83,8 +83,26 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 
 int main( int argc, char *argv[] ){
 	srand(static_cast<unsigned int>(time(NULL)));
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
 	window.setFramerateLimit(60);
+
+	//=======================================================
+	// Loading screen
+	//=======================================================
+	sf::Font font;
+	font.loadFromFile("Assets/PIXEARG_.ttf");
+	sf::Text loadingText;
+	loadingText.setFont(font);
+	loadingText.setString("Loading... Please wait");
+	loadingText.setCharacterSize(24);
+	loadingText.setFillColor(sf::Color::White);
+	loadingText.setOutlineColor(sf::Color::Black);
+	loadingText.setPosition(sf::Vector2f(5.0f, 5.0f));
+	
+	window.clear();
+	window.draw(loadingText);
+	window.display();
+
 	//=======================================================
 	// OverWorld dialog box
 	//=======================================================
@@ -114,6 +132,7 @@ int main( int argc, char *argv[] ){
 	anubisPair.first = "Assets/AnubisIdle.png";
 	anubisPair.second = "Assets/AnubisIdleFrameNoBottomWhitespace.png";
 	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", anubisPair);
+	testMonster->setDeathAnimation("Assets/AnibisDying.png");
 	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 	Mob monsters = (monsterVector);
 
@@ -543,6 +562,32 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	
 	heroParty[0]->increaseAbilityScore(AbilityScores::arcanism, 20);
+	
+	//=======================================================
+	// Home screen
+	//=======================================================
+	bool startGame = false;
+	KeyboardHandler homeMenuKeyHandler;
+	homeMenuKeyHandler.addListener(sf::Keyboard::Enter, [&]() { startGame = true;  });
+
+	sf::Texture homeImage;
+	homeImage.loadFromFile("Assets/BeginscreenWithUnicorn.png");
+	sf::Sprite homeBackground;
+	homeBackground.setTexture(homeImage);
+	while (!startGame) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+			}
+			if (event.type == sf::Event::KeyPressed) {
+				homeMenuKeyHandler.processKey(event.key.code);
+			}
+		}
+		window.clear();
+		window.draw(homeBackground);
+		window.display();
+	}
 
 	while (window.isOpen()) {
 

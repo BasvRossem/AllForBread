@@ -11,10 +11,9 @@ Character::Character(const std::string & characterName, const std::pair<const st
 	idleTexture->loadFromFile(texture.first);
 	idleTexture->setSmooth(true);
 
-	sf::Image tmpImage;
-	tmpImage.loadFromFile(texture.second);
+	singleAnimationFrame.loadFromFile(texture.second);
 
-	unsigned int frameAmount = idleTexture->getSize().x / tmpImage.getSize().x;
+	unsigned int frameAmount = idleTexture->getSize().x / singleAnimationFrame.getSize().x;
 	currentAnimation = Animation(sprite, idleTexture, float(1.0), frameAmount);
 
 	if (!deathTexture->loadFromFile("Assets/Rip.png")) {
@@ -35,7 +34,13 @@ void Character::makeMonster() {
 }
 
 void Character::update() {
-	currentAnimation.update();
+	if (currentAnimation.getTexture() == deathTexture && currentAnimation.getOneToLastFinished()) {
+		currentAnimation.makeOneToLast();
+		stopAnimation();
+	}
+	else {
+		currentAnimation.update();
+	}
 }
 
 Character::~Character(){
@@ -307,4 +312,14 @@ void Character::reCalculateHealth() {
 	}
 
 	healthBar.setMaxResource(newMaxHealth);
+}
+
+void Character::setDeathAnimation(const std::string & deathTexturePath) {
+	
+	if (!deathTexture->loadFromFile(deathTexturePath)) {
+		std::cout << "Error loading new deathTexture" << std::endl;
+	}
+	unsigned int frameAmount = deathTexture->getSize().x / singleAnimationFrame.getSize().x;
+	deathAnimation = Animation(sprite, deathTexture, float(1.0), frameAmount);
+
 }

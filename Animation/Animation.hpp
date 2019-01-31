@@ -16,6 +16,8 @@ private:
 	float switchTime;
 
 	bool animate = true;
+	bool oneLoopFinished = false;
+	bool oneToLastFinished = false;
 public:
 	Animation(std::shared_ptr<sf::Sprite> playerSprite, std::shared_ptr<sf::Texture> texture, float animationDuration);
 	Animation(std::shared_ptr<sf::Sprite> playerSprite, std::shared_ptr<sf::Texture> texture, float animationDuration, int frameAmount);
@@ -26,4 +28,8 @@ public:
 
 	void start();
 	void stop();
+	std::shared_ptr<sf::Texture> getTexture();
+	bool getLoopFinished();
+	bool getOneToLastFinished();
+	void makeOneToLast();
 };

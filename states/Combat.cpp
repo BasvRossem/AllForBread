@@ -388,6 +388,7 @@ void Combat::partyVictory() {
 		if (party[i]->getLevelUp()) {
 			AbilitySpeccing a(party[i], window);
 			a.use(window);
+			party[i]->setIsLevelUp(false);
 		}
 	}
 }

@@ -44,12 +44,14 @@ void Animation::update(){
 		if (totalTime >= switchTime) {
 			totalTime -= switchTime;
 			currentImage++;
-
+			if (currentImage >= imageCount - 1) {
+				oneToLastFinished = true;
+			}
 			if (currentImage >= imageCount) {
 				currentImage = 0;
+				oneLoopFinished = true;
 			}
 		}
-
 		textureRect.left = currentImage * (texture->getSize().x / imageCount);
 		playerSprite->setTexture(*texture);
 		playerSprite->setTextureRect(textureRect);
@@ -62,4 +64,23 @@ void Animation::start() {
 
 void Animation::stop() {
 	animate = false;
+}
+
+std::shared_ptr<sf::Texture> Animation::getTexture() {
+	return texture;
+}
+
+bool Animation::getLoopFinished() {
+	return oneLoopFinished;
+}
+
+bool Animation::getOneToLastFinished() {
+	return oneToLastFinished;
+}
+
+void Animation::makeOneToLast() {
+	currentImage = static_cast<int>(texture->getSize().x / float(textureRect.width)) - 1;
+	textureRect.left = currentImage * (texture->getSize().x / imageCount);
+	playerSprite->setTexture(*texture);
+	playerSprite->setTextureRect(textureRect);
 }
