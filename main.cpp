@@ -83,7 +83,7 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 
 int main( int argc, char *argv[] ){
 	srand(static_cast<unsigned int>(time(NULL)));
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
 
 	//=======================================================
@@ -108,7 +108,7 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 
 	DialogBox overWorldDialog(window, 75, 10, "Assets/arial.ttf", sf::Vector2i{ 900, 400 }, sf::Vector2f{ 510, 680 }, sf::Color::Black);
-	overWorldDialog.setSound("Assets/key.wav");
+	overWorldDialog.setSound("SoundEffects/key.wav");
 
 	DataManager DM("dataManager/data.db");
 	

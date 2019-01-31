@@ -165,6 +165,13 @@ void DialogBox::print(std::string str, std::string backgroundUrl, bool sound, in
 					feedbackSound.setPitch(pitch);
 					feedbackSound.play();
 				}
+				sf::Event event;
+				while (w.pollEvent(event)) {
+					if (event.type == sf::Event::Closed) {
+						w.close();
+					}
+					
+				}
 				background.draw(w);
 				draw();
 				sf::sleep(sf::milliseconds(speed));
@@ -307,14 +314,15 @@ int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<voi
 						if (event.type == sf::Event::KeyPressed){
 							keyHandle.processKey(event.key.code);
 						}
-						if (event.type == sf::Event::Closed)
-							w.close();
+						
 						if (event.key.code >= static_cast<int>(sf::Keyboard::Num1 + begin) && event.key.code <= static_cast<int>(sf::Keyboard::Num0 + max + begin)){
 							selected = true;
 							int index = overAllMax - max;
 							selectedValue = (event.key.code - 26) + index + begin - 1;
 						}
 					}
+					if (event.type == sf::Event::Closed)
+						w.close();
 				}
 				background.draw(w);
 				draw();
