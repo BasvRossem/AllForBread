@@ -309,6 +309,7 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 				}
 				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
 				deleteItem(item);
+				sound.playSoundEffect(SoundEffect::weaponEquip);
 				break;
 
 			case WeaponSlots::offhand:
@@ -322,6 +323,7 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 				}
 				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
 				deleteItem(item);
+				sound.playSoundEffect(SoundEffect::weaponEquip);
 				break;
 
 			default:
