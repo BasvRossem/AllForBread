@@ -22,6 +22,7 @@ private:
 	std::map<std::string, std::function<void()>>& functions;
 
 	std::map<std::string, AbilityScores> abilityScores;
+	std::map<AbilityScores, int> abilityScoresId;
 	std::map<std::string, DamageTypes> damageTypes;
 	std::map<std::string, ArmorSlots> armorSlots;
 	std::map<std::string, WeaponSlots> weaponSlots;
@@ -74,10 +75,11 @@ private:
 	void loading<Party*>(Party*& p) {
 		std::vector<std::shared_ptr<PlayerCharacter>> heroVector;
 		std::pair<Database&, std::vector<std::shared_ptr<PlayerCharacter>>&> passThrough(db, heroVector);
-		db.cmd("SELECT id, name, texturePath,individualFrame FROM Player", [](void * p, int argc, char **argv, char **azColName)->int {
+		db.cmd("SELECT id, name, texturePath, individualFrame, portrait FROM Player", [](void * p, int argc, char **argv, char **azColName)->int {
 			auto pass = (std::pair<Database&, std::vector<std::shared_ptr<PlayerCharacter>>&>*)p;
 			std::pair<std::string, std::string> texturePair(argv[2], argv[3]);
 			auto character = std::make_shared<PlayerCharacter>(argv[1], texturePair);
+			character->setPortraitFilename(argv[4]);
 			pass->second.push_back(character);
 			return 0;
 		}, &passThrough);
@@ -210,17 +212,17 @@ private:
 			auto & consumablesMap = std::get<3>(*p);
 			auto w = weaponMap.find(argv[0]);
 			if (w != weaponMap.end()) {
-				partey.addToInventory(std::make_shared<Item>(w->second));
+				partey.addToInventory(std::make_shared<Weapon>(w->second));
 				return 0;
 			} 
 			auto a = armorMap.find(argv[0]);
 			if (a != armorMap.end()) {
-				partey.addToInventory(std::make_shared<Item>(a->second));
+				partey.addToInventory(std::make_shared<Armor>(a->second));
 				return 0;
 			}
 			auto c = consumablesMap.find(argv[0]);
 			if (c != consumablesMap.end()) {
-				partey.addToInventory(std::make_shared<Item>(c->second));
+				partey.addToInventory(std::make_shared<Consumable>(c->second));
 				return 0;
 			}
 			return 0;
@@ -228,7 +230,32 @@ private:
 		//load inventory each player
 		for (unsigned int i = 0; i < party.size(); i++) {
 			party[i]->clearEquipment();
-			
+
+			//load level abilityPoints exp
+			std::string qL("SELECT Player.[exp], Player.[level], Player.[abilityPoints] FROM Player WHERE Player.id = ");
+			qL += std::to_string(i + 1);
+			db.cmd(qL.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+				auto p = (std::shared_ptr<PlayerCharacter>*)someP;
+				(*p)->setAbilityPoints(std::stoi(argv[2]));
+				(*p)->setCharlevel(std::stoi(argv[1]));
+				(*p)->setExperience(std::stoi(argv[0]));
+				return 0;			
+			},&party[i]);
+
+			//load Ability scores
+			std::string qAS("SELECT AbilityScore.name, AbilityScorePlayer.value FROM AbilityScore INNER JOIN AbilityScorePlayer ON AbilityScore.[id] = AbilityScorePlayer.[abilityScoreId] WHERE AbilityScorePlayer.playerId = ");
+			qAS += std::to_string(i + 1);
+
+			std::unordered_map<AbilityScores, int> stats;
+			std::pair< std::unordered_map<AbilityScores, int>&, std::map<std::string, AbilityScores>&> comboAS(stats, abilityScores);
+			db.cmd(qAS.c_str(), [](void * someP, int argc, char **argv, char **azColName)->int {
+				auto p = (std::pair< std::unordered_map<AbilityScores, int>&, std::map<std::string, AbilityScores>&>*)someP;
+				p->first[p->second[argv[0]]] = std::stoi(argv[1]);
+				return 0;
+			}, &comboAS);
+
+			party[i]->setCharacterStats(stats);
+
 			//armor loading
 			std::tuple<std::shared_ptr<PlayerCharacter>&, std::map<std::string, ArmorSlots>&, std::map<std::string, AbilityScores>&, Database&> comboArmor(party[i], armorSlots, abilityScores, db);
 			std::string qA("SELECT Item.name, Item.description, Item.weight, Item.baseValue, ArmorSlot.name, Armor.physicalProtection, Armor.magicalProtecton, Armor.id FROM ((ArmorSlot INNER JOIN Armor ON ArmorSlot.[id] = Armor.[armorSlotId]) INNER JOIN Item ON Armor.[itemId] = Item.[id]) INNER JOIN ((Player INNER JOIN Inventory ON Player.id = Inventory.playerId) INNER JOIN InventoryItem ON Inventory.id = InventoryItem.inventoryId) ON Item.id = InventoryItem.itemId WHERE Player.id = ");
@@ -322,14 +349,21 @@ private:
 
 	template<>
 	void saving<Party>(Party& party) {
+		
+		std::string query("");
+		std::string id("");
+
 		db.cmd("BEGIN");
+
+		query = "UPDATE PartyInfo SET ";
+		query += ("currency = " + std::string(std::to_string(party.getCurrency())) + ", ");
+		query += ("overworldPosition = " + std::string(std::to_string(party.getOverworldPosition())) + " WHERE id = 1");
+
+		db.cmd(query.c_str());
 
 		db.cmd("DELETE FROM InventoryItem");
 
 		db.cmd("VACUUM");
-
-		std::string query("");
-		std::string id("");
 
 		for (auto & item : party.getInventory()) {
 			query = "SELECT id FROM Item Where name = ";
@@ -346,6 +380,25 @@ private:
 		}
 
 		for (unsigned int i = 0; i < party.size(); i++) {
+			//save exp level attr
+			query = "UPDATE Player SET ";
+			query += ("exp = " + std::string(std::to_string(party[i]->getExperience())) + ", ");
+			query += ("abilityPoints = " + std::string(std::to_string(party[i]->getAbilityPoints())) + ", ");
+			query += ("level = " + std::string(std::to_string(party[i]->getCharlevel())) + " WHERE id = " + std::string(std::to_string(i + 1)));
+			db.cmd(query.c_str());
+
+
+			
+			auto stats = party[i]->getCharacterStats();
+			
+			for (auto & stat : stats) {				
+				query = "UPDATE AbilityScorePlayer SET value = " + std::string(std::to_string(stat.second)) + " ";
+				query += "WHERE ";
+				query += "playerId = " + std::string(std::to_string(i + 1)) + " AND ";
+				query += "abilityScoreId = " + std::string(std::to_string(abilityScoresId[stat.first])) + ";";
+				db.cmd(query.c_str());
+			}
+
 			//save weapons
 			for (auto & weapon : party[i]->getWeaponMap()) {
 				query = "SELECT id FROM Item Where name = ";
