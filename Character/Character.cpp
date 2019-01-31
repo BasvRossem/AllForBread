@@ -203,9 +203,15 @@ const int Character::getCharlevel() {
 	return level;
 }
 
+
 void Character::setLevel(const int & newLevel) {
 	level = newLevel;
 }
+
+void Character::setCharlevel(const int & lvl){
+	level = lvl;
+}
+
 
 std::unordered_map<AbilityScores, int> Character::getStats() {
 	return characterStats;
