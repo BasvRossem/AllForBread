@@ -28,8 +28,6 @@ Character::Character(const std::string & characterName, const std::pair<const st
 	auto spriteSize = sf::Vector2f(250, 300);
 	sprite->setOrigin(getSpriteMidpoint());
 	sprite->setScale(spriteSize.x / sprite->getGlobalBounds().width, spriteSize.y / sprite->getGlobalBounds().height);
-	
-	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 void Character::makeMonster() {

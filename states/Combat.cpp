@@ -38,7 +38,6 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	
 	//Load a font
 	attackFont.loadFromFile("Assets/PIXEARG_.ttf");
-	srand(clock.getElapsedTime().asMilliseconds());
 }
 
 
@@ -173,8 +172,6 @@ State* Combat::update() {
 			//-Monster Actions
 			//===========================================================================================================================================
 			} else if(!isPlayer(initiative[currentInitiative])) {
-				clock.restart();
-				srand(static_cast<unsigned int>(clock.getElapsedTime().asMicroseconds()));
 				int randomTargetSelect = (rand() % party.size() + 0);
 				while (party[randomTargetSelect]->getHealth() <= 0) {
 					randomTargetSelect = (rand() % party.size() + 0);
