@@ -114,6 +114,7 @@ int main( int argc, char *argv[] ){
 	anubisPair.first = "Assets/AnubisIdle.png";
 	anubisPair.second = "Assets/AnubisIdleFrameNoBottomWhitespace.png";
 	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Big Nick Digga Jim", anubisPair);
+	testMonster->setDeathAnimation("Assets/AnibisDying.png");
 	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 	Mob monsters = (monsterVector);
 

@@ -28,7 +28,6 @@ const int Monster::getRewardCurrency() {
 void Monster::doDeath() {
 	std::cout << name << " is dead!\n";
 	currentAnimation = deathAnimation;
-	sprite->scale(-1.0f, 1.0f);
 }
 
 void Monster::printRewards() {
