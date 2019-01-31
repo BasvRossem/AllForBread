@@ -215,13 +215,17 @@ int main( int argc, char *argv[] ){
 	std::string backgroundImage = "takatikimap.png";
 
 	std::string menuBackGround = "menu";
-	std::string menuBackGroundImage = "Assets/menu.jpg";
+	std::string menuBackGroundImage = "Assets/menu.png";
+
+	std::string churchBackGround = "church";
+	std::string churchBackGroundImage = "Assets/church.png";
 
 	BackGround background;
 
 	background.add(takatikimap, backgroundImage);
 	background.add(combatBackground, combatBackgroundImage);
 	background.add(menuBackGround, menuBackGroundImage);
+	background.add(churchBackGround, churchBackGroundImage);
 
 	//=======================================================
 	// Creating Combat
@@ -237,14 +241,14 @@ int main( int argc, char *argv[] ){
 
 
 	std::function<void()> inventoryFunctie = [&heroParty, &window]() {InventoryDisplay InventoryD(heroParty, window); InventoryD.use(); };
-	std::function<void()> partyFunctie = []() {};
+	std::function<void()> partyFunctie = [&heroParty, &window, &background, &takatikimap]() {PartyOverview overview(heroParty, background, takatikimap);overview.open(window);};
 	std::function<void()> saveFunctie = [&heroParty, &DM]() {DM.save(heroParty); };
 	std::function<void()> loadFunctie = []() {};
 	std::function<void()> closeFunctie = [&window]() {window.close(); };
 
 
 	std::string inventoryImage = ("Assets/inventory.png");
-	std::string partyImage = ("");
+	std::string partyImage = ("Assets/partyOverview.png");
 	std::string saveImage = ("Assets/save.png");
 	std::string loadImage = ("Assets/load.png");
 	std::string closeImage = ("Assets/close.png");
@@ -369,7 +373,7 @@ int main( int argc, char *argv[] ){
 	cityDialogPoint1ChurchNode0->addDialogOption(std::make_shared<DialogOption>("no", cityDialogPoint1Node1));
 
 	for (size_t i = 0; i < heroParty.size(); i++){
-		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background]() {AbilitySpeccing a(heroParty[i], window); a.resetAbilits(); a.use(window); window.clear(sf::Color::Transparent); }));
+		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background, &churchBackGround]() {AbilitySpeccing a(heroParty[i], window, background, churchBackGround); a.resetAbilits(); a.use(window); window.clear(sf::Color::Transparent); }));
 	}
 
 
@@ -434,7 +438,6 @@ int main( int argc, char *argv[] ){
 
 	KeyboardHandler keyHandl;
 
-	//keyHandl.addListener(sf::Keyboard::I, [&]() { AbilitySpeccing a(testCharacter, window); a.resetAbilits(); a.use(window); });
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
 	

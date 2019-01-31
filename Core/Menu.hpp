@@ -11,7 +11,7 @@ class Menu {
 private:
 	std::vector<std::shared_ptr<Tile>> tiles;
 	sf::Vector2f size;
-	sf::RectangleShape selectRectangle;
+	sf::CircleShape selectCircle;
 	BackGround backGround;
 	std::string surroundings;
 	unsigned int selectedID = 0;
