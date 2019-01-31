@@ -131,7 +131,6 @@ public:
 	int getAbilityPoints();
 	int getExperienceGauge();
 	int getExperience();
-	void setExperience(const int & exp);
 	void setIsLevelUp(bool value);
 	void setAbilityPoints(const unsigned int & ap);
 /*

@@ -193,6 +193,7 @@ void PartyOverview::drawSelectedPlayerStats(sf::RenderWindow & window) {
 
 		drawModifierBox();
 		drawProtectionStats();
+		drawDamageStats();
 
 		// Post-draw
 		rightScreen.drawSurfaceDisplay();
@@ -394,6 +395,116 @@ void PartyOverview::drawProtectionStats() {
 	}
 }
 
+void PartyOverview::drawDamageStats() {
+	if ((*selected)->getWeaponMap().size() == 0) {
+		return; // can return because there are no damage stats to display
+	}
+	//DamageValues
+	sf::Text damageTitle;
+	damageTitle.setFont(font);
+	damageTitle.setCharacterSize(30);
+	damageTitle.setPosition(125.0f, 525.0f);
+	damageTitle.setFillColor(sf::Color::White);
+	damageTitle.setOutlineColor(sf::Color::Black);
+	damageTitle.setString("Damage values");
+
+
+	rightScreen.drawSurfaceDraw(damageTitle);
+	// damageBox
+	// calculating height
+	auto damageBoxMap = (*selected)->getWeaponMap();
+	float boxHeightOffset = 0;
+	for (auto & weapon : damageBoxMap) {
+		float damageBoxHeight = (weapon.second.getSecondaryDamageEffects().size() * 25.0f) + 55.0f;
+		sf::RectangleShape damageBox;
+		sf::Vector2f damageBoxPosition = sf::Vector2f(50.0f, 575.0f + boxHeightOffset);
+		sf::Vector2f damageBoxSize = sf::Vector2f(475.0f, damageBoxHeight);
+		damageBox.setPosition(damageBoxPosition);
+		damageBox.setSize(damageBoxSize);
+		damageBox.setFillColor(sf::Color::White);
+		damageBox.setOutlineColor(sf::Color(102, 51, 0));
+		damageBox.setOutlineThickness(5.0f);
+
+
+		int rowOffset = 25;
+		int colOffset = 200;
+		sf::Text damageTypeTitle;
+		damageTypeTitle.setFont(font);
+		damageTypeTitle.setCharacterSize(18);
+		damageTypeTitle.setFillColor(sf::Color::Black);
+		damageTypeTitle.setOutlineColor(sf::Color::White);
+		damageTypeTitle.setPosition(damageBoxPosition.x + 15.0f, damageBoxPosition.y + 5);
+		damageTypeTitle.setString("Damage Type");
+
+		sf::Text damageValueTitle;
+		damageValueTitle.setFont(font);
+		damageValueTitle.setCharacterSize(18);
+		damageValueTitle.setFillColor(sf::Color::Black);
+		damageValueTitle.setOutlineColor(sf::Color::White);
+		damageValueTitle.setPosition(damageBoxPosition.x + colOffset + 15.0f, damageBoxPosition.y + 5);
+		damageValueTitle.setString("Value");
+
+		sf::Text primaryDamageTitle;
+		primaryDamageTitle.setFont(font);
+		primaryDamageTitle.setLetterSpacing(2.0f);
+		primaryDamageTitle.setCharacterSize(18);
+		primaryDamageTitle.setFillColor(EnumMethods::getDamageTypeColor(weapon.second.getPrimaryDamageEffect().first));
+		primaryDamageTitle.setOutlineColor(sf::Color::Black);
+		primaryDamageTitle.setOutlineThickness(1.0f);
+		primaryDamageTitle.setPosition(damageBoxPosition.x + 15.0f, damageBoxPosition.y + rowOffset + 5);
+		primaryDamageTitle.setString(EnumMethods::getDamageTypeName(weapon.second.getPrimaryDamageEffect().first));
+
+		sf::Text primaryDamageValue;
+		primaryDamageValue.setFont(font);
+		primaryDamageValue.setLetterSpacing(2.0f);
+		primaryDamageValue.setCharacterSize(18);
+		primaryDamageValue.setFillColor(EnumMethods::getDamageTypeColor(weapon.second.getPrimaryDamageEffect().first));
+		primaryDamageValue.setOutlineColor(sf::Color::Black);
+		primaryDamageValue.setOutlineThickness(1.0f);
+		primaryDamageValue.setPosition(damageBoxPosition.x + colOffset + 15.0f, damageBoxPosition.y + rowOffset + 5);
+		primaryDamageValue.setString(std::to_string(weapon.second.getPrimaryDamageEffect().second));
+
+		rightScreen.drawSurfaceDraw(damageBox);
+		rightScreen.drawSurfaceDraw(damageTypeTitle);
+		rightScreen.drawSurfaceDraw(damageValueTitle);
+		rightScreen.drawSurfaceDraw(primaryDamageTitle);
+		rightScreen.drawSurfaceDraw(primaryDamageValue);
+
+
+		unsigned int i = 0;
+		for (auto & secondary : weapon.second.getSecondaryDamageEffects()) {
+			sf::Text secondaryDamageTitle;
+			secondaryDamageTitle.setFont(font);
+			secondaryDamageTitle.setLetterSpacing(2.0f);
+			secondaryDamageTitle.setCharacterSize(18);
+			secondaryDamageTitle.setFillColor(EnumMethods::getDamageTypeColor(secondary.first));
+			secondaryDamageTitle.setOutlineColor(sf::Color::Black);
+			secondaryDamageTitle.setOutlineThickness(1.0f);
+			secondaryDamageTitle.setPosition(damageBoxPosition.x + 15.0f, damageBoxPosition.y + ((i + 2) * rowOffset) + 5);
+			secondaryDamageTitle.setString(EnumMethods::getDamageTypeName(secondary.first));
+
+			sf::Text secondaryDamageValue;
+			secondaryDamageValue.setFont(font);
+			secondaryDamageValue.setLetterSpacing(2.0f);
+			secondaryDamageValue.setCharacterSize(18);
+			secondaryDamageValue.setFillColor(EnumMethods::getDamageTypeColor(secondary.first));
+			secondaryDamageValue.setOutlineColor(sf::Color::Black);
+			secondaryDamageValue.setOutlineThickness(1.0f);
+			secondaryDamageValue.setPosition(damageBoxPosition.x + colOffset + 15.0f, damageBoxPosition.y + ((i + 2) * rowOffset) + 5);
+			secondaryDamageValue.setString(std::to_string(secondary.second));
+
+			rightScreen.drawSurfaceDraw(secondaryDamageTitle);
+			rightScreen.drawSurfaceDraw(secondaryDamageValue);
+
+			i++;
+		}
+
+
+		boxHeightOffset += damageBoxHeight;
+		boxHeightOffset += 15.0f;
+	}
+}
+
 void PartyOverview::open(sf::RenderWindow & window) {
 	isOpen = true;
 
@@ -402,7 +513,7 @@ void PartyOverview::open(sf::RenderWindow & window) {
 	keyHandle.addListener(sf::Keyboard::C, [&isOpen = isOpen]() {isOpen = false; });
 	keyHandle.addListener(sf::Keyboard::Enter, [&party = party, &selected = selected]() {party.setPartyLeader(selected); });
 	
-	keyHandle.addListener(sf::Keyboard::Up, [&selected = selected, &party = party]() {
+	keyHandle.addListener(sf::Keyboard::W, [&selected = selected, &party = party]() {
 		for (unsigned int i = 0; i < party.size(); i++) {
 			if (selected == &party[i]) {
 				if (i == 0) {
@@ -414,7 +525,7 @@ void PartyOverview::open(sf::RenderWindow & window) {
 			}
 		}
 	});
-	keyHandle.addListener(sf::Keyboard::Down, [&selected = selected, &party = party]() {
+	keyHandle.addListener(sf::Keyboard::S, [&selected = selected, &party = party]() {
 		for (unsigned int i = 0; i < party.size(); i++) {
 			if (selected == &party[i]) {
 				if (i == party.size()-1) {
@@ -480,4 +591,3 @@ void PartyOverview::open(sf::RenderWindow & window) {
 		}
 	}
 }
-

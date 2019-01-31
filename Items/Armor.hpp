@@ -7,8 +7,8 @@
 class Armor : public Item {
 private:
 	ArmorSlots armorSlot = ArmorSlots::chestplate;
-	int physicalProtection = 0;
-	int magicalProtecton = 0;
+	int physicalProtection;
+	int magicalProtecton;
 	std::vector<std::pair<AbilityScores, int>> propertyModifiers;
 public:
 	Armor();

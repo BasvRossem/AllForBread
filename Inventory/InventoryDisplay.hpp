@@ -9,7 +9,7 @@
 #include "InventoryTile.hpp"
 #include "playerInventoryTile.hpp"
 #include "../Core/KeyboardHandler.hpp"
-
+#include "../Core/Sounds.hpp"
 
 /// \brief
 /// A class that handles the inventory display.
@@ -40,6 +40,7 @@ private:
 
 	sf::Font font;
 	sf::Text text;
+	Sounds sound;
 public:
 	InventoryDisplay(Party & party, sf::RenderWindow & window);
 	~InventoryDisplay();

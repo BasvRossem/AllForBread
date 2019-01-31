@@ -221,11 +221,6 @@ int PlayerCharacter::getExperience() {
 	return experience;
 }
 
-void PlayerCharacter::setExperience(const int & exp)
-{
-	experience = exp;
-}
-
 std::unordered_map<AbilityScores, int> PlayerCharacter::getArmorModifierTotal() {
 	std::unordered_map<AbilityScores, int> totals;
 	for (auto armorPiece : armor) {

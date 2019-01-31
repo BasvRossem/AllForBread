@@ -38,7 +38,6 @@ void AbilitySpeccing::resetAbilits() {
 	}
 	playerCharacter->setAbilityPoints(count);
 	playerCharacter->setCharacterStats(characterStats);
-	playerCharacter->reCalculateHealth();
 	updateStats();
 }
 

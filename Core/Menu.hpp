@@ -16,7 +16,7 @@ private:
 	std::string surroundings;
 	unsigned int selectedID = 0;
 public:
-	Menu(const std::string & surroundings, BackGround & backGround);
+	Menu(std::string & surroundings, BackGround & backGround);
 	void addTile(std::string & imageName, std::function<void()> & f);
 	void update(sf::RenderWindow & window);
 	void draw(sf::RenderWindow & window);

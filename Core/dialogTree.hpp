@@ -75,7 +75,7 @@ public:
 	DialogTree();
 	///\brief
 	/// displays the dialogTree
-	void performDialogue(DialogBox& diaBox, bool sound = true, int speed = 50);
+	void performDialogue(DialogBox& diaBox, bool sound = true, int speed = 100);
 	///\brief
 	/// add a node to the dialogTree
 	void addNode(std::shared_ptr< DialogNode> node);

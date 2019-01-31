@@ -2,7 +2,7 @@
 
 
 
-Menu::Menu(const std::string & surroundings, BackGround & backGround):
+Menu::Menu(std::string & surroundings, BackGround & backGround):
 	backGround(backGround),
 	surroundings(surroundings),
 	size(200,200)

@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include <SFML/Graphics.hpp>
 //-Character stats		(Issue 39)
 //================================
 enum class AbilityScores {
@@ -52,4 +52,5 @@ public:
 	const std::string static getDamageTypeName(const DamageTypes & type);
 	const std::string static getArmorSlotName(const ArmorSlots & slot);
 	const std::string static getWeaponSlotName(const WeaponSlots & slot);
+	const sf::Color static getDamageTypeColor(const DamageTypes & type);
 };

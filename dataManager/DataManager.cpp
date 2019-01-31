@@ -2,8 +2,7 @@
 
 
 
-DataManager::DataManager(const char * s, std::map<std::string, std::function<void()>>&func) :
-	functions(func)
+DataManager::DataManager(const char * s)
 {
 	db.open(s);
 
@@ -38,13 +37,6 @@ DataManager::DataManager(const char * s, std::map<std::string, std::function<voi
 	weaponSlots["mainhand"]		=	WeaponSlots::mainhand;
 	weaponSlots["offhand"]		=	WeaponSlots::offhand;
 	weaponSlots["twohanded"]	=	WeaponSlots::twohanded;
-
-	abilityScoresId[AbilityScores::vitality]	= 1;
-	abilityScoresId[AbilityScores::strength]	= 2;
-	abilityScoresId[AbilityScores::dexterity]	= 3;
-	abilityScoresId[AbilityScores::arcanism]	= 4;
-	abilityScoresId[AbilityScores::charisma]	= 5;
-	abilityScoresId[AbilityScores::luck]		= 6;
 }
 
 
