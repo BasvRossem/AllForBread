@@ -135,6 +135,10 @@ public:
 	/// \brief
 	/// Sets the level of the character
 	virtual void setLevel(const int & newLevel);
+	
+	/// \brief
+	/// sets characte level
+	void setCharlevel(const int & lvl);
 
 	/// \brief
 	/// Returns unordered map of ability scores

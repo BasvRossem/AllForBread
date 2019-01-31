@@ -113,6 +113,11 @@ const int PlayerCharacter::getMaxExperience() {
 	return experienceGauge;
 }
 
+void PlayerCharacter::setExperience(const int & exp)
+{
+	experience = exp;
+}
+
 void PlayerCharacter::setPortraitFilename(const std::string & filename) {
 	if (filename.size() > 0) {
 		portraitFileName = filename;

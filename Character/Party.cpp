@@ -11,7 +11,11 @@ Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>> & players) :
 
 Party::Party(const Party & p):
 	Party(p.characters)
-{}
+{
+	inventory = p.inventory;
+	overworldPosition = p.overworldPosition;
+	currency = p.currency;
+}
 
 void Party::add(std::shared_ptr<PlayerCharacter> character) {
 	CharacterContainer< std::shared_ptr<PlayerCharacter>, 4>::add(character);

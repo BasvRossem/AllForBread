@@ -24,9 +24,6 @@
 #include "Character/PartyOverview.hpp"
 #include "Core/Sounds.hpp"
 
-
-
-
 void constructSellList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNode> returnPoint, Party & heroParty) {
 	shop->removeAllOptions();
 	std::stringstream currency;
@@ -45,7 +42,7 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 	std::stringstream currency;
 	currency << "Current currency " << heroParty.getCurrency();
 	shop->addDialogOption(std::make_shared<DialogOption>(currency.str(), shop));
-	for (auto item : items) { 
+	for (auto item : items) {
 		std::stringstream itemBuyName;
 		itemBuyName << item->getName() << " (" << item->getBaseValue() << ")";
 		shop->addDialogOption(std::make_shared<DialogOption>(itemBuyName.str(), returnPoint, [&, item]() {
@@ -59,20 +56,20 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 					//itemCopy = std::make_shared<Item>(*itemWeapon);
 					heroParty.addToInventory(std::make_shared<Weapon>(*itemWeapon));
 					heroParty.decreaseCurrency(item->getBaseValue());
-				}else if (itemArmor != nullptr) {
+				} else if (itemArmor != nullptr) {
 					std::cout << "\nJe bent niet vergeten dat je een armor bent :D\n";
 					//itemCopy = std::make_shared<Item>(*itemArmor);
 					heroParty.addToInventory(std::make_shared<Armor>(*itemArmor));
 					heroParty.decreaseCurrency(item->getBaseValue());
-				}else if (itemConsumable != nullptr) {
+				} else if (itemConsumable != nullptr) {
 					heroParty.addToInventory(std::make_shared<Consumable>(*itemConsumable));
 					heroParty.decreaseCurrency(item->getBaseValue());
-				}else {
+				} else {
 					std::cout << "\nJe bent vergeten wie je bent :(\n";
 				}
 
 				// #mergefix good sound
-			}else {
+			} else {
 				// #mergefix bad sound
 			}
 		}));
@@ -82,7 +79,7 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 
 
 
-int main( int argc, char *argv[] ){
+int main(int argc, char *argv[]) {
 	srand(static_cast<unsigned int>(time(NULL)));
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
@@ -99,7 +96,7 @@ int main( int argc, char *argv[] ){
 	loadingText.setFillColor(sf::Color::White);
 	loadingText.setOutlineColor(sf::Color::Black);
 	loadingText.setPosition(sf::Vector2f(5.0f, 5.0f));
-	
+
 	window.clear();
 	window.draw(loadingText);
 	window.display();
@@ -111,8 +108,6 @@ int main( int argc, char *argv[] ){
 	DialogBox overWorldDialog(window, 75, 10, "Assets/arial.ttf", sf::Vector2i{ 900, 400 }, sf::Vector2f{ 510, 680 }, sf::Color::Black);
 	overWorldDialog.setSound("SoundEffects/key.wav");
 
-	DataManager DM("dataManager/data.db");
-
 
 	//=======================================================
 	// Sound and Music
@@ -121,19 +116,12 @@ int main( int argc, char *argv[] ){
 	bool playMenuTheme = true;
 	sound.setMusicLoop(true);
 
-
-
-
 	//=======================================================
-	// Weapon testing
+	// Datamanager init
 	//=======================================================
+	std::map<std::string, std::function<void()>> functions;
+	DataManager DM("dataManager/data.db", functions);
 
-	std::map<std::string, Weapon> weapons;
-
-	DM.load(weapons);
-
-	Weapon zweihander = weapons["zweihander"];
-	Weapon dagger = weapons["dagger"];
 
 
 	//=======================================================
@@ -153,61 +141,15 @@ int main( int argc, char *argv[] ){
 	delete hParty;
 	heroParty.addCurrency(200);
 
-	heroParty[0]->setPortraitFilename("Anubis_head.png");
-	heroParty[1]->setPortraitFilename("Barbarian_head.png");
-	heroParty[2]->setPortraitFilename("Black_Wizard_head.png");
-	heroParty[3]->setPortraitFilename("Blacksmith_head.png");
-
 	//=======================================================
 	// Creating items
 	//=======================================================
 
+	std::map<std::string, Weapon> weapons;
 	std::map<std::string, Item> items;
 	std::map<std::string, Armor> armor;
 
-	DM.load(items, armor);
-
-	Item stick = items["Stick of Truth"];
-	
-	Weapon pointyStick = weapons["Slightly pointy stick"];
-
-	Armor boots = armor["Normal boots"];
-
-	/*Armor wingedBoots;
-	wingedBoots.setName("Winged boots");
-	wingedBoots.setArmorSlot(ArmorSlots::boots);
-	wingedBoots.setMagicalProtection(5);
-	wingedBoots.setPhysicalProtection(3);
-	wingedBoots.addPropertyModifier(std::pair<AbilityScores, int>(AbilityScores::dexterity, 5));
-
-	Armor juggernaut;
-	juggernaut.setName("The Juggernaut");
-	juggernaut.setArmorSlot(ArmorSlots::chestplate);
-	juggernaut.setPhysicalProtection(12);
-	juggernaut.addPropertyModifier(std::pair<AbilityScores, int>(AbilityScores::strength, 3));
-	juggernaut.addPropertyModifier(std::pair<AbilityScores, int>(AbilityScores::dexterity, -3));
-
-	Armor poorlyFittedClothing;
-	poorlyFittedClothing.setName("Poorly fitting clothes");
-	poorlyFittedClothing.setArmorSlot(ArmorSlots::helmet);
-	poorlyFittedClothing.addPropertyModifier(std::pair<AbilityScores, int>(AbilityScores::charisma, -5));
-
-
-	Weapon sting;
-	sting.setName("Sting");
-	sting.setPrimaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::piercing, 5));
-	sting.setWeaponSlot(WeaponSlots::mainhand);
-
-	Weapon defender;
-	defender.setName("Dragon defender");
-	defender.setPrimaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::lightning, 5));
-	defender.setWeaponSlot(WeaponSlots::offhand);
-*/
-
-	Consumable apple;
-	apple.setName("Appel");
-	apple.setQuantityUses(2);
-	apple.setAction(std::function<void()>([&heroParty]() {
+	functions["heal1"] = [&heroParty]() {
 		auto lowest = heroParty[0];
 		for (unsigned int i = 0; i < heroParty.size(); i++) {
 			if (heroParty[i]->getHealth() < lowest->getHealth()) {
@@ -215,70 +157,41 @@ int main( int argc, char *argv[] ){
 			}
 		}
 		lowest->increaseHealth(2);
-	}));
-	Weapon thunderfury;
-	thunderfury.setName("Thunderfury, Blessed blade of the Windseeker");
-	thunderfury.setPrimaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::lightning, 5));
-	thunderfury.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::thunder, 2));
-	thunderfury.addSecondaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::necrotic, 2));
-	thunderfury.setWeaponSlot(WeaponSlots::mainhand);
-	Weapon sting;
-	sting.setName("Sting");
-	sting.setPrimaryDamageEffect(std::pair<DamageTypes, int>(DamageTypes::piercing, 5));
-	sting.setWeaponSlot(WeaponSlots::offhand);
+	};
 
-	heroParty.addToInventory(std::make_shared<Item>(stick));
-	heroParty.addToInventory(std::make_shared<Armor>(boots));
-	heroParty.addToInventory(std::make_shared<Weapon>(pointyStick));
-	heroParty.addToInventory(std::make_shared<Weapon>(thunderfury));
-	heroParty.addToInventory(std::make_shared<Weapon>(sting));/*
-	heroParty.addToInventory(std::make_shared<Weapon>(defender));
-	heroParty.addToInventory(std::make_shared<Armor>(wingedBoots));
-	heroParty.addToInventory(std::make_shared<Armor>(juggernaut));
-	heroParty.addToInventory(std::make_shared<Armor>(poorlyFittedClothing));*/
-	heroParty.addToInventory(std::make_shared<Consumable>(apple));
+	DM.load(items, armor, weapons, heroParty);
+
+	Item stick = items["Stick of Truth"];
+
+	Weapon pointyStick = weapons["Slightly pointy stick"];
+
+	Armor boots = armor["Normal boots"];
 
 
 	//=======================================================
 	// Creating BackGround
 	//=======================================================
 
-	std::string combatBackground = "combatBackGround";
-	std::string combatBackgroundImage = "Assets/background680.png";
-
-	std::string takatikimap = "takatiki";
-	std::string backgroundImage = "takatikimap.png";
-
-	std::string menuBackGround = "menu";
-	std::string menuBackGroundImage = "Assets/menu.png";
-
-	std::string churchBackGround = "church";
-	std::string churchBackGroundImage = "Assets/church.png";
-
 	BackGround background;
 
-	background.add(takatikimap, backgroundImage);
-	background.add(combatBackground, combatBackgroundImage);
-	background.add(menuBackGround, menuBackGroundImage);
-	background.add(churchBackGround, churchBackGroundImage);
-
+	DM.load(background);
 	//=======================================================
 	// Creating Combat
 	//=======================================================
 
-	Combat testCombat(window, heroParty, monsters, combatBackground, background);
+	Combat testCombat(window, heroParty, monsters, "combatBackGround", background);
 
 	//=======================================================
 	// Creating Menu
 	//=======================================================
 
-	Menu menu(menuBackGround, background);
+	Menu menu("menu", background);
 
 
 	std::function<void()> inventoryFunctie = [&heroParty, &window]() {InventoryDisplay InventoryD(heroParty, window); InventoryD.use(); };
-	std::function<void()> partyFunctie = [&heroParty, &window, &background, &takatikimap]() {PartyOverview overview(heroParty, background, takatikimap);overview.open(window);};
+	std::function<void()> partyFunctie = [&heroParty, &window, &background, &takatikimap]() {PartyOverview overview(heroParty, background, takatikimap); overview.open(window); };
 	std::function<void()> saveFunctie = [&heroParty, &DM]() {DM.save(heroParty); };
-	std::function<void()> loadFunctie = []() {};
+	std::function<void()> loadFunctie = [&heroParty, &DM]() {DM.load(heroParty); };
 	std::function<void()> closeFunctie = [&window]() {window.close(); };
 
 
@@ -287,7 +200,7 @@ int main( int argc, char *argv[] ){
 	std::string saveImage = ("Assets/save.png");
 	std::string loadImage = ("Assets/load.png");
 	std::string closeImage = ("Assets/close.png");
-	
+
 
 	menu.addTile(inventoryImage, inventoryFunctie);
 	menu.addTile(partyImage, partyFunctie);
@@ -298,24 +211,42 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// shops
 	//=======================================================
-	
-	
+
+
 
 	std::shared_ptr<DialogNode> shopDialogNode0(new DialogNode("Do you wish to buy or sell items?"));
 	std::shared_ptr<DialogNode> shopDialogBuyNode(new DialogNode("What item do you wish to buy?"));
 	std::shared_ptr<DialogNode> shopDialogSellNode(new DialogNode("What item do you wish to sell?"));
 
-	std::function<void()> buyFunc = [&] {constructBuyList(shopDialogBuyNode, shopDialogNode0, heroParty, heroParty.getInventory() ); };// #mergefix get all  items
+
+	std::map<std::string, Armor> inventoryArmor;
+	std::map<std::string, Weapon> inventoryWeapon;
+	//std::map<std::string, Consumable> inventoryWeapon;
+
+	DM.load(inventoryWeapon, inventoryArmor);
+
+	std::vector<std::shared_ptr<Item>> blackSmithInventoryVector;
+
+	for (auto &item : inventoryArmor) {
+		blackSmithInventoryVector.push_back(std::make_shared<Item>(item.second));
+	}
+
+	for (auto &item : inventoryWeapon) {
+		blackSmithInventoryVector.push_back(std::make_shared<Item>(item.second));
+	}
+	// MapToVec(
+
+	std::function<void()> buyFunc = [&] {constructBuyList(shopDialogBuyNode, shopDialogNode0, heroParty, blackSmithInventoryVector); };
 	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", shopDialogBuyNode, buyFunc));
 	std::function<void()> sellFunc = [&] {constructSellList(shopDialogSellNode, shopDialogNode0, heroParty); };
 	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", shopDialogSellNode, sellFunc));
-	
+
 
 
 	//=======================================================
 	// Functional Buildings
 	//=======================================================
-	
+
 	// Windmill
 	std::shared_ptr<DialogNode> windmillDialog0(new DialogNode("You come across a lonely windmill. The blades turn in the wind. Do you want to get closer to the windmill?"));
 	std::shared_ptr<DialogNode> windmillDialog1(new DialogNode("You get closer to the windmill and notice that the door is open. Do you want to go into the windmill?"));
@@ -334,9 +265,9 @@ int main( int argc, char *argv[] ){
 
 	windmillDialog2->addDialogOption(std::make_shared<DialogOption>("Yes", windmillDialog3, removeAllCrumbs));
 	windmillDialog2->addDialogOption(std::make_shared<DialogOption>("No, I know what's going to happen. Walk away.", windmillDialog4));
-	
+
 	windmillDialog3->addDialogOption(std::make_shared<DialogOption>("Wait, what? Screw this I'm gone", windmillDialog5));
-	
+
 	DialogTree windmillTree;
 	windmillTree.addNode(windmillDialog0);
 	windmillTree.addNode(windmillDialog1);
@@ -378,20 +309,22 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Point Of Interest
 	//=======================================================
-	std::map<std::string, std::function<void()>> functions;
+
 	functions["function1"] = [&testCombat]() {testCombat.update(); };
 
 
 	PointOfInterestContainer poiCont(heroParty);
 
+
 	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
+	DM.load(poibox);
 
 
 
 	//city dialog
 	DialogTree cityDialogPoint1;
 	functions["cityDialogPoint1"] = [&cityDialogPoint1, &overWorldDialog]() {cityDialogPoint1.performDialogue(overWorldDialog); };
-	DM.load(poibox);
+
 
 	std::shared_ptr<DialogNode> cityDialogPoint1Node0(new DialogNode("Do you wish to enter Villageville?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?", "Assets/town.png"));
@@ -407,7 +340,7 @@ int main( int argc, char *argv[] ){
 	cityDialogPoint1ChurchNode0->addDialogOption(std::make_shared<DialogOption>("yes", cityDialogPoint1ChurchNode1));
 	cityDialogPoint1ChurchNode0->addDialogOption(std::make_shared<DialogOption>("no", cityDialogPoint1Node1));
 
-	for (size_t i = 0; i < heroParty.size(); i++){
+	for (size_t i = 0; i < heroParty.size(); i++) {
 		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background, &churchBackGround]() {AbilitySpeccing a(heroParty[i], window, background, churchBackGround); a.resetAbilits(); a.use(window); window.clear(sf::Color::Transparent); }));
 	}
 
@@ -437,7 +370,7 @@ int main( int argc, char *argv[] ){
 	//
 
 	//end city dialog
-	sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
+	/*sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
 	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
 	std::vector<sf::Vector2f> notPath = {};
 	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
@@ -450,20 +383,26 @@ int main( int argc, char *argv[] ){
 	std::function<void()> cityPoint1 = [&]() {cityDialogPoint1.performDialogue(overWorldDialog); };
 
 	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cityPoint1, path);
-	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);
+	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);*/
 
 
-	background.setBackGround(takatikimap, window);
 
-	std::shared_ptr<sf::RectangleShape> partey(new sf::RectangleShape);
-	sf::Vector2f abh(20, 20);
+
+	background.setBackGround("takatiki", window);
+
+	std::shared_ptr<sf::RectangleShape> partyOverWorldIcon(new sf::RectangleShape);
+	sf::Texture partyOverWorldIconTexture;
+	sf::Vector2f partyIconSize(50, 50);
+	partyOverWorldIconTexture.create(50, 50);
+	partyOverWorldIconTexture.loadFromFile("PartyBanner.png");
 	sf::Vector2f newLocation;
 	newLocation = poiCont.getCurrentPointLocation();
-	partey->setSize(abh);
-	partey->setPosition(newLocation);
-	partey->setFillColor(sf::Color::Black);
+	partyOverWorldIcon->setSize(partyIconSize);
+	partyOverWorldIcon->setTexture(&partyOverWorldIconTexture);
+	partyOverWorldIcon->setOrigin(25.0f, 50.0f);
+	partyOverWorldIcon->setPosition(newLocation);
 
-	TransformableMovement POIMove(partey, newLocation, 0.0f);
+	TransformableMovement POIMove(partyOverWorldIcon, newLocation, 0.0f);
 	POIMove.blend();
 	std::vector<sf::Vector2f> moveList;
 
@@ -475,11 +414,11 @@ int main( int argc, char *argv[] ){
 
 
 	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
-	
+
 	keyHandl.addListener(sf::Keyboard::Escape, [&menu, &window]() {menu.update(window); });
 
-	keyHandl.addListener(sf::Keyboard::C, [&heroParty, &window, &background, &takatikimap]() {
-		PartyOverview overview(heroParty, background, takatikimap);
+	keyHandl.addListener(sf::Keyboard::C, [&heroParty, &window, &background]() {
+		PartyOverview overview(heroParty, background, "takatiki");
 		overview.open(window);
 	});
 
@@ -509,63 +448,10 @@ int main( int argc, char *argv[] ){
 	});
 
 	//=======================================================
-	// Armor testing
-	//=======================================================
-
-	auto differences = zweihander.compareTo(dagger);
-	std::cout << "Als je dagger equipped, volgen er de volgende verschillen.\n";
-
-	for (auto & difference : differences) {
-		if (std::get<2>(difference) == &zweihander) {
-			std::cout << "Je verliest ";
-		} else {
-			std::cout << "Je krijgt ";
-		}
-		std::cout
-			<< std::get<1>(difference)
-			<< ' '
-			<< EnumMethods::getDamageTypeName(std::get<0>(difference))
-			<< " schade!"
-			<< '\n';
-	}
-	
-	Armor chainmail = armor["Chainmail"];
-
-	Armor leather = armor["Leather chest armor +2"];
-
-	auto armorDifferences = chainmail.compareTo(leather);
-	std::cout << "De volgende modifiers veranderen door het equippen van " << leather.getName() << '\n';
-	for (auto & difference : armorDifferences) {
-		if (std::get<1>(difference) < 0) {
-			std::get<1>(difference) *= -1;
-			if (std::get<2>(difference) == &chainmail) {
-				std::cout << "Je krijgt ";
-			} else {
-				std::cout << "Je verliest ";
-			}
-		} else if (std::get<1>(difference) > 0) {
-			if (std::get<2>(difference) == &chainmail) {
-				std::cout << "Je verliest ";
-			} else {
-				std::cout << "Je krijgt ";
-			}
-		} else {
-			std::cout << "Er gebeurt iets?:";
-		}
-
-		std::cout << std::get<1>(difference)
-			<< ' '
-			<< EnumMethods::getAbilityScoreName(std::get<0>(difference))
-			<< " ability!"
-			<< '\n';
-
-	}
-
-	//=======================================================
 	// NPC DIEalogue
 	//=======================================================
 
-	
+
 	DialogTree randomEncounter;
 	std::shared_ptr<DialogNode> randomEncounterNode0(new DialogNode("Good day Sir..."));
 	std::shared_ptr<DialogNode> randomEncounterNode1(new DialogNode("I can't believe you've done this!"));
@@ -579,15 +465,15 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// While Loop
 	//=======================================================
-	
+
 	heroParty[0]->increaseAbilityScore(AbilityScores::arcanism, 20);
-	
+
 	//=======================================================
 	// Home screen
 	//=======================================================
 	bool startGame = false;
 	KeyboardHandler homeMenuKeyHandler;
-	homeMenuKeyHandler.addListener(sf::Keyboard::Enter, [&]() { 
+	homeMenuKeyHandler.addListener(sf::Keyboard::Enter, [&]() {
 		startGame = true;
 		sound.playSoundEffect(SoundEffect::gameStart);
 		sf::sleep(sf::seconds(1));
@@ -620,8 +506,9 @@ int main( int argc, char *argv[] ){
 		window.display();
 	}
 
-	while (window.isOpen()) {
 
+
+	while (window.isOpen()) {
 		if (playMenuTheme) {
 			sound.playMusicType(MusicType::overworld);
 			playMenuTheme = false;
@@ -631,12 +518,12 @@ int main( int argc, char *argv[] ){
 			// calc random encounter
 			int encounterChange = rand() % 100 + 1;
 
-			if (encounterChange > 90 && encounterChange < 95){
+			if (encounterChange > 90 && encounterChange < 95) {
 
 				testMonster = std::make_shared<Monster>("U snap it is u", anubisPair);
 				std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
 				Mob monsterParty(monsterVector);
-				Combat testCombat(window, heroParty, monsterParty, combatBackground, background);
+				Combat testCombat(window, heroParty, monsterParty, "combatBackGround", background);
 				std::cout << "QUEUEUEUE battle music" << '\n';
 				std::cout << encounterChange << '\n';
 
@@ -645,13 +532,12 @@ int main( int argc, char *argv[] ){
 				sound.stopMusic();
 				testCombat.update();
 
-			}else if (encounterChange > 0 && encounterChange < 5) {
+			} else if (encounterChange > 0 && encounterChange < 5) {
 				randomEncounter.performDialogue(overWorldDialog);
-			}
-			else if (encounterChange > 5 && encounterChange < 10) {
+			} else if (encounterChange > 5 && encounterChange < 10) {
 				waterWellTree.performDialogue(overWorldDialog, false, 0);
 			}
-			POIMove = TransformableMovement(partey, moveList.back(), 1.0f);
+			POIMove = TransformableMovement(partyOverWorldIcon, moveList.back(), 1.0f);
 			moveList.pop_back();
 			POIMove.blend();
 		} else if (moveList.size() == 0 && POIMove.isFinished()) {
@@ -674,7 +560,7 @@ int main( int argc, char *argv[] ){
 		window.clear();
 		background.draw(window);
 		poiCont.draw(window);
-		window.draw(*partey);
+		window.draw(*partyOverWorldIcon);
 		window.display();
 
 	}
