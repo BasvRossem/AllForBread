@@ -176,11 +176,21 @@ void InventoryDisplay::changeSelected(const int x, const int y, const int &chara
 	}
 	else {
 		if (x == 0) {
-			if (y + selected.second < signed int(pTile.first[character]->getWeaponTiles().size()) && y + selected.second >= 0){ selected.first = x; selected.second = y + selected.second; selectBox.setPosition(pTile.first[character]->getWeaponTiles()[y]->getSelectboxPositionMini()); selectBox.setSize(sf::Vector2f{ 40,40 });}
+			if (y + selected.second < signed int(pTile.first[character]->getWeaponTiles().size()) && y + selected.second >= 0) { 
+				selected.first = x;
+				selected.second = y + selected.second;
+				selectBox.setPosition(pTile.first[character]->getWeaponTiles()[selected.second]->getSelectboxPositionMini());
+				selectBox.setSize(sf::Vector2f{ 40,40 }); 
+			}
 		}
 		else if (x == 1) 
 		{
-			if (y + selected.second < signed int (pTile.first[character]->getArmorTiles().size()) && y + selected.second >= 0) { selected.first = x; selected.second = y + selected.second; selectBox.setPosition(pTile.first[character]->getArmorTiles()[y]->getSelectboxPositionMini()); selectBox.setSize(sf::Vector2f{ 20,20 });}
+			if (y + selected.second < signed int(pTile.first[character]->getArmorTiles().size()) && y + selected.second >= 0) {
+				selected.first = x;
+				selected.second = y + selected.second;
+				selectBox.setPosition(pTile.first[character]->getArmorTiles()[selected.second]->getSelectboxPositionMini());
+				selectBox.setSize(sf::Vector2f{ 20,20 }); 
+			}
 		}
 	}
 }
