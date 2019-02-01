@@ -127,3 +127,49 @@ const std::string EnumMethods::getWeaponSlotName(const WeaponSlots & slot) {
 		break;
 	}
 }
+
+const sf::Color EnumMethods::getDamageTypeColor(const DamageTypes & type) {
+	switch (type) {
+		case DamageTypes::acid:
+			return sf::Color(83, 204, 14);
+		break;
+		case DamageTypes::bludgeoning:
+			return sf::Color(68, 70, 73);
+		break;
+		case DamageTypes::piercing:
+			return sf::Color(68, 70, 73);
+		break;
+		case DamageTypes::slashing:
+			return sf::Color(68, 70, 73);
+		break;
+		case DamageTypes::fire:
+			return sf::Color(155, 36, 12);
+		break;
+		case DamageTypes::force:
+			return sf::Color(127, 118, 49);
+		break;
+		case DamageTypes::frost:
+			return sf::Color(45, 167, 181);
+		break;
+		case DamageTypes::lightning:
+			return sf::Color(200, 209, 33);
+		break;
+		case DamageTypes::necrotic:
+			return sf::Color(13, 51, 0);
+		break;
+		case DamageTypes::poison:
+			return sf::Color(67, 249, 4);
+		break;
+		case DamageTypes::radiant:
+			return sf::Color(235, 255, 107);
+		break;
+		case DamageTypes::thunder:
+			return sf::Color(194, 197, 234);
+		break;
+		default:
+			return sf::Color::Black;
+		break;
+	}
+
+
+}

@@ -70,9 +70,6 @@ InventoryDisplay::~InventoryDisplay()
 }
 
 
-
-
-
 void InventoryDisplay::use() {
 	enum class InventoryMenu { left, right , equipItem , unequipItem};
 	enum class equip { left, right };
@@ -83,6 +80,7 @@ void InventoryDisplay::use() {
 	reloadTiles();
 
 	isOpen = true;
+	sound.playSoundEffect(SoundEffect::bagOpen);
 	while (isOpen && window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)){
@@ -104,7 +102,7 @@ void InventoryDisplay::use() {
 				keyHandler.addListener(sf::Keyboard::U, []() {});
 				keyHandler.addListener(sf::Keyboard::Enter, [&]() {if (pTile.first[selected.second]->getWeaponTiles().size() != 0 || pTile.first[selected.second]->getArmorTiles().size() != 0) { state = InventoryMenu::unequipItem; select(selected.first, selected.second); lastSelected.first = selected.first;  lastSelected.second = selected.second; setZeroSelected(0, lastSelected.second); }});
 				keyHandler.addListener(sf::Keyboard::Delete, [&]() {});
-				keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false; });
+				keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false;});
 				break;
 			case InventoryMenu::right:
 				text.setString("Navigation use W A S D		Equip Item to player use Enter			Use a Consumeble use U			Delete Item from Party inventory									Exit inventory use ESC");
@@ -116,7 +114,7 @@ void InventoryDisplay::use() {
 				keyHandler.addListener(sf::Keyboard::U, [&]() {useItem(selected.second); if (itemToUse != nullptr) { isOpen = false; } });
 				keyHandler.addListener(sf::Keyboard::Delete, [&]() {if (pTile.second.size() != 0) { state = InventoryMenu::left; deleteItem(selected.second); changeSelected(0, 0);state = InventoryMenu::left; }});
 				keyHandler.addListener(sf::Keyboard::Enter, [&]() {state = InventoryMenu::equipItem; select(selected.first, selected.second); lastSelected.first = selected.first;  lastSelected.second = selected.second; setZeroSelected(0); });
-				keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false; });
+				keyHandler.addListener(sf::Keyboard::Escape, [&]() {isOpen = false;});
 				break;
 			case InventoryMenu::equipItem:
 				text.setString("Navigation use W S			Equip Item to player use Enter																												Exit Equip a Item use ESC");
@@ -161,6 +159,10 @@ void InventoryDisplay::use() {
 				break;
 		}
 	}
+
+
+	sound.playSoundEffect(SoundEffect::bagClose);
+	sf::sleep(sf::milliseconds(650));
 }
 
 void InventoryDisplay::changeSelected(const int x, const int y, const int &character) {
@@ -293,6 +295,7 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 				}
 				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
 				deleteItem(item);
+				sound.playSoundEffect(SoundEffect::weaponEquip);
 				break;
 				
 			case WeaponSlots::mainhand:
@@ -306,6 +309,7 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 				}
 				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
 				deleteItem(item);
+				sound.playSoundEffect(SoundEffect::weaponEquip);
 				break;
 
 			case WeaponSlots::offhand:
@@ -319,6 +323,7 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 				}
 				party.addWeapontoPartyMember(pTile.first[character]->getCharacter(), a);
 				deleteItem(item);
+				sound.playSoundEffect(SoundEffect::weaponEquip);
 				break;
 
 			default:
@@ -344,6 +349,7 @@ void InventoryDisplay::addItemToCharacter(const int & character, const int & ite
 						removeItemFromCharacer(character, 1, i);
 						party.addArmortoPartyMember(pTile.first[character]->getCharacter(), b);
 						deleteItem(item);
+						sound.playSoundEffect(SoundEffect::armorEquip);
 					}
 				}
 			}

@@ -140,7 +140,6 @@ public:
 	/// sets characte level
 	void setCharlevel(const int & lvl);
 
-
 	/// \brief
 	/// Returns unordered map of ability scores
 	std::unordered_map<AbilityScores, int> getStats();

@@ -26,6 +26,7 @@ private:
 	void drawSelectedPlayerStats(sf::RenderWindow & window);
 	void drawModifierBox();
 	void drawProtectionStats();
+	void drawDamageStats();
 
 
 	sf::Vector2u leftScreenSize = sf::Vector2u(500, 1040);
