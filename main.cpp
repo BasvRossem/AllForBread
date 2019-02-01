@@ -83,7 +83,7 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 
 int main( int argc, char *argv[] ){
 	srand(static_cast<unsigned int>(time(NULL)));
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki", sf::Style::Fullscreen);
 	window.setFramerateLimit(60);
 
 	//=======================================================
@@ -139,13 +139,7 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Character
 	//=======================================================
-	std::pair< std::string, std::string> anubisPair;
-	anubisPair.first = "Assets/Anubis/Idle_all.png";
-	anubisPair.second = "Assets/Anubis/Idle_000.png";
-	std::shared_ptr<Monster> testMonster = std::make_shared<Monster>("Jim", anubisPair);
-	testMonster->setDeathAnimation("Assets/Anubis/Dying_all.png");
-	std::vector<std::shared_ptr<Monster>> monsterVector = { testMonster };
-	Mob monsters = (monsterVector);
+
 
 	Party *hParty;
 	DM.load(hParty);
@@ -183,8 +177,55 @@ int main( int argc, char *argv[] ){
 	//=======================================================
 	// Creating Combat
 	//=======================================================
+	std::pair< std::string, std::string> anubisPair1;
+	anubisPair1.first = "Assets/Anubis/Idle_all.png";
+	anubisPair1.second = "Assets/Anubis/Idle_000.png";
+	std::shared_ptr<Monster> testMonster1 = std::make_shared<Monster>("Jim", anubisPair1);
+	testMonster1->setDeathAnimation("Assets/Anubis/Dying_all.png");
+	std::vector<std::shared_ptr<Monster>> monsterVector1 = { testMonster1 };
+	Mob monsters1 = (monsterVector1);
 
-	Combat testCombat(window, heroParty, monsters, "combatBackGround", background);
+	Combat testCombat1(window, heroParty, monsters1, "combatBackGround", background);
+
+	std::pair< std::string, std::string> anubisPair2;
+	anubisPair2.first = "Assets/Anubis/Idle_all.png";
+	anubisPair2.second = "Assets/Anubis/Idle_000.png";
+	std::shared_ptr<Monster> testMonster2 = std::make_shared<Monster>("Jim", anubisPair2);
+	testMonster2->setDeathAnimation("Assets/Anubis/Dying_all.png");
+	std::vector<std::shared_ptr<Monster>> monsterVector2 = { testMonster2 };
+	Mob monsters2 = (monsterVector2);
+
+	Combat testCombat2(window, heroParty, monsters2, "combatBackGround", background);
+
+	std::pair< std::string, std::string> anubisPair3;
+	anubisPair3.first = "Assets/Anubis/Idle_all.png";
+	anubisPair3.second = "Assets/Anubis/Idle_000.png";
+	std::shared_ptr<Monster> testMonster3 = std::make_shared<Monster>("Jim", anubisPair3);
+	testMonster3->setDeathAnimation("Assets/Anubis/Dying_all.png");
+	std::vector<std::shared_ptr<Monster>> monsterVector3 = { testMonster3 };
+	Mob monsters3 = (monsterVector3);
+
+	Combat testCombat3(window, heroParty, monsters3, "combatBackGround", background);
+
+	std::pair< std::string, std::string> anubisPair4;
+	anubisPair4.first = "Assets/Anubis/Idle_all.png";
+	anubisPair4.second = "Assets/Anubis/Idle_000.png";
+	std::shared_ptr<Monster> testMonster4 = std::make_shared<Monster>("Jim", anubisPair4);
+	testMonster4->setDeathAnimation("Assets/Anubis/Dying_all.png");
+	std::vector<std::shared_ptr<Monster>> monsterVector4 = { testMonster4 };
+	Mob monsters4 = (monsterVector4);
+
+	Combat testCombat4(window, heroParty, monsters4, "combatBackGround", background);
+
+	std::pair< std::string, std::string> anubisPair5;
+	anubisPair5.first = "Assets/Anubis/Idle_all.png";
+	anubisPair5.second = "Assets/Anubis/Idle_000.png";
+	std::shared_ptr<Monster> testMonster5 = std::make_shared<Monster>("Jim", anubisPair5);
+	testMonster5->setDeathAnimation("Assets/Anubis/Dying_all.png");
+	std::vector<std::shared_ptr<Monster>> monsterVector5 = { testMonster5 };
+	Mob monsters5 = (monsterVector5);
+
+	Combat testCombat5(window, heroParty, monsters5, "combatBackGround", background);
 
 	//=======================================================
 	// Creating Menu
@@ -219,13 +260,21 @@ int main( int argc, char *argv[] ){
 	
 	
 
-	std::shared_ptr<DialogNode> shopDialogNode0(new DialogNode("Do you wish to buy or sell items?"));
-	std::shared_ptr<DialogNode> shopDialogBuyNode(new DialogNode("What item do you wish to buy?"));
-	std::shared_ptr<DialogNode> shopDialogSellNode(new DialogNode("What item do you wish to sell?"));
+	std::shared_ptr<DialogNode> shopDialogNode0(new DialogNode("Do you wish to buy or sell items?", "town"));
+	std::shared_ptr<DialogNode> shopDialogBuyNode0(new DialogNode("What item do you wish to buy?", "town"));
+	std::shared_ptr<DialogNode> shopDialogSellNode0(new DialogNode("What item do you wish to sell?", "town"));
 
-	std::shared_ptr<DialogNode> smithDialogNode0(new DialogNode("Do you wish to buy or sell weapons and armor?"));
-	std::shared_ptr<DialogNode> smithDialogBuyNode(new DialogNode("What item do you wish to buy?"));
-	std::shared_ptr<DialogNode> smithDialogSellNode(new DialogNode("What item do you wish to sell?"));
+	std::shared_ptr<DialogNode> smithDialogNode0(new DialogNode("Do you wish to buy or sell weapons and armor?", "town"));
+	std::shared_ptr<DialogNode> smithDialogBuyNode0(new DialogNode("What item do you wish to buy?", "town"));
+	std::shared_ptr<DialogNode> smithDialogSellNode0(new DialogNode("What item do you wish to sell?", "town"));
+
+	std::shared_ptr<DialogNode> shopDialogNode1(new DialogNode("Do you wish to buy or sell items?", "town"));
+	std::shared_ptr<DialogNode> shopDialogBuyNode1(new DialogNode("What item do you wish to buy?", "town"));
+	std::shared_ptr<DialogNode> shopDialogSellNode1(new DialogNode("What item do you wish to sell?", "town"));
+
+	std::shared_ptr<DialogNode> smithDialogNode1(new DialogNode("Do you wish to buy or sell weapons and armor?", "town"));
+	std::shared_ptr<DialogNode> smithDialogBuyNode1(new DialogNode("What item do you wish to buy?", "town"));
+	std::shared_ptr<DialogNode> smithDialogSellNode1(new DialogNode("What item do you wish to sell?", "town"));
 
 	std::map<std::string, Armor> inventoryArmor;
 	std::map<std::string, Weapon> inventoryWeapon;
@@ -248,19 +297,28 @@ int main( int argc, char *argv[] ){
 		shopInventoryVector.push_back(std::make_shared<Consumable>(item.second));
 	}
 
-	// MapToVec(
+	// town 1
 	//shop
-	std::function<void()> shopBuyFunc = [&] {constructBuyList(shopDialogBuyNode, shopDialogNode0, heroParty, shopInventoryVector); };
-	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", shopDialogBuyNode, shopBuyFunc));
-	std::function<void()> shopSellFunc = [&] {constructSellList(shopDialogSellNode, shopDialogNode0, heroParty); };
-	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", shopDialogSellNode, shopSellFunc));
+	std::function<void()> shopBuyFunc = [&] {constructBuyList(shopDialogBuyNode0, shopDialogNode0, heroParty, shopInventoryVector); };
+	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", shopDialogBuyNode0, shopBuyFunc));
+	std::function<void()> shopSellFunc = [&] {constructSellList(shopDialogSellNode0, shopDialogNode0, heroParty); };
+	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", shopDialogSellNode0, shopSellFunc));
 	//smith
-	std::function<void()> smithBuyFunc = [&] {constructBuyList(smithDialogBuyNode, smithDialogNode0, heroParty, blackSmithInventoryVector); };
-	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", smithDialogBuyNode, smithBuyFunc));
-	std::function<void()> smithSellFunc = [&] {constructSellList(smithDialogSellNode, smithDialogNode0, heroParty); };
-	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", smithDialogSellNode, smithSellFunc));
-
-
+	std::function<void()> smithBuyFunc = [&] {constructBuyList(smithDialogBuyNode0, smithDialogNode0, heroParty, blackSmithInventoryVector); };
+	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", smithDialogBuyNode0, smithBuyFunc));
+	std::function<void()> smithSellFunc = [&] {constructSellList(smithDialogSellNode0, smithDialogNode0, heroParty); };
+	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", smithDialogSellNode0, smithSellFunc));
+	// town 2
+		//shop
+	std::function<void()> shopBuyFunc1 = [&] {constructBuyList(shopDialogBuyNode1, shopDialogNode1, heroParty, shopInventoryVector); };
+	shopDialogNode1->addDialogOption(std::make_shared<DialogOption>("Buy", shopDialogBuyNode1, shopBuyFunc1));
+	std::function<void()> shopSellFunc1 = [&] {constructSellList(shopDialogSellNode1, shopDialogNode1, heroParty); };
+	shopDialogNode1->addDialogOption(std::make_shared<DialogOption>("Sell", shopDialogSellNode1, shopSellFunc1));
+	//smith
+	std::function<void()> smithBuyFunc1 = [&] {constructBuyList(smithDialogBuyNode1, smithDialogNode1, heroParty, blackSmithInventoryVector); };
+	smithDialogNode1->addDialogOption(std::make_shared<DialogOption>("Buy", smithDialogBuyNode1, smithBuyFunc1));
+	std::function<void()> smithSellFunc1 = [&] {constructSellList(smithDialogSellNode1, smithDialogNode0, heroParty); };
+	smithDialogNode1->addDialogOption(std::make_shared<DialogOption>("Sell", smithDialogSellNode1, smithSellFunc1));
 	//=======================================================
 	// Functional Buildings
 	//=======================================================
@@ -328,7 +386,11 @@ int main( int argc, char *argv[] ){
 	// Creating Point Of Interest
 	//=======================================================
 	
-	functions["function1"] = [&testCombat]() {testCombat.update(); };
+	functions["combat1"] = [&]() { playMenuTheme = true; sound.stopMusic(); testCombat1.update(); };
+	functions["combat2"] = [&]() { playMenuTheme = true; sound.stopMusic(); testCombat2.update(); };
+	functions["combat3"] = [&]() { playMenuTheme = true; sound.stopMusic(); testCombat3.update(); };
+	functions["combat4"] = [&]() { playMenuTheme = true; sound.stopMusic(); testCombat4.update(); };
+	functions["combat5"] = [&]() { playMenuTheme = true; sound.stopMusic(); testCombat5.update(); };
 
 
 	PointOfInterestContainer poiCont(heroParty);
@@ -338,18 +400,20 @@ int main( int argc, char *argv[] ){
 
 	//city dialog
 	DialogTree cityDialogPoint1;
+	DialogTree cityDialogPoint2;
 	functions["cityDialogPoint1"] = [&cityDialogPoint1, &overWorldDialog]() {cityDialogPoint1.performDialogue(overWorldDialog); };
+	functions["cityDialogPoint2"] = [&cityDialogPoint2, &overWorldDialog]() {cityDialogPoint2.performDialogue(overWorldDialog); };
 	
 	DM.load(poibox);
 
-
+	///start town 1
 	std::shared_ptr<DialogNode> cityDialogPoint1Node0(new DialogNode("Do you wish to enter Villageville?"));
 	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?", "town"));
-	std::shared_ptr<DialogNode> cityDialogPoint1BankNode(new DialogNode("We are sorry the bank is under construction"));
-	std::shared_ptr<DialogNode> cityDialogPoint1SmithNode(new DialogNode("We are sorry the smith is under construction"));
+	std::shared_ptr<DialogNode> cityDialogPoint1BankNode(new DialogNode("We are sorry the bank is under construction", "town"));
+	std::shared_ptr<DialogNode> cityDialogPoint1SmithNode(new DialogNode("We are sorry the smith is under construction", "town"));
 	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode0(new DialogNode("You enter the church, do you wish to respec your ability points", "church"));
 	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode1(new DialogNode("Which character do you wish to respec?", "church"));
-	std::shared_ptr<DialogNode> cityDialogPoint1RandomHouseNode(new DialogNode("The houses look generic and boring, like they have been copied and pasted."));
+	std::shared_ptr<DialogNode> cityDialogPoint1RandomHouseNode(new DialogNode("The houses look generic and boring, like they have been copied and pasted.", "town"));
 
 	cityDialogPoint1Node0->addDialogOption(std::make_shared<DialogOption>("Yes", cityDialogPoint1Node1));
 	cityDialogPoint1Node0->addDialogOption(std::make_shared<DialogOption>("No", std::shared_ptr<DialogNode>(nullptr)));
@@ -383,6 +447,51 @@ int main( int argc, char *argv[] ){
 
 	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
+	//end town 1
+
+	//start town 2
+	std::shared_ptr<DialogNode> cityDialogPoint2Node0(new DialogNode("Do you wish to enter [insert bread-related town name]?"));
+	std::shared_ptr<DialogNode> cityDialogPoint2Node1(new DialogNode("What do you want to visit in [insert bread-related town name]?", "town"));
+	std::shared_ptr<DialogNode> cityDialogPoint2BankNode(new DialogNode("We are sorry the bank is under construction", "town"));
+	std::shared_ptr<DialogNode> cityDialogPoint2SmithNode(new DialogNode("We are sorry the smith is under construction", "town"));
+	std::shared_ptr<DialogNode> cityDialogPoint2ChurchNode0(new DialogNode("You enter the church, do you wish to respec your ability points", "church"));
+	std::shared_ptr<DialogNode> cityDialogPoint2ChurchNode1(new DialogNode("Which character do you wish to respec?", "church"));
+	std::shared_ptr<DialogNode> cityDialogPoint2RandomHouseNode(new DialogNode("The houses look generic and boring, like they have been copied and pasted.", "town"));
+
+	cityDialogPoint2Node0->addDialogOption(std::make_shared<DialogOption>("Yes", cityDialogPoint2Node1));
+	cityDialogPoint2Node0->addDialogOption(std::make_shared<DialogOption>("No", std::shared_ptr<DialogNode>(nullptr)));
+
+	cityDialogPoint2ChurchNode0->addDialogOption(std::make_shared<DialogOption>("yes", cityDialogPoint2ChurchNode1));
+	cityDialogPoint2ChurchNode0->addDialogOption(std::make_shared<DialogOption>("no", cityDialogPoint2Node1));
+
+	for (size_t i = 0; i < heroParty.size(); i++) {
+		cityDialogPoint2ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint2Node1, [&heroParty, i, &window, &background]() {AbilitySpeccing a(heroParty[i], window, background, "church"); a.resetAbilits(); a.use(window); window.clear(sf::Color::Transparent); }));
+	}
+
+
+
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Bank", cityDialogPoint2BankNode));
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Grocery", shopDialogNode0));
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Metal shop", smithDialogNode0));
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Church", cityDialogPoint2ChurchNode0));
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Houses", cityDialogPoint2RandomHouseNode));
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Leave VillageVille", std::shared_ptr<DialogNode>(nullptr)));
+
+	cityDialogPoint2BankNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint2Node1));
+
+
+	cityDialogPoint2RandomHouseNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint2Node1));
+
+	cityDialogPoint2.addNode(cityDialogPoint2Node0);
+	cityDialogPoint2.addNode(cityDialogPoint2Node1);
+	cityDialogPoint2.addNode(cityDialogPoint2BankNode);
+	cityDialogPoint2.addNode(cityDialogPoint2RandomHouseNode);
+
+
+	shopDialogNode1->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint2Node1));
+	smithDialogNode1->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint2Node1));
+	/// end town 2
+
 
 	background.setBackGround("takatiki", window);
 
@@ -409,9 +518,9 @@ int main( int argc, char *argv[] ){
 	KeyboardHandler keyHandl;
 
 
-	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); }; });
+	keyHandl.addListener(sf::Keyboard::Enter, [&]() { if (moveList.size() == 0 && POIMove.isFinished()) { poiCont.activate(); background.setBackGround("takatiki", window);};  });
 	
-	keyHandl.addListener(sf::Keyboard::Escape, [&menu, &window]() {menu.update(window); });
+	keyHandl.addListener(sf::Keyboard::Escape, [&]() {menu.update(window); background.setBackGround("takatiki", window); });
 
 
 
@@ -525,7 +634,10 @@ int main( int argc, char *argv[] ){
 				randomEncounter.performDialogue(overWorldDialog);
 			}
 			else if (encounterChange > 5 && encounterChange < 10) {
-				waterWellTree.performDialogue(overWorldDialog, false, 0);
+				waterWellTree.performDialogue(overWorldDialog, true, 20);
+			}
+			else if (encounterChange > 10 && encounterChange < 15) {
+				windmillTree.performDialogue(overWorldDialog, true , 20);
 			}
 			POIMove = TransformableMovement(partyOverWorldIcon, moveList.back(), 1.0f);
 			moveList.pop_back();

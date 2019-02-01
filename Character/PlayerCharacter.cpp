@@ -180,26 +180,38 @@ std::vector<std::pair<DamageTypes, int>> PlayerCharacter::generateAttack(const s
 		return attackInformation;
 
 	} else {
+		try
+		{
+			Weapon currentWeapon = this->getWeapon(std::get<1>(attackDefenition));
+			DamageTypes weaponDamageType = currentWeapon.getPrimaryDamageEffect().first;
 
-		Weapon currentWeapon = this->getWeapon(std::get<1>(attackDefenition));
+			attackInformation[0].first = weaponDamageType;
 
-		DamageTypes weaponDamageType = currentWeapon.getPrimaryDamageEffect().first;
+			int primaryTypeDamage = currentWeapon.getPrimaryDamageEffect().second;
 
-		attackInformation[0].first = weaponDamageType;
-		
-		int primaryTypeDamage = currentWeapon.getPrimaryDamageEffect().second;
+			//Attack Damage				[AbilityScore Value]				*	[Weapon Value]	 +	[Twohanded Base Damage]
+			int finalAttackDamage = ((getStat(getScaling(weaponDamageType)) * primaryTypeDamage) + std::get<2>(attackDefenition));
 
-		//Attack Damage				[AbilityScore Value]				*	[Weapon Value]	 +	[Twohanded Base Damage]
-		int finalAttackDamage = ((getStat(getScaling(weaponDamageType)) * primaryTypeDamage) + std::get<2>(attackDefenition));
+			attackInformation[0].second = finalAttackDamage;
 
-		attackInformation[0].second = finalAttackDamage;
+			// Add Secondary DamageTypes and DamageValues
+			for (auto & index : currentWeapon.getSecondaryDamageEffects()) {
+				attackInformation.push_back(index);
+			}
 
-		// Add Secondary DamageTypes and DamageValues
-		for (auto & index : currentWeapon.getSecondaryDamageEffects()) {
-			attackInformation.push_back(index);
+			return attackInformation;
 		}
+		catch (const std::exception&)
+		{ //please send help thank you
+			attackInformation[0].first = DamageTypes::bludgeoning;
+			//Punch Damage = 											  [Base Value]	  *			[Strength]
+			attackInformation[0].second = static_cast<int>(std::get<2>(attackDefenition) * (getStat(AbilityScores::strength)));
 
-		return attackInformation;
+			return attackInformation;
+		}
+		
+
+		
 	}
 }
 //====================================================================================================================================
