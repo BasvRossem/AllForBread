@@ -505,7 +505,7 @@ int main( int argc, char *argv[] ){
 			// calc random encounter
 			int encounterChange = rand() % 100 + 1;
 
-			if (encounterChange > 90 && encounterChange < 95) {
+			if (encounterChange > 90 && encounterChange < 95){
 
 				std::pair< std::string, std::string> anubisPair;
 				anubisPair.first = "Assets/Anubis/Idle_all.png";
@@ -521,7 +521,10 @@ int main( int argc, char *argv[] ){
 				sound.stopMusic();
 				testCombat.update();
 
+			}else if (encounterChange > 0 && encounterChange < 5) {
 				randomEncounter.performDialogue(overWorldDialog);
+			}
+			else if (encounterChange > 5 && encounterChange < 10) {
 				waterWellTree.performDialogue(overWorldDialog, false, 0);
 			}
 			POIMove = TransformableMovement(partyOverWorldIcon, moveList.back(), 1.0f);
