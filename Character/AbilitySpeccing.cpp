@@ -4,7 +4,7 @@
 
 AbilitySpeccing::AbilitySpeccing(std::shared_ptr<PlayerCharacter> playerCharacter, sf::RenderWindow & window, BackGround & backGround, const std::string & surroundings):
 	playerCharacter(playerCharacter),
-	textBox(window, 100, 10, "Assets/arial.ttf", sf::Vector2i(400, 750), sf::Vector2f(0, 150), sf::Color::Transparent, sf::Color::Transparent),
+	textBox(window, 100, 10, "Assets/arial.ttf", sf::Vector2i(400, 750), sf::Vector2f(0, 150), backGround, sf::Color::Transparent, sf::Color::Transparent),
 	windowSize(400, 900),
 	virtualWindow(unsigned int(windowSize.x), unsigned int(windowSize.y)),
 	backGround(backGround),

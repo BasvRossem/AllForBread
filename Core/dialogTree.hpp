@@ -5,6 +5,7 @@
 #include <memory>
 #include <functional>
 #include "dialogBox.h"
+#include "background.hpp"
 
 
 class DialogNode;
@@ -40,7 +41,7 @@ public:
 
 	///\brief
 	/// make adialogNode with a string of the text that needs to
-	DialogNode(std::string text, std::string background = std::string("takatikimap.png"));
+	DialogNode(std::string text, std::string background = std::string("takatiki"));
 	///\brief
 	/// Adds a dialog option to the dialogoptions vector
 	void addDialogOption(std::shared_ptr<DialogOption> option);

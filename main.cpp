@@ -34,13 +34,14 @@ void constructSellList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogN
 		itemSellName << item->getName() << " (" << item->getBaseValue() << ")";
 		shop->addDialogOption(std::make_shared<DialogOption>(itemSellName.str(), returnPoint, [&, item]() { heroParty.eraseItem(item); heroParty.addCurrency(item->getBaseValue()); /* good sound */}));
 	}
-	shop->addDialogOption(std::make_shared<DialogOption>("back", returnPoint));
+	shop->addDialogOption(std::make_shared<DialogOption>("Back", returnPoint));
 }
 
 void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNode> returnPoint, Party & heroParty, std::vector<std::shared_ptr<Item>> items) {
 	shop->removeAllOptions();
 	std::stringstream currency;
 	currency << "Current currency " << heroParty.getCurrency();
+	std::cout << currency.str();
 	shop->addDialogOption(std::make_shared<DialogOption>(currency.str(), shop));
 	for (auto item : items) { 
 		std::stringstream itemBuyName;
@@ -64,7 +65,8 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 				}else if (itemConsumable != nullptr) {
 					heroParty.addToInventory(std::make_shared<Consumable>(*itemConsumable));
 					heroParty.decreaseCurrency(item->getBaseValue());
-				}else {
+				}
+				else {
 					std::cout << "\nJe bent vergeten wie je bent :(\n";
 				}
 
@@ -74,7 +76,7 @@ void constructBuyList(std::shared_ptr<DialogNode> shop, std::shared_ptr<DialogNo
 			}
 		}));
 	}
-	shop->addDialogOption(std::make_shared<DialogOption>("back", returnPoint));
+	shop->addDialogOption(std::make_shared<DialogOption>("Back", returnPoint));
 }
 
 
@@ -83,6 +85,13 @@ int main( int argc, char *argv[] ){
 	srand(static_cast<unsigned int>(time(NULL)));
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "The Holy Bread of Takatiki");
 	window.setFramerateLimit(60);
+
+	//=======================================================
+	// Datamanager init
+	//=======================================================
+	std::map<std::string, std::function<void()>> functions;
+	DataManager DM("dataManager/data.db", functions);
+
 
 	//=======================================================
 	// Loading screen
@@ -100,12 +109,19 @@ int main( int argc, char *argv[] ){
 	window.clear();
 	window.draw(loadingText);
 	window.display();
+	//=======================================================
+	// Creating BackGround
+	//=======================================================
+
+	BackGround background;
+
+	DM.load(background);
 
 	//=======================================================
 	// OverWorld dialog box
 	//=======================================================
 
-	DialogBox overWorldDialog(window, 75, 10, "Assets/arial.ttf", sf::Vector2i{ 900, 400 }, sf::Vector2f{ 510, 680 }, sf::Color::Black);
+	DialogBox overWorldDialog(window, 75, 10, "Assets/arial.ttf", sf::Vector2i{ 900, 400 }, sf::Vector2f{ 510, 680 }, background, sf::Color::Black);
 	overWorldDialog.setSound("SoundEffects/key.wav");
 
 
@@ -116,11 +132,7 @@ int main( int argc, char *argv[] ){
 	bool playMenuTheme = true;
 	sound.setMusicLoop(true);
 
-	//=======================================================
-	// Datamanager init
-	//=======================================================
-	std::map<std::string, std::function<void()>> functions;
-	DataManager DM("dataManager/data.db", functions);
+
 
 
 
@@ -139,7 +151,6 @@ int main( int argc, char *argv[] ){
 	DM.load(hParty);
 	Party heroParty = *hParty;
 	delete hParty;
-	heroParty.addCurrency(200);
 
 	//=======================================================
 	// Creating items
@@ -168,13 +179,7 @@ int main( int argc, char *argv[] ){
 	Armor boots = armor["Normal boots"];
 
 
-	//=======================================================
-	// Creating BackGround
-	//=======================================================
 
-	BackGround background;
-
-	DM.load(background);
 	//=======================================================
 	// Creating Combat
 	//=======================================================
@@ -189,7 +194,7 @@ int main( int argc, char *argv[] ){
 
 
 	std::function<void()> inventoryFunctie = [&heroParty, &window]() {InventoryDisplay InventoryD(heroParty, window); InventoryD.use(); };
-	std::function<void()> partyFunctie = [&heroParty, &window, &background, &takatikimap]() {PartyOverview overview(heroParty, background, takatikimap);overview.open(window);};
+	std::function<void()> partyFunctie = [&heroParty, &window, &background]() {PartyOverview overview(heroParty, background, "takatiki");overview.open(window);};
 	std::function<void()> saveFunctie = [&heroParty, &DM]() {DM.save(heroParty); };
 	std::function<void()> loadFunctie = [&heroParty, &DM]() {DM.load(heroParty); };
 	std::function<void()> closeFunctie = [&window]() {window.close(); };
@@ -218,29 +223,42 @@ int main( int argc, char *argv[] ){
 	std::shared_ptr<DialogNode> shopDialogBuyNode(new DialogNode("What item do you wish to buy?"));
 	std::shared_ptr<DialogNode> shopDialogSellNode(new DialogNode("What item do you wish to sell?"));
 
+	std::shared_ptr<DialogNode> smithDialogNode0(new DialogNode("Do you wish to buy or sell weapons and armor?"));
+	std::shared_ptr<DialogNode> smithDialogBuyNode(new DialogNode("What item do you wish to buy?"));
+	std::shared_ptr<DialogNode> smithDialogSellNode(new DialogNode("What item do you wish to sell?"));
 
 	std::map<std::string, Armor> inventoryArmor;
 	std::map<std::string, Weapon> inventoryWeapon;
-	//std::map<std::string, Consumable> inventoryWeapon;
+	std::map<std::string, Consumable> inventoryConsumable;
 
-	DM.load(inventoryWeapon, inventoryArmor);
+	DM.load(inventoryWeapon, inventoryArmor, inventoryConsumable);
 
 	std::vector<std::shared_ptr<Item>> blackSmithInventoryVector;
+	std::vector<std::shared_ptr<Item>> shopInventoryVector;
 
 	for (auto &item : inventoryArmor) {
-		blackSmithInventoryVector.push_back(std::make_shared<Item>(item.second));
+		blackSmithInventoryVector.push_back(std::make_shared<Armor>(item.second));
 	}
 
 	for (auto &item : inventoryWeapon) {
-		blackSmithInventoryVector.push_back(std::make_shared<Item>(item.second));
+		blackSmithInventoryVector.push_back(std::make_shared<Weapon>(item.second));
 	}
-	// MapToVec(
 
-	std::function<void()> buyFunc = [&] {constructBuyList(shopDialogBuyNode, shopDialogNode0, heroParty, blackSmithInventoryVector); };
-	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", shopDialogBuyNode, buyFunc));
-	std::function<void()> sellFunc = [&] {constructSellList(shopDialogSellNode, shopDialogNode0, heroParty); };
-	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", shopDialogSellNode, sellFunc));
-	
+	for (auto &item : inventoryConsumable) {
+		shopInventoryVector.push_back(std::make_shared<Consumable>(item.second));
+	}
+
+	// MapToVec(
+	//shop
+	std::function<void()> shopBuyFunc = [&] {constructBuyList(shopDialogBuyNode, shopDialogNode0, heroParty, shopInventoryVector); };
+	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", shopDialogBuyNode, shopBuyFunc));
+	std::function<void()> shopSellFunc = [&] {constructSellList(shopDialogSellNode, shopDialogNode0, heroParty); };
+	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", shopDialogSellNode, shopSellFunc));
+	//smith
+	std::function<void()> smithBuyFunc = [&] {constructBuyList(smithDialogBuyNode, smithDialogNode0, heroParty, blackSmithInventoryVector); };
+	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Buy", smithDialogBuyNode, smithBuyFunc));
+	std::function<void()> smithSellFunc = [&] {constructSellList(smithDialogSellNode, smithDialogNode0, heroParty); };
+	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Sell", smithDialogSellNode, smithSellFunc));
 
 
 	//=======================================================
@@ -314,24 +332,23 @@ int main( int argc, char *argv[] ){
 
 
 	PointOfInterestContainer poiCont(heroParty);
-
-
 	std::pair< PointOfInterestContainer&, std::map<std::string, std::function<void()>>&> poibox(poiCont, functions);
-	DM.load(poibox);
 
 
 
 	//city dialog
 	DialogTree cityDialogPoint1;
 	functions["cityDialogPoint1"] = [&cityDialogPoint1, &overWorldDialog]() {cityDialogPoint1.performDialogue(overWorldDialog); };
+	
+	DM.load(poibox);
 
 
 	std::shared_ptr<DialogNode> cityDialogPoint1Node0(new DialogNode("Do you wish to enter Villageville?"));
-	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?", "Assets/town.png"));
+	std::shared_ptr<DialogNode> cityDialogPoint1Node1(new DialogNode("What do you want to visit in Villageville?", "town"));
 	std::shared_ptr<DialogNode> cityDialogPoint1BankNode(new DialogNode("We are sorry the bank is under construction"));
 	std::shared_ptr<DialogNode> cityDialogPoint1SmithNode(new DialogNode("We are sorry the smith is under construction"));
-	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode0(new DialogNode("You enter the church, do you wish to respec your ability points", "Assets/church.png"));
-	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode1(new DialogNode("Which character do you wish to respec?", "Assets/church.png"));
+	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode0(new DialogNode("You enter the church, do you wish to respec your ability points", "church"));
+	std::shared_ptr<DialogNode> cityDialogPoint1ChurchNode1(new DialogNode("Which character do you wish to respec?", "church"));
 	std::shared_ptr<DialogNode> cityDialogPoint1RandomHouseNode(new DialogNode("The houses look generic and boring, like they have been copied and pasted."));
 
 	cityDialogPoint1Node0->addDialogOption(std::make_shared<DialogOption>("Yes", cityDialogPoint1Node1));
@@ -341,52 +358,31 @@ int main( int argc, char *argv[] ){
 	cityDialogPoint1ChurchNode0->addDialogOption(std::make_shared<DialogOption>("no", cityDialogPoint1Node1));
 
 	for (size_t i = 0; i < heroParty.size(); i++){
-		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background, &churchBackGround]() {AbilitySpeccing a(heroParty[i], window, background, churchBackGround); a.resetAbilits(); a.use(window); window.clear(sf::Color::Transparent); }));
+		cityDialogPoint1ChurchNode1->addDialogOption(std::make_shared<DialogOption>(heroParty[i]->getName(), cityDialogPoint1Node1, [&heroParty, i, &window, &background]() {AbilitySpeccing a(heroParty[i], window, background, "church"); a.resetAbilits(); a.use(window); window.clear(sf::Color::Transparent); }));
 	}
 
 
 
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Bank", cityDialogPoint1BankNode));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Shop", shopDialogNode0));
-	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Smith", cityDialogPoint1SmithNode));
+	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Smith", smithDialogNode0));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Church", cityDialogPoint1ChurchNode0));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Houses", cityDialogPoint1RandomHouseNode));
 	cityDialogPoint1Node1->addDialogOption(std::make_shared<DialogOption>("Leave VillageVille", std::shared_ptr<DialogNode>(nullptr)));
 
 	cityDialogPoint1BankNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 
-	cityDialogPoint1SmithNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 
 	cityDialogPoint1RandomHouseNode->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 
 	cityDialogPoint1.addNode(cityDialogPoint1Node0);
 	cityDialogPoint1.addNode(cityDialogPoint1Node1);
 	cityDialogPoint1.addNode(cityDialogPoint1BankNode);
-	cityDialogPoint1.addNode(cityDialogPoint1SmithNode);
 	cityDialogPoint1.addNode(cityDialogPoint1RandomHouseNode);
 
-	// we need to fix dis
+
 	shopDialogNode0->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
-	//
-
-	//end city dialog
-	/*sf::Vector2f POI1Pos = sf::Vector2f(600, 675);
-	std::vector<sf::Vector2f> path = { sf::Vector2f(600, 675), sf::Vector2f(644, 713), sf::Vector2f(688, 747), sf::Vector2f(748, 775), sf::Vector2f(814, 793), sf::Vector2f(878, 790), sf::Vector2f(950, 772) };
-	std::vector<sf::Vector2f> notPath = {};
-	sf::Vector2f POI2Pos = sf::Vector2f(950, 772);
-	float POI1Size = 15;
-	sf::Color POI1Color = sf::Color::Black;
-	std::string POI1LocationType = "Battle";
-
-	std::function<void()> combatPoint2 = [&testCombat]() {testCombat.update(); };
-
-	std::function<void()> cityPoint1 = [&]() {cityDialogPoint1.performDialogue(overWorldDialog); };
-
-	poiCont.add(POI1Pos, POI1Size, POI1Color, POI1LocationType, cityPoint1, path);
-	poiCont.add(POI2Pos, POI1Size, POI1Color, POI1LocationType, combatPoint2, notPath);*/
-
-
-
+	smithDialogNode0->addDialogOption(std::make_shared<DialogOption>("Back", cityDialogPoint1Node1));
 
 	background.setBackGround("takatiki", window);
 
@@ -417,10 +413,6 @@ int main( int argc, char *argv[] ){
 	
 	keyHandl.addListener(sf::Keyboard::Escape, [&menu, &window]() {menu.update(window); });
 
-	keyHandl.addListener(sf::Keyboard::C, [&heroParty, &window, &background]() {
-		PartyOverview overview(heroParty, background, "takatiki");
-		overview.open(window);
-	});
 
 
 	keyHandl.addListener(sf::Keyboard::D, [&moveList, &poiCont]()->void {
@@ -462,11 +454,6 @@ int main( int argc, char *argv[] ){
 	randomEncounter.addNode(randomEncounterNode0);
 	randomEncounter.addNode(randomEncounterNode1);
 
-	//=======================================================
-	// While Loop
-	//=======================================================
-	
-	heroParty[0]->increaseAbilityScore(AbilityScores::arcanism, 20);
 	
 	//=======================================================
 	// Home screen
@@ -507,7 +494,7 @@ int main( int argc, char *argv[] ){
 	}
 
 	
-
+	heroParty.addCurrency(2000000);
 	while (window.isOpen()) {
 		if (playMenuTheme) {
 			sound.playMusicType(MusicType::overworld);

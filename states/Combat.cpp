@@ -10,8 +10,8 @@ Combat::Combat(sf::RenderWindow & window, Party & party, Mob & monster, std::str
 	menuScreen(menuScreenSize.x, menuScreenSize.y),
 	backgrnd(backgrnd),
 	surrounding(surrounding),
-	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black),
-	afterCombatBox(window, 1000, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), sf::Color::Black),
+	diaBox(window, 40, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), backgrnd, sf::Color::Black),
+	afterCombatBox(window, 1000, 5, "Assets/PIXEARG_.ttf", sf::Vector2i(menuScreenSize.x, menuScreenSize.y), sf::Vector2f(0.0f, static_cast<float>(animationScreenSize.y)), backgrnd, sf::Color::Black),
 	sound(MusicType::battle, 5.0f)
 {
 	//dialogue config
@@ -387,7 +387,7 @@ void Combat::partyVictory() {
 
 	for (unsigned int i = 0; i < party.size(); i++) {
 		if (party[i]->getLevelUp()) {
-			AbilitySpeccing a(party[i], window, backgrnd, "takatiki");
+			AbilitySpeccing a(party[i], window, backgrnd, "church");
 			a.use(window);
 			party[i]->setIsLevelUp(false);
 		}

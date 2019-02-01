@@ -75,11 +75,12 @@ private:
 	void loading<Party*>(Party*& p) {
 		std::vector<std::shared_ptr<PlayerCharacter>> heroVector;
 		std::pair<Database&, std::vector<std::shared_ptr<PlayerCharacter>>&> passThrough(db, heroVector);
-		db.cmd("SELECT id, name, texturePath, individualFrame, portrait FROM Player", [](void * p, int argc, char **argv, char **azColName)->int {
+		db.cmd("SELECT id, name, texturePath, individualFrame, portrait, death FROM Player", [](void * p, int argc, char **argv, char **azColName)->int {
 			auto pass = (std::pair<Database&, std::vector<std::shared_ptr<PlayerCharacter>>&>*)p;
 			std::pair<std::string, std::string> texturePair(argv[2], argv[3]);
 			auto character = std::make_shared<PlayerCharacter>(argv[1], texturePair);
 			character->setPortraitFilename(argv[4]);
+			character->setDeathAnimation(argv[5]);
 			pass->second.push_back(character);
 			return 0;
 		}, &passThrough);

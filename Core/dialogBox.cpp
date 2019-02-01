@@ -1,11 +1,12 @@
 #include "dialogBox.h"
 
-DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, sf::Color backgroundColor, sf::Color edgeColor) :
+DialogBox::DialogBox(sf::RenderWindow& window, uint_least16_t bufferWidth, uint_fast16_t maxLines, std::string fontFileLocation, sf::Vector2i size, sf::Vector2f position, BackGround& background, sf::Color backgroundColor, sf::Color edgeColor) :
 	w(window),
 	bufferWidth(bufferWidth),
 	maxLines(maxLines),
 	diaBox(size.x, size.y),
-	backgroundColor(backgroundColor)
+	backgroundColor(backgroundColor),
+	background(background)
 {
 
 	if (!font.loadFromFile(fontFileLocation)) {
@@ -121,12 +122,7 @@ void DialogBox::printPerm(std::vector<std::string>& textVector) {
 }
 
 void DialogBox::print(std::string str, std::string backgroundUrl, bool sound, int speed) {
-	std::string defaultBackground = "defaultBackground";
-	std::string defaultBackgroundImage = backgroundUrl;
-	BackGround background;
-
-	background.add(defaultBackground, defaultBackgroundImage);
-	background.setBackGround(defaultBackground, w);
+	background.setBackGround(backgroundUrl, w);
 	std::vector<std::string> strVect = wordwrap(str);
 	uint_fast16_t page = 0;
 
@@ -213,12 +209,7 @@ void DialogBox::clearText() {
 
 
 int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<void()>>>& choices, std::string backgroundUrl) {
-	std::string defaultBackground = "defaultBackground";
-	std::string defaultBackgroundImage = backgroundUrl;
-	BackGround background;
-
-	background.add(defaultBackground, defaultBackgroundImage);
-	background.setBackGround(defaultBackground, w);
+	background.setBackGround(backgroundUrl, w);
 
 	int selectedValue = -1;
 	uint_fast16_t page = 0;
@@ -318,7 +309,8 @@ int DialogBox::printChoices(std::vector<std::pair<std::string, std::function<voi
 						if (event.key.code >= static_cast<int>(sf::Keyboard::Num1 + begin) && event.key.code <= static_cast<int>(sf::Keyboard::Num0 + max + begin)){
 							selected = true;
 							int index = overAllMax - max;
-							selectedValue = (event.key.code - 26) + index + begin - 1;
+							selectedValue = (event.key.code - 26) + index - begin - 1;
+							std::cout << "selectedValue: " << selectedValue << '\n';
 						}
 					}
 					if (event.type == sf::Event::Closed)

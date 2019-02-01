@@ -317,7 +317,10 @@ void Character::reCalculateHealth() {
 		bonusVitality--;
 	}
 
-	healthBar.setMaxResource(newMaxHealth);
+	maxHealth = newMaxHealth;
+	currentHealth = maxHealth;
+	healthBar.setMaxResource(maxHealth);
+	healthBar.setCurrentResource(maxHealth);
 }
 
 void Character::setDeathAnimation(const std::string & deathTexturePath) {
