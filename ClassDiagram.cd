@@ -341,16 +341,14 @@
         <Point X="40" Y="34.688" />
         <Point X="39.146" Y="34.688" Type="JumpStart" />
         <Point X="38.979" Y="34.688" Type="JumpEnd" />
-        <Point X="36.396" Y="34.688" Type="JumpStart" />
-        <Point X="36.229" Y="34.688" Type="JumpEnd" />
-        <Point X="26.833" Y="34.688" Type="JumpStart" />
-        <Point X="26.667" Y="34.688" Type="JumpEnd" />
-        <Point X="23.75" Y="34.688" />
-        <Point X="23.75" Y="34.719" />
-        <Point X="14.271" Y="34.719" Type="JumpStart" />
-        <Point X="14.104" Y="34.719" Type="JumpEnd" />
-        <Point X="12.708" Y="34.719" Type="JumpStart" />
-        <Point X="12.542" Y="34.719" Type="JumpEnd" />
+        <Point X="36.396" Y="34.691" Type="JumpStart" />
+        <Point X="36.229" Y="34.691" Type="JumpEnd" />
+        <Point X="26.833" Y="34.7" Type="JumpStart" />
+        <Point X="26.667" Y="34.7" Type="JumpEnd" />
+        <Point X="14.271" Y="34.712" Type="JumpStart" />
+        <Point X="14.104" Y="34.712" Type="JumpEnd" />
+        <Point X="12.708" Y="34.714" Type="JumpStart" />
+        <Point X="12.542" Y="34.714" Type="JumpEnd" />
         <Point X="7.5" Y="34.719" />
       </Path>
     </AssociationLine>
