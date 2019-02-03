@@ -471,8 +471,8 @@ int main( int argc, char *argv[] ){
 
 
 	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Bank", cityDialogPoint2BankNode));
-	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Grocery", shopDialogNode0));
-	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Metal shop", smithDialogNode0));
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Grocery", shopDialogNode1));
+	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Metal shop", smithDialogNode1));
 	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Church", cityDialogPoint2ChurchNode0));
 	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Houses", cityDialogPoint2RandomHouseNode));
 	cityDialogPoint2Node1->addDialogOption(std::make_shared<DialogOption>("Leave VillageVille", std::shared_ptr<DialogNode>(nullptr)));
