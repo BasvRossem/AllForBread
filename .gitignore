@@ -1,0 +1,10 @@
+.vs
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+Debug
+Release
+*.dll
+*.lib
+database/sqlite3.c
+database/sqlite3.h
