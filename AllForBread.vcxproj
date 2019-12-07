@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{821C327E-4D46-4134-ABDE-70044870B084}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Programming tools\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Programming tools\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Programming tools\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Programming tools\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Programming tools\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Programming tools\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Programming tools\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Programming tools\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Programming tools\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Projects\AllForBread\database;C:\Programming tools\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlite3.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>C:\Programming tools\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Projects\AllForBread\database;C:\Programming tools\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlite3.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>C:\Projects\AllForBread\database;C:\Programming tools\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlite3.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Programming tools\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>C:\Projects\AllForBread\database;C:\Programming tools\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlite3.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Programming tools\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="animation\Animation.cpp" />
+    <ClCompile Include="character\AbilitySpeccing.cpp" />
+    <ClCompile Include="character\Attacks.cpp" />
+    <ClCompile Include="character\Character.cpp" />
+    <ClCompile Include="character\EnumClasses.cpp" />
+    <ClCompile Include="character\Mob.cpp" />
+    <ClCompile Include="character\Monster.cpp" />
+    <ClCompile Include="character\Party.cpp" />
+    <ClCompile Include="character\PartyOverview.cpp" />
+    <ClCompile Include="character\PlayerCharacter.cpp" />
+    <ClCompile Include="character\ResourceBar.cpp" />
+    <ClCompile Include="core\background.cpp" />
+    <ClCompile Include="core\dialogBox.cpp" />
+    <ClCompile Include="core\dialogTree.cpp" />
+    <ClCompile Include="core\KeyboardHandler.cpp" />
+    <ClCompile Include="core\Menu.cpp" />
+    <ClCompile Include="core\Sounds.cpp" />
+    <ClCompile Include="core\Tile.cpp" />
+    <ClCompile Include="database\Database.cpp" />
+    <ClCompile Include="datamanager\DataManager.cpp" />
+    <ClCompile Include="debugclass\Debug.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="inventory\InventoryDisplay.cpp" />
+    <ClCompile Include="inventory\InventoryTile.cpp" />
+    <ClCompile Include="inventory\PlayerInventoryTile.cpp" />
+    <ClCompile Include="items\Armor.cpp" />
+    <ClCompile Include="items\Consumable.cpp" />
+    <ClCompile Include="items\Item.cpp" />
+    <ClCompile Include="items\Weapon.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="pointsofinterest\PointOfInterest.cpp" />
+    <ClCompile Include="pointsofinterest\pointOfInterestContainer.cpp" />
+    <ClCompile Include="states\Combat.cpp" />
+    <ClCompile Include="transformablemovement\TransformableMovement.cpp" />
+    <ClCompile Include="virtualscreen\virtualScreen.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="animation\Animation.hpp" />
+    <ClInclude Include="character\AbilitySpeccing.hpp" />
+    <ClInclude Include="character\Attacks.hpp" />
+    <ClInclude Include="character\Character.hpp" />
+    <ClInclude Include="character\CharacterContainer.hpp" />
+    <ClInclude Include="character\EnumClasses.hpp" />
+    <ClInclude Include="character\Mob.hpp" />
+    <ClInclude Include="character\Monster.hpp" />
+    <ClInclude Include="character\Party.hpp" />
+    <ClInclude Include="character\PartyOverview.hpp" />
+    <ClInclude Include="character\PlayerCharacter.hpp" />
+    <ClInclude Include="character\ResourceBar.hpp" />
+    <ClInclude Include="core\background.hpp" />
+    <ClInclude Include="core\dialogBox.h" />
+    <ClInclude Include="core\dialogTree.hpp" />
+    <ClInclude Include="core\KeyboardHandler.hpp" />
+    <ClInclude Include="core\Menu.hpp" />
+    <ClInclude Include="core\Sounds.hpp" />
+    <ClInclude Include="core\Tile.hpp" />
+    <ClInclude Include="database\Database.hpp" />
+    <ClInclude Include="datamanager\DataManager.hpp" />
+    <ClInclude Include="debugclass\Debug.hpp" />
+    <ClInclude Include="Inventory.hpp" />
+    <ClInclude Include="inventory\InventoryDisplay.hpp" />
+    <ClInclude Include="inventory\InventoryTile.hpp" />
+    <ClInclude Include="inventory\PlayerInventoryTile.hpp" />
+    <ClInclude Include="items\Armor.hpp" />
+    <ClInclude Include="items\Consumable.hpp" />
+    <ClInclude Include="items\Item.hpp" />
+    <ClInclude Include="items\Weapon.hpp" />
+    <ClInclude Include="pointsofinterest\PointOfInterest.hpp" />
+    <ClInclude Include="pointsofinterest\pointOfInterestContainer.hpp" />
+    <ClInclude Include="states\Combat.hpp" />
+    <ClInclude Include="states\State.hpp" />
+    <ClInclude Include="transformablemovement\TransformableMovement.hpp" />
+    <ClInclude Include="virtualscreen\virtualScreen.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
